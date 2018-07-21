@@ -16,7 +16,8 @@
         "source": "https://github.com/Ma3oBblu/yii2-user"
     },
     "require": {
-        "yiisoft/yii2": ">=2.0.6"
+        "yiisoft/yii2": ">=2.0.6",
+        "ma3obblu/yii2-ar-relations": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "4.*"
@@ -28,6 +29,8 @@
             "ma3obblu\\user\\forms\\": "src/forms/",
             "ma3obblu\\user\\handlers\\": "src/handlers/",
             "ma3obblu\\user\\helpers\\": "src/helpers/",
+            "ma3obblu\\user\\migrations\\": "src/migrations/",
+            "ma3obblu\\user\\traits\\": "src/traits/",
             "ma3obblu\\user\\tests\\": "tests/"
         }
     },
