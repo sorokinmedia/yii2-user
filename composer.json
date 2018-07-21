@@ -1,0 +1,40 @@
+{
+    "name": "ma3obblu/yii2-user",
+    "description": "User component for Yii2",
+    "type": "yii2-extension",
+    "keywords": ["yii2", "yii 2", "user"],
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Ruslan Gilyazetdinov",
+            "email": "ma3obblu@gmail.com",
+            "homepage": "https://vk.com/ma3obblu"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/Ma3oBblu/yii2-user/issues?state=open",
+        "source": "https://github.com/Ma3oBblu/yii2-user"
+    },
+    "require": {
+        "yiisoft/yii2": ">=2.0.6"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "ma3obblu\\user\\": "src/",
+            "ma3obblu\\user\\entities\\": "src/entities/",
+            "ma3obblu\\user\\forms\\": "src/forms/",
+            "ma3obblu\\user\\handlers\\": "src/handlers/",
+            "ma3obblu\\user\\helpers\\": "src/helpers/",
+            "ma3obblu\\user\\tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "asset-installer-paths": {
+            "npm-asset-library": "vendor/npm",
+            "bower-asset-library": "vendor/bower"
+        }
+    }
+}
