@@ -1,5 +1,5 @@
 {
-    "name": "ma3obblu/yii2-user",
+    "name": "sorokinmedia/yii2-user",
     "description": "User component for Yii2",
     "type": "yii2-extension",
     "keywords": ["yii2", "yii 2", "user"],
@@ -12,8 +12,8 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/Ma3oBblu/yii2-user/issues?state=open",
-        "source": "https://github.com/Ma3oBblu/yii2-user"
+        "issues": "https://github.com/sorokinmedia/yii2-user/issues?state=open",
+        "source": "https://github.com/sorokinmedia/yii2-user"
     },
     "require": {
         "yiisoft/yii2": ">=2.0.6",
@@ -24,14 +24,14 @@
     },
     "autoload": {
         "psr-4": {
-            "ma3obblu\\user\\": "src/",
-            "ma3obblu\\user\\entities\\": "src/entities/",
-            "ma3obblu\\user\\forms\\": "src/forms/",
-            "ma3obblu\\user\\handlers\\": "src/handlers/",
-            "ma3obblu\\user\\helpers\\": "src/helpers/",
-            "ma3obblu\\user\\migrations\\": "src/migrations/",
-            "ma3obblu\\user\\traits\\": "src/traits/",
-            "ma3obblu\\user\\tests\\": "tests/"
+            "sorokinmedia\\user\\": "src/",
+            "sorokinmedia\\user\\entities\\": "src/entities/",
+            "sorokinmedia\\user\\forms\\": "src/forms/",
+            "sorokinmedia\\user\\handlers\\": "src/handlers/",
+            "sorokinmedia\\user\\helpers\\": "src/helpers/",
+            "sorokinmedia\\user\\migrations\\": "src/migrations/",
+            "sorokinmedia\\user\\traits\\": "src/traits/",
+            "sorokinmedia\\user\\tests\\": "tests/"
         }
     },
     "extra": {

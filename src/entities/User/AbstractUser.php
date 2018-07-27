@@ -1,7 +1,7 @@
 <?php
-namespace ma3obblu\user\entities\User;
+namespace sorokinmedia\user\entities\User;
 
-use ma3obblu\user\entities\UserAccessToken\{
+use sorokinmedia\user\entities\UserAccessToken\{
     UserAccessToken
 };
 use yii\behaviors\TimestampBehavior;

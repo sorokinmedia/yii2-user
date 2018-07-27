@@ -1,9 +1,9 @@
 <?php
-namespace ma3obblu\user\forms;
+namespace sorokinmedia\user\forms;
 
 use yii\base\InvalidArgumentException;
 use yii\base\Model;
-use ma3obblu\user\entities\User\User;
+use sorokinmedia\user\entities\User\User;
 
 /**
  * Class PasswordResetForm

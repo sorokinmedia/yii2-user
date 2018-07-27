@@ -1,7 +1,7 @@
 <?php
 namespace common\components\user\forms;
 
-use ma3obblu\user\entities\User\User;
+use sorokinmedia\user\entities\User\User;
 use yii\db\Exception;
 use yii\base\Model;
 

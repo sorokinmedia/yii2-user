@@ -1,11 +1,11 @@
 <?php
-namespace ma3obblu\user\entities\User;
+namespace sorokinmedia\user\entities\User;
 
 use yii\rbac\Role;
 
 /**
  * Interface UserInterface
- * @package ma3obblu\user\entities\User
+ * @package sorokinmedia\user\entities\User
  */
 interface UserInterface
 {

@@ -1,12 +1,12 @@
 <?php
-namespace ma3obblu\user\forms;
+namespace sorokinmedia\user\forms;
 
 use yii\base\Model;
-use ma3obblu\user\entities\User\User;
+use sorokinmedia\user\entities\User\User;
 
 /**
  * Class LoginForm
- * @package ma3obblu\user\forms
+ * @package sorokinmedia\user\forms
  *
  * @property string $email
  * @property string $password

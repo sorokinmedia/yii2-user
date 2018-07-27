@@ -1,14 +1,14 @@
 <?php
-namespace ma3obblu\user\entities\UserAccessToken;
+namespace sorokinmedia\user\entities\UserAccessToken;
 
-use ma3obblu\user\entities\User\AbstractUser;
+use sorokinmedia\user\entities\User\AbstractUser;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\db\Exception;
 
 /**
  * Class UserAccessTokenAR
- * @package ma3obblu\user\entities\UserAccessToken
+ * @package sorokinmedia\user\entities\UserAccessToken
  *
  * @property int $user_id
  * @property string $access_token

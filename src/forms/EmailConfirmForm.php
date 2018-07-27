@@ -1,7 +1,7 @@
 <?php
-namespace ma3obblu\user\forms;
+namespace sorokinmedia\user\forms;
 
-use ma3obblu\user\entities\User\User;
+use sorokinmedia\user\entities\User\User;
 use yii\base\InvalidArgumentException;
 use yii\base\Model;
 

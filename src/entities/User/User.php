@@ -1,9 +1,9 @@
 <?php
-namespace ma3obblu\user\entities\User;
+namespace sorokinmedia\user\entities\User;
 
 /**
  * Class User
- * @package ma3obblu\user\entities\User
+ * @package sorokinmedia\user\entities\User
  */
 class User extends AbstractUser
 {
