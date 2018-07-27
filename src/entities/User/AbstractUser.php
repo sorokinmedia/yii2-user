@@ -451,4 +451,52 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
         \Yii::$app->getResponse()->getCookies()->remove('auth_token');
         return true;
     }
+
+    /******************************************************************************
+     * общие методы
+     *****************************************************************************/
+
+    /**
+     * смена статуса на активный
+     */
+    public function activate()
+    {
+        $this->status_id = self::STATUS_ACTIVE;
+    }
+
+    /**
+     * смена статуса на заблокированный
+     */
+    public function deactivate()
+    {
+        $this->status_id = self::STATUS_BLOCKED;
+    }
+
+    /**
+     * блокировака юзера
+     * @return bool
+     * @throws \Exception
+     */
+    public function blockUser() : bool
+    {
+        $this->activate();
+        if (!$this->save()){
+            throw new Exception(\Yii::t('app','Ошибка при блокировании пользователя'));
+        }
+        return true;
+    }
+
+    /**
+     * разблокировка юзера
+     * @return bool
+     * @throws \Exception
+     */
+    public function unblockUser() : bool
+    {
+        $this->deactivate();
+        if (!$this->save()){
+            throw new Exception(\Yii::t('app','Ошибка при разблокировке пользователя'));
+        }
+        return true;
+    }
 }
