@@ -5,7 +5,7 @@ use sorokinmedia\user\entities\UserAccessToken\{
     UserAccessToken
 };
 use yii\behaviors\TimestampBehavior;
-use yii\db\ActiveRecord;
+use sorokinmedia\ar_relations\AbstractActiveRecord;
 use yii\db\Exception;
 use yii\rbac\Role;
 use yii\web\IdentityInterface;
@@ -26,7 +26,7 @@ use yii\web\IdentityInterface;
  * @property int $last_entering_date
  * @property string $email_confirm_token
  */
-abstract class AbstractUser extends ActiveRecord implements IdentityInterface, UserInterface
+abstract class AbstractUser extends AbstractActiveRecord implements IdentityInterface, UserInterface
 {
     const STATUS_BLOCKED = 0;
     const STATUS_ACTIVE = 1;
