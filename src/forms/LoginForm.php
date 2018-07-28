@@ -2,7 +2,8 @@
 namespace sorokinmedia\user\forms;
 
 use yii\base\Model;
-use sorokinmedia\user\entities\User\User;
+use sorokinmedia\user\entities\User\UserInterface;
+use yii\web\IdentityInterface;
 
 /**
  * Class LoginForm
@@ -12,10 +13,12 @@ use sorokinmedia\user\entities\User\User;
  * @property string $password
  * @property bool $rememberMe
  *
- * @property User $_user
+ * @property UserInterface $_user
  */
 class LoginForm extends Model
 {
+    const THIRTY_DAYS = 3600*24*30;
+
     public $email;
     public $password;
     public $rememberMe = true;
@@ -54,7 +57,7 @@ class LoginForm extends Model
     public function validatePassword(string $attribute)
     {
         if (!$this->hasErrors()) {
-            $user = $this->getUser();
+            $user = $this->_getUser();
             if (!$user || !$user->validatePassword($this->password)) {
                 $this->addError($attribute, \Yii::t('app','Неверно указан логин или пароль'));
             }
@@ -62,25 +65,26 @@ class LoginForm extends Model
     }
 
     /**
-     * логин пользователя
-     * @return bool
+     * @return UserInterface
      */
-    public function login() : bool
+    private function _getUser()
     {
-        if ($this->validate()) {
-            return \Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
+        if ($this->_user === false) {
+            $this->_user = UserInterface::findByEmail($this->email);
         }
-        return false;
+        return $this->_user;
     }
 
     /**
-     * @return User
+     * логин пользователя
+     * @param IdentityInterface $user
+     * @return bool
      */
-    public function getUser()
+    public function login(IdentityInterface $user) : bool
     {
-        if ($this->_user === false) {
-            $this->_user = User::findByEmail($this->email);
+        if ($this->validate()) {
+            return \Yii::$app->user->login($user, $this->rememberMe ? self::THIRTY_DAYS : 0);
         }
-        return $this->_user;
+        return false;
     }
 }

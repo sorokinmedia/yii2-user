@@ -1,7 +1,7 @@
 <?php
 namespace sorokinmedia\user\forms;
 
-use sorokinmedia\user\entities\User\User;
+use sorokinmedia\user\entities\User\UserInterface;
 use yii\base\InvalidArgumentException;
 use yii\base\Model;
 
@@ -9,7 +9,7 @@ use yii\base\Model;
  * Class EmailConfirmForm
  * @package common\components\user\forms
  *
- * @property User $_user
+ * @property UserInterface $_user
  */
 class EmailConfirmForm extends Model
 {
@@ -20,12 +20,12 @@ class EmailConfirmForm extends Model
      * @param string $token
      * @param array $config
      */
-    public function __construct(string $token, array $config = [])
+    public function __construct(array $config = [], string $token, UserInterface $user)
     {
         if (empty($token) || !is_string($token)) {
             throw new InvalidArgumentException(\Yii::t('app','Отсутствует код подтверждения.'));
         }
-        $this->_user = User::findByEmailConfirmToken($token);
+        $this->_user = $user;
         if (!$this->_user) {
             throw new InvalidArgumentException(\Yii::t('app','Неверный токен.'));
         }
@@ -39,8 +39,6 @@ class EmailConfirmForm extends Model
     public function confirmEmail() : bool
     {
         $user = $this->_user;
-        $user->status_id = User::STATUS_ACTIVE;
-        $user->removeEmailConfirmToken();
-        return $user->save();
+        return $user->confirmEmailAction();
     }
 }

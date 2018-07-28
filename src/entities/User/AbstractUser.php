@@ -133,6 +133,50 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
         return (self::getStatusesArray())[$this->status_id];
     }
 
+    /**
+     * смена статуса на активный
+     */
+    public function activate()
+    {
+        $this->status_id = self::STATUS_ACTIVE;
+    }
+
+    /**
+     * смена статуса на заблокированный
+     */
+    public function deactivate()
+    {
+        $this->status_id = self::STATUS_BLOCKED;
+    }
+
+    /**
+     * блокировака юзера
+     * @return bool
+     * @throws \Exception
+     */
+    public function blockUser() : bool
+    {
+        $this->activate();
+        if (!$this->save()){
+            throw new Exception(\Yii::t('app','Ошибка при блокировании пользователя'));
+        }
+        return true;
+    }
+
+    /**
+     * разблокировка юзера
+     * @return bool
+     * @throws \Exception
+     */
+    public function unblockUser() : bool
+    {
+        $this->deactivate();
+        if (!$this->save()){
+            throw new Exception(\Yii::t('app','Ошибка при разблокировке пользователя'));
+        }
+        return true;
+    }
+
     /**********************************
      * реализация интерфейсных методов
      *********************************/
@@ -198,33 +242,41 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     }
 
     /**
+     * @return bool
+     * @throws \yii\base\Exception
+     */
+    public function saveGeneratedPasswordResetToken(): bool
+    {
+        $this->generatePasswordResetToken();
+        return $this->save();
+    }
+
+    /**
      * поиск по токену сброса пароля
-     * @param string $token
      * @return AbstractUser
      */
-    public static function findByPasswordResetToken(string $token) : UserInterface
+    public function findByPasswordResetToken() : UserInterface
     {
-        if (!static::isPasswordResetTokenValid($token)) {
+        if (!$this->isPasswordResetTokenValid()) {
             throw new \RuntimeException(\Yii::t('app', 'Недействительный токен. Запросите сброс пароля еще раз.'));
         }
-        return static::findOne([
-            'password_reset_token' => $token,
+        return self::findOne([
+            'password_reset_token' => $this->password_reset_token,
             'status' => self::STATUS_ACTIVE,
         ]);
     }
 
     /**
      * проверяет валидность токена сброса пароля (по времени)
-     * @param string $token password reset token
      * @return boolean
      */
-    public static function isPasswordResetTokenValid($token) : bool
+    public function isPasswordResetTokenValid() : bool
     {
-        if (is_null($token)) {
+        if (is_null($this->password_reset_token)) {
             return false;
         }
         $expire = \Yii::$app->params['user.passwordResetTokenExpire'];
-        $parts = explode('_', $token);
+        $parts = explode('_', $this->password_reset_token);
         $timestamp = (int) end($parts);
         return $timestamp + $expire >= time();
     }
@@ -285,6 +337,17 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     }
 
     /**
+     * действия при подтверждении e-mail
+     * @return bool
+     */
+    public function confirmEmailAction(): bool
+    {
+        $this->activate();
+        $this->removeEmailConfirmToken();
+        return $this->save();
+    }
+
+    /**
      * Валидация пароля
      * @param string $password
      * @return bool
@@ -302,6 +365,22 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     public function setPassword(string $password)
     {
         $this->password_hash = \Yii::$app->security->generatePasswordHash($password);
+    }
+
+    /**
+     * сохранение нового пароля
+     * @param bool $reset_token
+     * @param string $password
+     * @return bool
+     * @throws \yii\base\Exception
+     */
+    public function saveNewPassword(string $password, bool $reset_token = false): bool
+    {
+        $this->setPassword($password);
+        if ($reset_token === true){
+            $this->removePasswordResetToken();
+        }
+        return $this->save();
     }
 
     /**
@@ -450,54 +529,6 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
             $websiteToken->deactivate();
         }
         \Yii::$app->getResponse()->getCookies()->remove('auth_token');
-        return true;
-    }
-
-    /******************************************************************************
-     * общие методы
-     *****************************************************************************/
-
-    /**
-     * смена статуса на активный
-     */
-    public function activate()
-    {
-        $this->status_id = self::STATUS_ACTIVE;
-    }
-
-    /**
-     * смена статуса на заблокированный
-     */
-    public function deactivate()
-    {
-        $this->status_id = self::STATUS_BLOCKED;
-    }
-
-    /**
-     * блокировака юзера
-     * @return bool
-     * @throws \Exception
-     */
-    public function blockUser() : bool
-    {
-        $this->activate();
-        if (!$this->save()){
-            throw new Exception(\Yii::t('app','Ошибка при блокировании пользователя'));
-        }
-        return true;
-    }
-
-    /**
-     * разблокировка юзера
-     * @return bool
-     * @throws \Exception
-     */
-    public function unblockUser() : bool
-    {
-        $this->deactivate();
-        if (!$this->save()){
-            throw new Exception(\Yii::t('app','Ошибка при разблокировке пользователя'));
-        }
         return true;
     }
 }

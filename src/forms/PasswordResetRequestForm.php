@@ -1,8 +1,8 @@
 <?php
 namespace sorokinmedia\user\forms;
 
+use sorokinmedia\user\entities\User\UserInterface;
 use yii\base\Model;
-use sorokinmedia\user\entities\User\User;
 
 /**
  * Class PasswordResetRequestForm
@@ -30,33 +30,21 @@ class PasswordResetRequestForm extends Model
             ['email', 'filter', 'filter' => 'trim'],
             ['email', 'required'],
             ['email', 'email'],
-            ['email', 'exist',
-                'targetClass' => User::class,
-                //'filter' => ['status' => User::STATUS_ACTIVE],
-                'message' => \Yii::t('app', 'Пользователь с таким e-mail не найден')
-            ],
         ];
     }
 
     /**
      * @return bool
      * @throws \yii\base\Exception
+     * //TODO: mailer from component settings
      */
-    public function sendEmail()
+    public function sendEmail(UserInterface $user)
     {
-        /* @var $user User */
-        $user = User::findOne([
-            'status' => User::STATUS_ACTIVE,
-            'email' => $this->email,
-        ]);
         if (is_null($user)) {
             return false;
         }
-        if (!User::isPasswordResetTokenValid($user->password_reset_token)) {
-            $user->generatePasswordResetToken();
-        }
-        if (!$user->save()) {
-            return false;
+        if (!$user->isPasswordResetTokenValid()) {
+            $user->saveGeneratedPasswordResetToken();
         }
         return \Yii::$app->mailer
             ->compose('@common/mail/passwordReset',['user' => $user])

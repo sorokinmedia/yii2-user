@@ -25,6 +25,30 @@ interface UserInterface
      */
     public function getStatus() : string;
 
+    /**
+     * смена статуса на активный
+     * @return void
+     */
+    public function activate();
+
+    /**
+     * смена статуса на заблокированный
+     * @return void
+     */
+    public function deactivate();
+
+    /**
+     * блокировака юзера
+     * @return bool
+     */
+    public function blockUser() : bool;
+
+    /**
+     * разблокировка юзера
+     * @return bool
+     */
+    public function unblockUser() : bool;
+
     /******************************************************************************************************************
      * СБРОС ПАРОЛЯ
      *****************************************************************************************************************/
@@ -36,18 +60,22 @@ interface UserInterface
     public function generatePasswordResetToken();
 
     /**
+     * сохранить токен для сброса пароля
+     * @return bool
+     */
+    public function saveGeneratedPasswordResetToken() : bool;
+
+    /**
      * поиск пользователя по токену сброса пароля
-     * @param string $token
      * @return mixed
      */
-    public static function findByPasswordResetToken(string $token);
+    public function findByPasswordResetToken();
 
     /**
      * проверка валидности токена сброса пароля
-     * @param $token
      * @return bool
      */
-    public static function isPasswordResetTokenValid($token) : bool;
+    public function isPasswordResetTokenValid() : bool;
 
     /**
      * удаление токена сброса пароля
@@ -77,6 +105,12 @@ interface UserInterface
      * @return mixed
      */
     public function removeEmailConfirmToken();
+
+    /**
+     * действия при подтверждении e-mail
+     * @return bool
+     */
+    public function confirmEmailAction() : bool;
 
     /******************************************************************************************************************
      * ПОИСК ПОЛЬЗОВАТЕЛЯ
@@ -113,6 +147,14 @@ interface UserInterface
      * @return mixed
      */
     public function setPassword(string $password);
+
+    /**
+     * сохранение нового пароля
+     * @param string $password
+     * @param bool $reset_token
+     * @return bool
+     */
+    public function saveNewPassword(string $password, bool $reset_token = false) : bool;
 
     /**
      * генерация API ключа

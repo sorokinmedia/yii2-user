@@ -1,8 +1,8 @@
 <?php
 namespace sorokinmedia\user\forms;
 
+use sorokinmedia\user\entities\User\UserInterface;
 use yii\base\Model;
-use sorokinmedia\user\entities\User\User;
 
 /**
  * Class PasswordResetForm
@@ -11,7 +11,7 @@ use sorokinmedia\user\entities\User\User;
  * @property string $password
  * @property string $password_repeat
  *
- * @property User $_user
+ * @property UserInterface $_user
  */
 class PasswordChangeForm extends Model
 {
@@ -57,9 +57,9 @@ class PasswordChangeForm extends Model
     /**
      * PasswordChangeForm constructor.
      * @param array $config
-     * @param User $user
+     * @param UserInterface $user
      */
-    public function __construct(array $config = [], User $user)
+    public function __construct(array $config = [], UserInterface $user)
     {
         $this->_user = $user;
         parent::__construct($config);
@@ -75,7 +75,6 @@ class PasswordChangeForm extends Model
         if (!$this->checkRepeat()){
             return false;
         }
-        $user->setPassword($this->password);
-        return $user->save();
+        return $user->saveNewPassword($this->password);
     }
 }

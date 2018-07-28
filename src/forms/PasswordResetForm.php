@@ -1,9 +1,9 @@
 <?php
 namespace sorokinmedia\user\forms;
 
+use sorokinmedia\user\entities\User\UserInterface;
 use yii\base\InvalidArgumentException;
 use yii\base\Model;
-use sorokinmedia\user\entities\User\User;
 
 /**
  * Class PasswordResetForm
@@ -11,7 +11,7 @@ use sorokinmedia\user\entities\User\User;
  *
  * @property string $password
  *
- * @property User $_user
+ * @property UserInterface $_user
  */
 class PasswordResetForm extends Model
 {
@@ -42,15 +42,16 @@ class PasswordResetForm extends Model
 
     /**
      * PasswordResetForm constructor.
+     * @param UserInterface $user
      * @param string $token
      * @param array $config
      */
-    public function __construct(string $token, array $config = [])
+    public function __construct(array $config = [],string $token, UserInterface $user)
     {
         if (empty($token) || !is_string($token)) {
             throw new InvalidArgumentException(\Yii::t('app', 'Токен не может быть пустым'));
         }
-        $this->_user = User::findByPasswordResetToken($token);
+        $this->_user = $user;
         if (!$this->_user) {
             throw new InvalidArgumentException(\Yii::t('app','Неверный токен'));
         }
@@ -59,13 +60,10 @@ class PasswordResetForm extends Model
 
     /**
      * @return bool
-     * @throws \yii\base\Exception
      */
     public function resetPassword() : bool
     {
         $user = $this->_user;
-        $user->setPassword($this->password);
-        $user->removePasswordResetToken();
-        return $user->save();
+        return $user->saveNewPassword($this->password, true);
     }
 }
