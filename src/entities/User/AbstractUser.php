@@ -23,7 +23,6 @@ use yii\web\IdentityInterface;
  * @property string $username
  * @property integer $status_id
  * @property int $created_at
- * @property int $updated_at
  * @property int $last_entering_date
  * @property string $email_confirm_token
  */
@@ -86,7 +85,6 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
         return [
             'id' => \Yii::t('app', 'ID'),
             'created_at' => \Yii::t('app', 'Дата регистрации'),
-            'updated_at' => \Yii::t('app', 'Обновлен'),
             'username' => \Yii::t('app', 'Никнейм'),
             'auth_key' => \Yii::t('app', 'API ключ'),
             'email_confirm_token' => \Yii::t('app', 'Токен подтверждения e-mail'),
@@ -106,7 +104,9 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     {
         return [
             [
-                'class' => TimestampBehavior::class
+                'class' => TimestampBehavior::class,
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => false,
             ],
         ];
     }
