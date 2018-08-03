@@ -2,3 +2,8 @@
 vendor
 composer.lock
 .idea
+src/entities/UserProfile/
+src/handlers/
+src/helpers/
+src/traits/
+tests/runtime/

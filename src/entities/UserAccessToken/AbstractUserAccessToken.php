@@ -111,5 +111,22 @@ abstract class AbstractUserAccessToken extends ActiveRecord implements UserAcces
      * @return UserAccessTokenInterface
      * @throws Exception
      */
-    abstract public static function create(AbstractUser $user, bool $remember = false) : UserAccessTokenInterface;
+    public static function create(AbstractUser $user, bool $remember = false) : UserAccessTokenInterface
+    {
+        $token = self::find()->where(['user_id' => $user->id, 'is_active' => 1])->orderBy(['created_at' => SORT_DESC])->one();
+        if ($token instanceof AbstractUserAccessToken && $token->expired_at > time()){
+            return $token;
+        }
+        $user->deactivateTokens();
+        $new_token = new static([
+            'user_id' => $user->id,
+            'access_token' => self::generateToken($user->email),
+            'expired_at' => self::generateExpired($remember),
+            'is_active' => 1,
+        ]);
+        if (!$new_token->save()){
+            throw new Exception(\Yii::t('app', 'Ошибка при добавлении токена'));
+        }
+        return $new_token;
+    }
 }
