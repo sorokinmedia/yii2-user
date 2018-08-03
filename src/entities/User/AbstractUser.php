@@ -177,6 +177,16 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
         return true;
     }
 
+    /**
+     * получает объект роли по ее названию
+     * @param string $role_name
+     * @return null|Role
+     */
+    public static function getRole(string $role_name)
+    {
+        return \Yii::$app->authManager->getRole($role_name);
+    }
+
     /**********************************
      * реализация интерфейсных методов
      *********************************/
