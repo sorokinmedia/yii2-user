@@ -3,7 +3,6 @@ namespace sorokinmedia\user\forms;
 
 use sorokinmedia\helpers\DateHelper;
 use sorokinmedia\user\entities\User\AbstractUser;
-use sorokinmedia\user\entities\User\UserInterface;
 use yii\base\Model;
 
 /**
@@ -73,7 +72,7 @@ class LoginForm extends Model
     private function _getUser()
     {
         if ($this->_user === false) {
-            $this->_user = UserInterface::findByEmail($this->email);
+            $this->_user = AbstractUser::findByEmail($this->email);
         }
         return $this->_user;
     }

@@ -127,7 +127,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      */
     public function getStatus() : string
     {
-        return (self::getStatusesArray())[$this->status_id];
+        return (static::getStatusesArray())[$this->status_id];
     }
 
     /**
@@ -202,7 +202,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      */
     public static function findIdentity($id)
     {
-        return self::findOne(['id' => $id, 'status_id' => self::STATUS_ACTIVE]);
+        return static::findOne(['id' => $id, 'status_id' => self::STATUS_ACTIVE]);
     }
 
     /**
@@ -274,10 +274,10 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      */
     public static function findByPasswordResetToken(int $expired, string $token = null) : UserInterface
     {
-        if (!self::isPasswordResetTokenValid($expired, $token)) {
+        if (!static::isPasswordResetTokenValid($expired, $token)) {
             throw new \RuntimeException(\Yii::t('app', 'Недействительный токен. Запросите сброс пароля еще раз.'));
         }
-        return self::findOne([
+        return static::findOne([
             'password_reset_token' => $token,
             'status' => self::STATUS_ACTIVE,
         ]);
@@ -314,7 +314,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      */
     public static function findByEmail(string $email) : UserInterface
     {
-        return self::findOne(['email' => $email]);
+        return static::findOne(['email' => $email]);
     }
 
     /**
@@ -325,7 +325,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      */
     public static function findByRole(string $role) : array
     {
-        return self::find()->where(['id' => \Yii::$app->authManager->getUserIdsByRole($role)])->all();
+        return static::find()->where(['id' => \Yii::$app->authManager->getUserIdsByRole($role)])->all();
     }
 
     /**
