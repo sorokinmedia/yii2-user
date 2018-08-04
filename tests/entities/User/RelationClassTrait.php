@@ -1,9 +1,6 @@
 <?php
 namespace sorokinmedia\user\tests\entities\User;
 
-use common\components\user\forms\UserMetaForm;
-use sorokinmedia\user\entities\UserAccessToken\UserAccessToken;
-
 trait RelationClassTrait
 {
     public $__userClass;

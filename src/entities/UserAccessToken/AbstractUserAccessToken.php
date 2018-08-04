@@ -114,7 +114,7 @@ abstract class AbstractUserAccessToken extends ActiveRecord implements UserAcces
     public static function create(AbstractUser $user, bool $remember = false) : UserAccessTokenInterface
     {
         $token = self::find()->where(['user_id' => $user->id, 'is_active' => 1])->orderBy(['created_at' => SORT_DESC])->one();
-        if ($token instanceof AbstractUserAccessToken && $token->expired_at > time()){
+        if ($token instanceof UserAccessTokenInterface && $token->expired_at > time()){
             return $token;
         }
         $user->deactivateTokens();

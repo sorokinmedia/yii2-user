@@ -2,9 +2,7 @@
 namespace sorokinmedia\user\entities\User;
 
 use sorokinmedia\ar_relations\RelationInterface;
-use sorokinmedia\user\entities\UserAccessToken\{
-    UserAccessToken
-};
+use sorokinmedia\user\entities\UserAccessToken\{AbstractUserAccessToken, UserAccessTokenInterface};
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\db\Exception;
@@ -58,12 +56,12 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
         return [
             ['username', 'required'],
             ['username', 'match', 'pattern' => '#^[\w_-]+$#i'],
-            ['username', 'unique', 'targetClass' => AbstractUser::class, 'message' => \Yii::t('app', 'Такое имя пользователя уже занято')],
+            ['username', 'unique', 'on' => 'create','targetClass' => AbstractUser::class, 'message' => \Yii::t('app', 'Такое имя пользователя уже занято')],
             ['username', 'string', 'min' => 2, 'max' => 255],
 
             ['email', 'required'],
             ['email', 'email'],
-            ['email', 'unique', 'targetClass' => AbstractUser::class, 'message' => \Yii::t('app', 'Такой e-mail уже зарегистрирован')],
+            ['email', 'unique', 'on' => 'create', 'targetClass' => AbstractUser::class, 'message' => \Yii::t('app', 'Такой e-mail уже зарегистрирован')],
             ['email', 'string', 'max' => 255],
 
             ['status_id', 'integer'],
@@ -157,6 +155,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     {
         $this->activate();
         if (!$this->save()){
+            print_r($this->getErrors());
             throw new Exception(\Yii::t('app','Ошибка при блокировании пользователя'));
         }
         return true;
@@ -180,10 +179,16 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * получает объект роли по ее названию
      * @param string $role_name
      * @return null|Role
+     * //TODO: need test
      */
     public static function getRole(string $role_name)
     {
         return \Yii::$app->authManager->getRole($role_name);
+    }
+
+    public static function getClass(string $class_name)
+    {
+        return new static();
     }
 
     /**********************************
@@ -211,8 +216,9 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
         if (static::findOne(['auth_key' => $token])){
             return static::findOne(['auth_key' => $token]);
         }
-        $access_token = UserAccessToken::findOne(['access_token' => $token]);
-        if ($access_token instanceof UserAccessToken){
+        $class = new static();
+        $access_token = $class->__userAccessTokenClass::findOne(['access_token' => $token]);
+        if ($access_token instanceof $class->__userAccessTokenClass){
             return static::findOne($access_token->user_id);
         }
         return null;
@@ -262,32 +268,35 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
 
     /**
      * поиск по токену сброса пароля
+     * @param int $expired
+     * @param string $token
      * @return AbstractUser
      */
-    public function findByPasswordResetToken() : UserInterface
+    public static function findByPasswordResetToken(int $expired, string $token = null) : UserInterface
     {
-        if (!$this->isPasswordResetTokenValid()) {
+        if (!self::isPasswordResetTokenValid($expired, $token)) {
             throw new \RuntimeException(\Yii::t('app', 'Недействительный токен. Запросите сброс пароля еще раз.'));
         }
         return self::findOne([
-            'password_reset_token' => $this->password_reset_token,
+            'password_reset_token' => $token,
             'status' => self::STATUS_ACTIVE,
         ]);
     }
 
     /**
      * проверяет валидность токена сброса пароля (по времени)
+     * @param int $expired
+     * @param string $token
      * @return boolean
      */
-    public function isPasswordResetTokenValid() : bool
+    public static function isPasswordResetTokenValid(int $expired, string $token = null) : bool
     {
-        if (is_null($this->password_reset_token)) {
+        if (is_null($token)) {
             return false;
         }
-        $expire = \Yii::$app->params['user.passwordResetTokenExpire'];
-        $parts = explode('_', $this->password_reset_token);
+        $parts = explode('_', $token);
         $timestamp = (int) end($parts);
-        return $timestamp + $expire >= time();
+        return $timestamp + $expired >= time();
     }
 
     /**
@@ -301,7 +310,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     /**
      * поиск пользователя по e-mail
      * @param string $email
-     * @return UserAR|null
+     * @return UserInterface|null
      */
     public static function findByEmail(string $email) : UserInterface
     {
@@ -312,6 +321,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * возвращает всех пользователей заданной роли
      * @param string $role
      * @return array
+     * //TODO: need test
      */
     public static function findByRole(string $role) : array
     {
@@ -410,6 +420,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * @param Role $role
      * @return bool
      * @throws \Exception
+     * //TODO: need test
      */
     public function upgradeToRole(Role $role) : bool
     {
@@ -424,6 +435,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * Даунгрейд пользователя до нужной роли
      * @param Role $role
      * @return bool
+     * //TODO: need test
      */
     public function downgradeFromRole(Role $role) : bool
     {
@@ -443,7 +455,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      */
     public function getTokens()
     {
-        return $this->hasOne(UserAccessToken::class, ['user_id' => 'id']);
+        return $this->hasOne($this->__userAccessTokenClass, ['user_id' => 'id']);
     }
 
     /**
@@ -456,7 +468,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
         $tokens = $this->getTokens()->all();
         if ($tokens){
             foreach ($tokens as $token){
-                /** @var $token UserAccessToken */
+                /** @var $token UserAccessTokenInterface */
                 $token->deactivate();
             }
         }
@@ -467,12 +479,14 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * Проставляем токены и куки после логина
      * @return bool
      * @throws \Throwable
+     * @deprecated spa
+     * //TODO: need test
      */
     public function afterLogin() : bool
     {
         $this->deactivateTokens();
-        $token = UserAccessToken::create($this, true);
-        if($token instanceof UserAccessToken && $token->is_active === true) {
+        $token = $this->__userAccessTokenClass::create($this, true);
+        if($token instanceof $this->__userAccessTokenClass && $token->is_active === true) {
             // записываем токен в куки
             if (\Yii::$app->getRequest()->getCookies()->getValue('auth_token')) {
                 \Yii::$app->getResponse()->getCookies()->remove('auth_token');
@@ -488,6 +502,8 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * Заменяет токен при заходе под другим юзером
      * @param string $token
      * @return bool
+     * @deprecated spa
+     * //TODO: need test
      */
     public function addCheckToken(string $token) : bool
     {
@@ -502,11 +518,12 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     /**
      * Получить api токен для Header Bearer авторизации
      * @return bool|string
+     * @deprecated spa
      */
     public function getToken() : string
     {
         if (\Yii::$app->session->get('auth_token')){ // берем из куки
-            $token = UserAccessToken::findOne(['access_token' => \Yii::$app->session->get('auth_token')]);
+            $token = $this->__userAccessTokenClass::findOne(['access_token' => \Yii::$app->session->get('auth_token')]);
             return $token->access_token;
         }
         return '';
@@ -519,8 +536,8 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      */
     public function getCheckToken() : string
     {
-        /** @var UserAccessToken $token */
-        $token = UserAccessToken::create($this, false);
+        /** @var AbstractUserAccessToken $token */
+        $token = $this->__userAccessTokenClass::create($this, false);
         return $token->access_token;
     }
 
@@ -533,8 +550,8 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     public function afterLogout() : bool
     {
         $token = \Yii::$app->getRequest()->getCookies()->getValue('auth_token');
-        $websiteToken = UserAccessToken::findOne(['user_id' => $this->id, 'access_token' => $token]);
-        if ($websiteToken instanceof UserAccessToken) {
+        $websiteToken = $this->__userAccessTokenClass::findOne(['user_id' => $this->id, 'access_token' => $token]);
+        if ($websiteToken instanceof $this->__userAccessTokenClass) {
             $websiteToken->deactivate();
         }
         \Yii::$app->getResponse()->getCookies()->remove('auth_token');

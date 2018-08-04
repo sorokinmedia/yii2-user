@@ -74,15 +74,19 @@ interface UserInterface
 
     /**
      * поиск пользователя по токену сброса пароля
+     * @param int $expired
+     * @param string $token
      * @return mixed
      */
-    public function findByPasswordResetToken();
+    public static function findByPasswordResetToken(int $expired, string $token = null);
 
     /**
      * проверка валидности токена сброса пароля
+     * @param int $expired
+     * @param string $token
      * @return bool
      */
-    public function isPasswordResetTokenValid() : bool;
+    public static function isPasswordResetTokenValid(int $expired, string $token = null) : bool;
 
     /**
      * удаление токена сброса пароля
