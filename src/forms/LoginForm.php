@@ -1,8 +1,9 @@
 <?php
 namespace sorokinmedia\user\forms;
 
+use sorokinmedia\helpers\DateHelper;
+use sorokinmedia\user\entities\User\AbstractUser;
 use yii\base\Model;
-use sorokinmedia\user\entities\User\UserInterface;
 use yii\web\IdentityInterface;
 
 /**
@@ -13,12 +14,10 @@ use yii\web\IdentityInterface;
  * @property string $password
  * @property bool $rememberMe
  *
- * @property UserInterface $_user
+ * @property AbstractUser $_user
  */
 class LoginForm extends Model
 {
-    const THIRTY_DAYS = 3600*24*30;
-
     public $email;
     public $password;
     public $rememberMe = true;
@@ -51,39 +50,42 @@ class LoginForm extends Model
     }
 
     /**
-     * валидация пароля
-     * @param string $attribute
+     * @param $attribute
+     * @param $params
      */
-    public function validatePassword(string $attribute)
+    public function validatePassword($attribute, $params)
     {
         if (!$this->hasErrors()) {
             $user = $this->_getUser();
             if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, \Yii::t('app','Неверно указан логин или пароль'));
+                $this->addError('password', \Yii::t('app', 'Логин или пароль указан не верно. Попробуйте еще раз.'));
+            } elseif ($user && $user->status_id == AbstractUser::STATUS_BLOCKED) {
+                $this->addError('login', \Yii::t('app', 'Ваш аккаунт заблокирован. Обратитесь к тех.поддержке.'));
+            } elseif ($user && $user->status_id == AbstractUser::STATUS_WAIT) {
+                $this->addError('login', \Yii::t('app', 'Ваш аккаунт не подтвержден. Необходимо подтвердить e-mail.'));
             }
         }
     }
 
     /**
-     * @return UserInterface
+     * @return AbstractUser
      */
     private function _getUser()
     {
         if ($this->_user === false) {
-            $this->_user = UserInterface::findByEmail($this->email);
+            $this->_user = AbstractUser::findByEmail($this->email);
         }
         return $this->_user;
     }
 
     /**
      * логин пользователя
-     * @param IdentityInterface $user
      * @return bool
      */
-    public function login(IdentityInterface $user) : bool
+    public function login() : bool
     {
         if ($this->validate()) {
-            return \Yii::$app->user->login($user, $this->rememberMe ? self::THIRTY_DAYS : 0);
+            return \Yii::$app->user->login($this->_getUser(), $this->rememberMe ? DateHelper::TIME_DAY_THIRTY : 0);
         }
         return false;
     }
