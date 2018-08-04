@@ -4,7 +4,6 @@ namespace sorokinmedia\user\forms;
 use sorokinmedia\helpers\DateHelper;
 use sorokinmedia\user\entities\User\AbstractUser;
 use yii\base\Model;
-use yii\web\IdentityInterface;
 
 /**
  * Class LoginForm
@@ -12,7 +11,7 @@ use yii\web\IdentityInterface;
  *
  * @property string $email
  * @property string $password
- * @property bool $rememberMe
+ * @property bool $remember
  *
  * @property AbstractUser $_user
  */
@@ -20,7 +19,7 @@ class LoginForm extends Model
 {
     public $email;
     public $password;
-    public $rememberMe = true;
+    public $remember = true;
 
     private $_user = false;
 
@@ -32,7 +31,7 @@ class LoginForm extends Model
         return [
             [['email', 'password'], 'required'],
             [['email'], 'email'],
-            ['rememberMe', 'boolean'],
+            ['remember', 'boolean'],
             ['password', 'validatePassword'],
         ];
     }
@@ -45,7 +44,7 @@ class LoginForm extends Model
         return [
             'email' => \Yii::t('app', 'Email'),
             'password' => \Yii::t('app','Пароль'),
-            'rememberMe' => \Yii::t('app','Запомнить меня'),
+            'remember' => \Yii::t('app','Запомнить меня'),
         ];
     }
 
@@ -85,7 +84,7 @@ class LoginForm extends Model
     public function login() : bool
     {
         if ($this->validate()) {
-            return \Yii::$app->user->login($this->_getUser(), $this->rememberMe ? DateHelper::TIME_DAY_THIRTY : 0);
+            return \Yii::$app->user->login($this->_getUser(), $this->remember ? DateHelper::TIME_DAY_THIRTY : 0);
         }
         return false;
     }
