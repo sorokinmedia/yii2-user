@@ -83,6 +83,19 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
     }
 
     /**
+     * UserMeta constructor.
+     * @param array $config
+     * @param UserMetaForm|null $userMetaForm
+     */
+    public function __construct(array $config = [], UserMetaForm $userMetaForm = null)
+    {
+        if (!is_null($userMetaForm)){
+            $this->form = $userMetaForm;
+        }
+        parent::__construct($config);
+    }
+
+    /**
      * трансфер данных из формы в модель
      */
     public function getFromForm()

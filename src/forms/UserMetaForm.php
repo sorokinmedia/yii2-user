@@ -11,7 +11,6 @@ use yii\base\Model;
  *
  * @property string $notification_email
  * @property string $notification_phone
- * @property string $avatar
  * @property string $full_name
  * @property string $tz
  * @property string $location
@@ -20,8 +19,7 @@ use yii\base\Model;
 class UserMetaForm extends Model
 {
     public $notification_email;
-    public $notification_tel;
-    public $avatar;
+    public $notification_phone;
     public $full_name;
     public $tz;
     public $location;
