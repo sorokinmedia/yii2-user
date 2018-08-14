@@ -12,13 +12,14 @@ class m180728_132939_add_user_access_token extends Migration
     public function safeUp()
     {
         $this->createTable('user_access_token', [
-            'id' => $this->primaryKey(),
+            'user_id' => $this->integer(),
             'access_token' => $this->string(32),
             'created_at' => $this->integer(11),
             'updated_at' => $this->integer(11),
             'expired_at' => $this->integer(11),
             'is_active' => $this->integer(1),
         ]);
+        $this->addPrimaryKey('pk-user_access_token', 'user_access_token', ['user_id', 'access_token']);
     }
 
     /**

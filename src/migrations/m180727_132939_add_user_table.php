@@ -6,6 +6,7 @@ use yii\db\Migration;
  */
 class m180727_132939_add_user_table extends Migration
 {
+    //TODO: use rbac migration as php yii migrate --migrationPath=@yii/rbac/migrations/
     /**
      * {@inheritdoc}
      */
