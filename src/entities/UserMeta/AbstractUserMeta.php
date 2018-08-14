@@ -2,14 +2,13 @@
 namespace sorokinmedia\user\entities\UserMeta;
 
 use sorokinmedia\user\entities\User\AbstractUser;
-use sorokinmedia\user\entities\User\UserInterface;
 use yii\db\ActiveRecord;
 
 /**
  * Class AbstractUserMeta
  * @package sorokinmedia\user\entities\UserMeta
  */
-abstract class AbstractUserMeta extends ActiveRecord implements UserInterface
+abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterface
 {
     /**
      * @inheritdoc
