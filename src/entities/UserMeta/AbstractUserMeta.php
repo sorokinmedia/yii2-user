@@ -1,15 +1,34 @@
 <?php
 namespace sorokinmedia\user\entities\UserMeta;
 
+use sorokinmedia\helpers\TextHelper;
 use sorokinmedia\user\entities\User\AbstractUser;
+use sorokinmedia\user\entities\User\UserInterface;
+use sorokinmedia\user\forms\UserMetaForm;
 use yii\db\ActiveRecord;
+use yii\db\Exception;
 
 /**
  * Class AbstractUserMeta
  * @package sorokinmedia\user\entities\UserMeta
+ *
+ * @property integer $user_id
+ * @property string $notification_email
+ * @property integer $notification_phone
+ * @property integer $notification_telegram
+ * @property string $full_name
+ * @property string $display_name
+ * @property string $tz
+ * @property string $location
+ * @property string $about
+ *
+ * @property UserInterface $user
+ * @property UserMetaForm $form
  */
 abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterface
 {
+    public $form;
+
     /**
      * @inheritdoc
      */
@@ -61,5 +80,91 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
     public function getUser()
     {
         return $this->hasOne($this->__userClass, ['id' => 'user_id']);
+    }
+
+    /**
+     * трансфер данных из формы в модель
+     */
+    public function getFromForm()
+    {
+        if (!is_null($this->form)){
+            $this->notification_email = $this->form->notification_email;
+            $this->notification_phone = $this->form->notification_phone;
+            $this->full_name = TextHelper::clearText($this->form->full_name);
+            $this->tz = $this->form->tz;
+            $this->location = TextHelper::clearText($this->form->location);
+            $this->about = TextHelper::clearText($this->form->about);
+        }
+    }
+
+    /**
+     * статический конструктор
+     * @param UserInterface $user
+     * @return UserMetaInterface
+     * @throws Exception
+     * @throws \Exception
+     * @throws \Throwable
+     */
+    public static function create(UserInterface $user) : UserMetaInterface
+    {
+        /** @var AbstractUser $user */
+        $user_meta = static::findOne(['user_id' => $user->id]);
+        if ($user_meta instanceof UserMetaInterface){
+            return $user_meta;
+        }
+        $user_meta = new static([
+            'user_id' => $user->id,
+            'notification_email' => $user->email,
+            'display_name' => $user->username,
+        ]);
+        if (!$user_meta->insert()){
+            throw new Exception(\Yii::t('app', 'Ошибка при добавлении меты'));
+        }
+        return $user_meta;
+    }
+
+    /**
+     * @return bool
+     * @throws Exception
+     */
+    public function updateModel() : bool
+    {
+        $this->getFromForm();
+        if ($this->full_name != ''){
+            $this->display_name = $this->full_name;
+        }
+        if (!$this->save()){
+            throw new Exception(\Yii::t('app', 'Ошибка при обновлении модели в БД'));
+        }
+        return true;
+    }
+
+    /**
+     * добавляет ID телеграм чата
+     * @param integer $chat_id
+     * @throws Exception
+     * @return bool
+     */
+    public function setTelegram(int $chat_id) : bool
+    {
+        $this->notification_telegram = $chat_id;
+        if (!$this->save()){
+            throw new Exception(\Yii::t('app','Ошибка при добавлении ID телеграм чата пользователю: setTelegramId'));
+        }
+        return true;
+    }
+
+    /**
+     * получает ID телеграм чата по user_id
+     * @param integer $chat_id
+     * @return bool|int
+     */
+    public static function getTelegram(int $chat_id)
+    {
+        $user_meta = static::findOne(['notification_telegram' => $chat_id]);
+        if ($user_meta){
+            return $user_meta->notification_telegram;
+        }
+        return false;
     }
 }
