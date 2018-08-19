@@ -33,7 +33,8 @@
             "sorokinmedia\\user\\migrations\\": "src/migrations/",
             "sorokinmedia\\user\\traits\\": "src/traits/",
             "sorokinmedia\\user\\tests\\": "tests/",
-            "sorokinmedia\\user\\tests\\entities\\": "tests/entities"
+            "sorokinmedia\\user\\tests\\entities\\": "tests/entities",
+            "sorokinmedia\\user\\tests\\handlers\\": "tests/handlers"
         }
     },
     "extra": {

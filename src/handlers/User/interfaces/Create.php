@@ -1,7 +1,7 @@
 <?php
 namespace sorokinmedia\user\handlers\User\interfaces;
 
-use common\components\user\forms\RegisterForm;
+use sorokinmedia\user\forms\SignupForm;
 
 /**
  * Interface Create
@@ -10,8 +10,8 @@ use common\components\user\forms\RegisterForm;
 interface Create
 {
     /**
-     * @param RegisterForm $signup_form
+     * @param SignupForm $signup_form
      * @return bool
      */
-    public function create(RegisterForm $signup_form) : bool;
+    public function create(SignupForm $signup_form) : bool;
 }

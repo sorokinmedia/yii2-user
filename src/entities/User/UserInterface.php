@@ -1,7 +1,7 @@
 <?php
 namespace sorokinmedia\user\entities\User;
 
-use common\components\user\forms\RegisterForm;
+use sorokinmedia\user\forms\SignupForm;
 use yii\rbac\Role;
 
 /**
@@ -245,10 +245,10 @@ interface UserInterface
 
     /**
      * регистрация пользователя. данные берутся из формы и создается сущность пользователя
-     * @param RegisterForm $registerForm
+     * @param SignupForm $signupForm
      * @return bool
      */
-    public function signUp(RegisterForm $registerForm) : bool;
+    public function signUp(SignupForm $signupForm) : bool;
 
     /**
      * метод вызывается после создания нового пользователя

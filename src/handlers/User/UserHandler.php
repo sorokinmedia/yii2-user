@@ -1,10 +1,9 @@
 <?php
 namespace sorokinmedia\user\handlers\User;
 
-use common\components\user\forms\RegisterForm;
+use sorokinmedia\user\forms\SignupForm;
 use sorokinmedia\user\handlers\User\interfaces\{Create};
 use sorokinmedia\user\entities\User\UserInterface;
-
 
 /**
  * Class UserHandler
@@ -28,12 +27,12 @@ class UserHandler implements Create
 
     /**
      * регистрация пользователя через форму
-     * @param RegisterForm $signup_form
+     * @param SignupForm $signup_form
      * @return bool
      * @throws \yii\db\Exception
      * @throws \yii\web\ServerErrorHttpException
      */
-    public function create(RegisterForm $signup_form) : bool
+    public function create(SignupForm $signup_form) : bool
     {
         return (new actions\Create($this->user, $signup_form))->execute();
     }

@@ -1,9 +1,9 @@
 <?php
 namespace sorokinmedia\user\entities\User;
 
-use common\components\user\forms\RegisterForm;
 use sorokinmedia\ar_relations\RelationInterface;
 use sorokinmedia\user\entities\UserAccessToken\{AbstractUserAccessToken, UserAccessTokenInterface};
+use sorokinmedia\user\forms\SignupForm;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\db\Exception;
@@ -566,12 +566,12 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
 
     /**
      * регистрация пользователя
-     * @param RegisterForm $form
+     * @param SignupForm $form
      * @return bool
      * @throws Exception
      * @throws ServerErrorHttpException
      */
-    public function signUp(RegisterForm $form) : bool
+    public function signUp(SignupForm $form) : bool
     {
         $transaction = \Yii::$app->db->beginTransaction();
         try {
