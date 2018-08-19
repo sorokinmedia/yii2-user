@@ -4,6 +4,7 @@ namespace sorokinmedia\user\entities\User;
 use sorokinmedia\ar_relations\RelationInterface;
 use sorokinmedia\user\entities\UserAccessToken\{AbstractUserAccessToken, UserAccessTokenInterface};
 use sorokinmedia\user\forms\SignupForm;
+use sorokinmedia\user\handlers\UserAccessToken\UserAccessTokenHandler;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\db\Exception;
@@ -471,7 +472,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
         if ($tokens){
             foreach ($tokens as $token){
                 /** @var $token UserAccessTokenInterface */
-                $token->deactivate();
+                (new UserAccessTokenHandler($token))->deactivate();
             }
         }
         return true;

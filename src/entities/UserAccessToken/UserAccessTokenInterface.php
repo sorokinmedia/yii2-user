@@ -32,6 +32,12 @@ interface UserAccessTokenInterface
     public static function create(AbstractUser $user, bool $remember = false) : UserAccessTokenInterface;
 
     /**
+     * создание модели в БД
+     * @return bool
+     */
+    public function insertModel() : bool;
+
+    /**
      * деактивирует токен
      * @return bool
      */

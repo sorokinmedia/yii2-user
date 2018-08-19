@@ -2,6 +2,7 @@
 namespace sorokinmedia\user\entities\UserAccessToken;
 
 use sorokinmedia\user\entities\User\AbstractUser;
+use sorokinmedia\user\handlers\UserAccessToken\UserAccessTokenHandler;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\db\Exception;
@@ -90,6 +91,20 @@ abstract class AbstractUserAccessToken extends ActiveRecord implements UserAcces
     }
 
     /**
+     * добавление модели в БД
+     * @return bool
+     * @throws Exception
+     * @throws \Throwable
+     */
+    public function insertModel() : bool
+    {
+        if (!$this->insert()){
+            throw new Exception(\Yii::t('app', 'Ошибка при добавлении модели в БД'));
+        }
+        return true;
+    }
+
+    /**
      * деактивация токена
      * @return bool
      * @throws Exception
@@ -110,6 +125,7 @@ abstract class AbstractUserAccessToken extends ActiveRecord implements UserAcces
      * @param bool $remember
      * @return UserAccessTokenInterface
      * @throws Exception
+     * @throws \Throwable
      */
     public static function create(AbstractUser $user, bool $remember = false) : UserAccessTokenInterface
     {
@@ -124,9 +140,8 @@ abstract class AbstractUserAccessToken extends ActiveRecord implements UserAcces
             'expired_at' => self::generateExpired($remember),
             'is_active' => 1,
         ]);
-        if (!$new_token->save()){
-            throw new Exception(\Yii::t('app', 'Ошибка при добавлении токена'));
-        }
+        (new UserAccessTokenHandler($new_token))->create();
+        $new_token->refresh();
         return $new_token;
     }
 }

@@ -1,6 +1,9 @@
 <?php
 namespace sorokinmedia\user\tests\entities\User;
 
+use sorokinmedia\user\tests\entities\UserAccessToken\UserAccessToken;
+use sorokinmedia\user\tests\entities\UserMeta\UserMeta;
+
 trait RelationClassTrait
 {
     public $__userClass;
