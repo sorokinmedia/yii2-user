@@ -1,6 +1,7 @@
 <?php
 namespace sorokinmedia\user\entities\User;
 
+use common\components\user\forms\RegisterForm;
 use yii\rbac\Role;
 
 /**
@@ -237,4 +238,22 @@ interface UserInterface
      * @return bool
      */
     public function addCheckToken(string $token) : bool;
+
+    /******************************************************************************************************************
+     * РЕГИСТРАЦИЯ
+     *****************************************************************************************************************/
+
+    /**
+     * регистрация пользователя. данные берутся из формы и создается сущность пользователя
+     * @param RegisterForm $registerForm
+     * @return bool
+     */
+    public function signUp(RegisterForm $registerForm) : bool;
+
+    /**
+     * метод вызывается после создания нового пользователя
+     * сюда вписывать доп действия - создание связанных сущностей, отсылку писем, уведомлений и прочее
+     * @return mixed
+     */
+    public function afterSignUp();
 }
