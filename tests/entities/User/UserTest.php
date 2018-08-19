@@ -3,6 +3,7 @@ namespace sorokinmedia\user\tests\entities\User;
 
 use sorokinmedia\user\entities\User\UserInterface;
 use sorokinmedia\user\entities\UserAccessToken\UserAccessTokenInterface;
+use sorokinmedia\user\forms\SignupForm;
 use sorokinmedia\user\tests\TestCase;
 use yii\db\Connection;
 use yii\db\Schema;
@@ -351,7 +352,33 @@ class UserTest extends TestCase
         $this->assertInternalType('string', $user->getCheckToken());
     }
 
+    /**
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\db\Exception
+     */
+    public function testAfterSignUp()
+    {
+        $this->initDb();
+        $user = new User();
+        $this->assertTrue($user->afterSignUp());
+    }
 
+    /**
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\db\Exception
+     * @throws \yii\web\ServerErrorHttpException
+     */
+    public function testSignUp()
+    {
+        $this->initDb();
+        $user = new User();
+        $signip_form = new SignupForm([
+            'email' => 'Ma3oBblu@gmail.com',
+            'username' => 'Ma3oBblu',
+            'password' => 'test_password',
+        ]);
+        $this->assertTrue($user->signUp($signip_form));
+    }
 
     /**
      * @throws \yii\base\InvalidConfigException
