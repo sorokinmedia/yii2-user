@@ -1,11 +1,8 @@
 <?php
 namespace sorokinmedia\user\handlers\UserMeta;
 
-use sorokinmedia\user\handlers\UserMeta\interfaces\{
-    Update
-};
+use sorokinmedia\user\handlers\UserMeta\interfaces\{Create, Update};
 use sorokinmedia\user\entities\UserMeta\UserMetaInterface;
-
 
 /**
  * Class UserMetaHandler
@@ -13,7 +10,7 @@ use sorokinmedia\user\entities\UserMeta\UserMetaInterface;
  *
  * @property UserMetaInterface $user_meta
  */
-class UserMetaHandler implements Update
+class UserMetaHandler implements Create, Update
 {
     public $user_meta;
 
@@ -25,6 +22,16 @@ class UserMetaHandler implements Update
     {
         $this->user_meta = $userMeta;
         return $this;
+    }
+
+    /**
+     * @return bool
+     * @throws \Throwable
+     * @throws \yii\db\Exception
+     */
+    public function create() : bool
+    {
+        return (new actions\Create($this->user_meta))->execute();
     }
 
     /**

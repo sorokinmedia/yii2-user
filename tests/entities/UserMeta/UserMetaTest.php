@@ -101,6 +101,12 @@ class UserMetaTest extends TestCase
         $this->assertEquals( 'О себе: текст', $user_meta->about);
     }
 
+    /**
+     * @throws \Throwable
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\db\Exception
+     * @throws \yii\db\StaleObjectException
+     */
     public function testCreateNew()
     {
         $this->initDb();
@@ -120,6 +126,16 @@ class UserMetaTest extends TestCase
         $this->assertEquals('Europe/Moscow', $user_meta->tz);
         $this->assertNull($user_meta->location);
         $this->assertNull( $user_meta->about);
+    }
+
+    public function testInsertModel()
+    {
+        $this->initDb();
+        /** @var UserMeta $user_meta */
+        $user_meta = new UserMeta([
+            'user_id' => 2
+        ]);
+        $this->assertTrue($user_meta->insertModel());
     }
 
     /**
@@ -210,6 +226,18 @@ class UserMetaTest extends TestCase
             'password_reset_token' => null,
             'auth_key' => 'NdLufkTZDHMPH8Sw3p5f7ukUXSXllYwM',
             'username' => 'IvanSidorov',
+            'status_id' => 1,
+            'created_at' => 1460902430,
+            'last_entering_date' => 1532370359,
+            'email_confirm_token' => null,
+        ])->execute();
+        $db->createCommand()->insert('user', [
+            'id' => 2,
+            'email' => 'test2@yandex.ru',
+            'password_hash' => '$2y$13$965KGf0VPtTcQqflsIEDtu4kmvM4mstARSbtRoZRiwYZkUqCQWmcy',
+            'password_reset_token' => null,
+            'auth_key' => 'NdLufkTZDHMPH8Sw3p5f7ukUXSXllYwM',
+            'username' => 'VasyaPupkin',
             'status_id' => 1,
             'created_at' => 1460902430,
             'last_entering_date' => 1532370359,

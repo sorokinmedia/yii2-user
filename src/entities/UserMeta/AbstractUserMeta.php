@@ -2,9 +2,11 @@
 namespace sorokinmedia\user\entities\UserMeta;
 
 use sorokinmedia\helpers\TextHelper;
-use sorokinmedia\user\entities\User\AbstractUser;
-use sorokinmedia\user\entities\User\UserInterface;
+use sorokinmedia\user\entities\{
+    User\AbstractUser,User\UserInterface
+};
 use sorokinmedia\user\forms\UserMetaForm;
+use sorokinmedia\user\handlers\UserMeta\UserMetaHandler;
 use yii\db\ActiveRecord;
 use yii\db\Exception;
 
@@ -130,10 +132,22 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
             'notification_email' => $user->email,
             'display_name' => $user->username,
         ]);
-        if (!$user_meta->insert()){
+        (new UserMetaHandler($user_meta))->create();
+        $user_meta->refresh();
+        return $user_meta;
+    }
+
+    /**
+     * @return bool
+     * @throws Exception
+     * @throws \Throwable
+     */
+    public function insertModel() : bool
+    {
+        if (!$this->insert()){
             throw new Exception(\Yii::t('app', 'Ошибка при добавлении меты'));
         }
-        return $user_meta;
+        return true;
     }
 
     /**
