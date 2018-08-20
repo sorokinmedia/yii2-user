@@ -3,6 +3,7 @@ namespace sorokinmedia\user\forms;
 
 use sorokinmedia\helpers\DateHelper;
 use sorokinmedia\user\entities\User\AbstractUser;
+use sorokinmedia\user\entities\User\UserInterface;
 use yii\base\Model;
 
 /**
@@ -49,32 +50,54 @@ class LoginForm extends Model
     }
 
     /**
+     * LoginForm constructor.
+     * @param array $config
+     * @param UserInterface $user
+     */
+    public function __construct(array $config = [], UserInterface $user)
+    {
+        parent::__construct($config);
+        $this->_user = $user;
+    }
+
+    /**
+     * геттер
+     * @return UserInterface
+     */
+    public function getUser() : UserInterface
+    {
+        return $this->_user;
+    }
+
+    /**
      * @param $attribute
      * @param $params
      */
     public function validatePassword($attribute, $params)
     {
         if (!$this->hasErrors()) {
-            $user = $this->_getUser();
+            /** @var UserInterface $user */
+            $user = $this->getUser();
             if (!$user || !$user->validatePassword($this->password)) {
                 $this->addError('password', \Yii::t('app', 'Логин или пароль указан не верно. Попробуйте еще раз.'));
-            } elseif ($user && $user->status_id == AbstractUser::STATUS_BLOCKED) {
-                $this->addError('login', \Yii::t('app', 'Ваш аккаунт заблокирован. Обратитесь к тех.поддержке.'));
-            } elseif ($user && $user->status_id == AbstractUser::STATUS_WAIT) {
-                $this->addError('login', \Yii::t('app', 'Ваш аккаунт не подтвержден. Необходимо подтвердить e-mail.'));
             }
         }
     }
 
     /**
-     * @return AbstractUser
+     * валидация статуса
      */
-    private function _getUser()
+    public function validateStatus()
     {
-        if ($this->_user === false) {
-            $this->_user = AbstractUser::findByEmail($this->email);
+        if (!$this->hasErrors()){
+            /** @var AbstractUser $user */
+            $user = $this->getUser();
+            if ($user && $user->status_id == AbstractUser::STATUS_BLOCKED) {
+                $this->addError('login', \Yii::t('app', 'Ваш аккаунт заблокирован. Обратитесь к тех.поддержке.'));
+            } elseif ($user && $user->status_id == AbstractUser::STATUS_WAIT) {
+                $this->addError('login', \Yii::t('app', 'Ваш аккаунт не подтвержден. Необходимо подтвердить e-mail.'));
+            }
         }
-        return $this->_user;
     }
 
     /**
@@ -84,7 +107,10 @@ class LoginForm extends Model
     public function login() : bool
     {
         if ($this->validate()) {
-            return \Yii::$app->user->login($this->_getUser(), $this->remember ? DateHelper::TIME_DAY_THIRTY : 0);
+            $this->validateStatus();
+            if (!$this->hasErrors()){
+                return \Yii::$app->user->login($this->_user, $this->remember ? DateHelper::TIME_DAY_THIRTY : 0);
+            }
         }
         return false;
     }
