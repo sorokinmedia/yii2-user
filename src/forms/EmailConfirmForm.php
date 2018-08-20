@@ -9,27 +9,29 @@ use yii\base\Model;
  * Class EmailConfirmForm
  * @package common\components\user\forms
  *
+ * @property string $token
  * @property UserInterface $_user
  */
 class EmailConfirmForm extends Model
 {
+    public $token;
     private $_user;
 
     /**
      * EmailConfirmForm constructor.
-     * @param string $token
      * @param array $config
+     * @param UserInterface $user
      */
-    public function __construct(array $config = [], string $token, UserInterface $user)
+    public function __construct(array $config = [], UserInterface $user)
     {
-        if (empty($token) || !is_string($token)) {
+        parent::__construct($config);
+        if (empty($this->token) || !is_string($this->token)) {
             throw new InvalidArgumentException(\Yii::t('app','Отсутствует код подтверждения.'));
         }
         $this->_user = $user;
         if (!$this->_user) {
             throw new InvalidArgumentException(\Yii::t('app','Неверный токен.'));
         }
-        parent::__construct($config);
     }
 
     /**
