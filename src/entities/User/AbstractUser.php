@@ -25,6 +25,8 @@ use yii\web\ServerErrorHttpException;
  * @property int $created_at
  * @property int $last_entering_date
  * @property string $email_confirm_token
+ *
+ * @property string $status
  */
 abstract class AbstractUser extends ActiveRecord implements IdentityInterface, UserInterface, RelationInterface
 {
