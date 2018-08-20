@@ -311,6 +311,14 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     }
 
     /**
+     * TODO: need test
+     * отправка письма с ссылкой сброса пароля
+     * необходима реализация метода в дочернем классе
+     * @return bool
+     */
+    abstract public function sendPasswordResetMail() : bool;
+
+    /**
      * поиск пользователя по e-mail
      * @param string $email
      * @return UserInterface|null
@@ -330,13 +338,6 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     {
         return static::find()->where(['id' => \Yii::$app->authManager->getUserIdsByRole($role)])->all();
     }
-
-    /**
-     * отправка письма со ссылкой на подтверждение e-mail'а
-     * необходима реализация метода в дочернем классе
-     * @return bool
-     */
-    abstract public function sendEmailConfirmMail() : bool;
 
     /**
      * ищет пользователя по токену подтверждения мыла
@@ -421,9 +422,9 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
         $this->auth_key = \Yii::$app->security->generateRandomString();
     }
 
-    /**
-     * работа с ролями
-     */
+    /******************************************************************************************************************
+     * РАБОТА С РОЛЯМИ
+     *****************************************************************************************************************/
 
     /**
      * Апгрейд пользователя до нужной роли
@@ -455,6 +456,20 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
         }
         return false;
     }
+
+    /**
+     * список ролей или текстовка роли
+     * @param string|null $role
+     * @return mixed
+     */
+    abstract public static function getRolesArray(string $role = null);
+
+    /**
+     * список ссылок по роли или ссылка по роли
+     * @param string|null $role
+     * @return mixed
+     */
+    abstract public static function getRoleLink(string $role = null);
 
     /********************************
      * работа с токенами авторизации
@@ -594,6 +609,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
             }
             $transaction->commit();
             $this->afterSignUp();
+            $this->sendEmailConfirmation();
         }
         catch(\Exception $e){
             $transaction->rollBack();
@@ -608,4 +624,35 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * @return mixed
      */
     abstract public function afterSignUp();
+
+    /**
+     * TODO: need test
+     * отправка письма с подтверждением e-mail
+     * @return bool
+     */
+    abstract public function sendEmailConfirmation() : bool;
+
+    /******************************************************************************************************************
+     * СПИСКИ ПОЛЬЗОВАТЕЛЕЙ
+     *****************************************************************************************************************/
+
+    /**
+     * TODO: need test
+     * список пользователей в виде id=>username
+     * @return array
+     */
+    public static function getUsersArray() : array
+    {
+        return static::find()->select(['username', 'id'])->where(['status_id' => self::STATUS_ACTIVE])->indexBy('id')->orderBy(['id' =>SORT_ASC])->column();
+    }
+
+    /**
+     * TODO: need test
+     * список всех активных пользователей
+     * @return array|mixed|AbstractUser[]|ActiveRecord[]
+     */
+    public static function getActiveUsers()
+    {
+        return static::find()->where(['status_id' => self::STATUS_ACTIVE])->all();
+    }
 }

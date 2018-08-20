@@ -95,6 +95,12 @@ interface UserInterface
      */
     public function removePasswordResetToken();
 
+    /**
+     * отправка письма с ссылкой на сброс пароля
+     * @return mixed
+     */
+    public function sendPasswordResetMail();
+
     /******************************************************************************************************************
      * ПОДТВЕРЖДЕНИЕ E-MAIL
      *****************************************************************************************************************/
@@ -125,10 +131,10 @@ interface UserInterface
     public function confirmEmailAction() : bool;
 
     /**
-     * отправка письма с ссылкой на подтверждение e-mail
+     * отправка письма с ссылкой на подтверждение e-mail'a
      * @return bool
      */
-    public function sendEmailConfirmMail() : bool;
+    public function sendEmailConfirmation() : bool;
 
     /******************************************************************************************************************
      * ПОИСК ПОЛЬЗОВАТЕЛЯ
@@ -198,6 +204,26 @@ interface UserInterface
      */
     public function downgradeFromRole(Role $role) : bool;
 
+    /**
+     * получить массив или текстовку ролей
+     * @param string|null $role
+     * @return mixed
+     */
+    public static function getRolesArray(string $role = null);
+
+    /**
+     * получить массив или ссылку по роли
+     * @param string|null $role
+     * @return mixed
+     */
+    public static function getRoleLink(string $role = null);
+
+    /**
+     * получение названия основной роли
+     * @return string
+     */
+    public function getPrimaryRole() : string;
+
     /******************************************************************************************************************
      * РАБОТА С ТОКЕНАМИ
      *****************************************************************************************************************/
@@ -262,4 +288,20 @@ interface UserInterface
      * @return mixed
      */
     public function afterSignUp();
+
+    /******************************************************************************************************************
+     * СПИСКИ ПОЛЬЗОВАТЕЛЕЙ
+     *****************************************************************************************************************/
+
+    /**
+     * массив пользователей в виде id => username
+     * @return array
+     */
+    public static function getUsersArray() : array;
+
+    /**
+     * все активные пользователи
+     * @return mixed
+     */
+    public static function getActiveUsers();
 }
