@@ -24,16 +24,15 @@ class CreateUserTest extends TestCase
     public function testHandler()
     {
         $this->initDb();
-        $user = User::findOne(1);
+        $user = new User();
         $signip_form = new SignupForm([
             'email' => 'Ma3oBblu@gmail.com',
             'username' => 'Ma3oBblu',
             'password' => 'test_password',
-        ]);
+        ], $user);
         $handler = new UserHandler($user);
         $this->assertTrue($handler->create($signip_form));
     }
-
 
     /**
      * @throws \yii\base\InvalidConfigException

@@ -18,6 +18,7 @@ use yii\db\Schema;
 class PasswordResetFromTest extends TestCase
 {
     /**
+     * @group forms
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      * @throws \yii\web\ServerErrorHttpException
@@ -39,6 +40,7 @@ class PasswordResetFromTest extends TestCase
     }
 
     /**
+     * @group forms
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      */
@@ -55,6 +57,7 @@ class PasswordResetFromTest extends TestCase
     }
 
     /**
+     * @group forms
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      */
@@ -71,6 +74,7 @@ class PasswordResetFromTest extends TestCase
     }
 
     /**
+     * @group forms
      * @throws \yii\base\Exception
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception

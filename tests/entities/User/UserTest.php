@@ -376,7 +376,7 @@ class UserTest extends TestCase
             'email' => 'Ma3oBblu@gmail.com',
             'username' => 'Ma3oBblu',
             'password' => 'test_password',
-        ]);
+        ], $user);
         $this->assertTrue($user->signUp($signip_form));
     }
 

@@ -18,6 +18,7 @@ use yii\db\Schema;
 class PasswordChangeFormTest extends TestCase
 {
     /**
+     * @group forms
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      * @throws \yii\web\ServerErrorHttpException
@@ -37,6 +38,7 @@ class PasswordChangeFormTest extends TestCase
     }
 
     /**
+     * @group forms
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      */
@@ -52,6 +54,7 @@ class PasswordChangeFormTest extends TestCase
     }
 
     /**
+     * @group forms
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      */
@@ -67,6 +70,7 @@ class PasswordChangeFormTest extends TestCase
     }
 
     /**
+     * @group forms
      * @throws \yii\base\Exception
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception

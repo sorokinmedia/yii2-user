@@ -18,6 +18,7 @@ use yii\db\Schema;
 class LoginFormTest extends TestCase
 {
     /**
+     * @group forms
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      * @throws \yii\web\ServerErrorHttpException
@@ -39,6 +40,7 @@ class LoginFormTest extends TestCase
     }
 
     /**
+     * @group forms
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      */
@@ -57,6 +59,7 @@ class LoginFormTest extends TestCase
     }
 
     /**
+     * @group forms
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      */
@@ -85,6 +88,7 @@ class LoginFormTest extends TestCase
     }
 
     /**
+     * @group forms
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      */

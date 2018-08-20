@@ -17,6 +17,7 @@ use yii\db\Schema;
 class EmailConfirmFormTest extends TestCase
 {
     /**
+     * @group forms
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      * @throws \yii\web\ServerErrorHttpException
@@ -33,6 +34,7 @@ class EmailConfirmFormTest extends TestCase
     }
 
     /**
+     * @group forms
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      */
