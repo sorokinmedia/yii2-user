@@ -5,10 +5,16 @@ use sorokinmedia\user\entities\User\AbstractUser;
 use sorokinmedia\user\handlers\User\UserHandler;
 use sorokinmedia\user\entities\User\UserInterface;
 use yii\base\Model;
+use yii\db\Exception;
 
 /**
  * Class SignupForm
  * @package sorokinmedia\user\forms
+ *
+ * @property string $username
+ * @property string $email
+ * @property string $password
+ * @property UserInterface $_user
  */
 class SignupForm extends Model
 {
@@ -16,15 +22,17 @@ class SignupForm extends Model
     public $email;
     public $password;
 
+    private $_user;
+
     /**
      * @return array
      */
     public function attributeLabels()
     {
         return [
-            'username' => \Yii::t('app', 'Username'),
+            'username' => \Yii::t('app', 'Имя пользователя'),
             'email' => \Yii::t('app', 'E-mail'),
-            'password' => \Yii::t('app', 'Password'),
+            'password' => \Yii::t('app', 'Пароль'),
         ];
     }
 
@@ -51,17 +59,36 @@ class SignupForm extends Model
     }
 
     /**
+     * SignupForm constructor.
+     * @param array $config
      * @param UserInterface $user
+     */
+    public function __construct(array $config = [], UserInterface $user)
+    {
+        parent::__construct($config);
+        $this->_user = $user;
+    }
+
+    /**
+     * @return UserInterface
+     */
+    public function getUser()
+    {
+        return $this->_user;
+    }
+
+    /**
      * @return bool
-     * @throws \yii\db\Exception
+     * @throws Exception
      * @throws \yii\web\ServerErrorHttpException
      */
-    public function signUp(UserInterface $user) : bool
+    public function signUp() : bool
     {
+        $user = $this->getUser();
         if ($this->validate()) {
             (new UserHandler($user))->create($this);
             return true;
         }
-        throw new \InvalidArgumentException(\Yii::t('app','Ошибка валидации данных при регистрации'));
+        return false;
     }
 }
