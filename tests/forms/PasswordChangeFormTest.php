@@ -3,19 +3,19 @@ namespace sorokinmedia\user\tests\forms;
 
 use sorokinmedia\user\entities\User\AbstractUser;
 use sorokinmedia\user\entities\User\UserInterface;
-use sorokinmedia\user\forms\LoginForm;
+use sorokinmedia\user\forms\PasswordChangeForm;
 use sorokinmedia\user\tests\entities\User\User;
 use sorokinmedia\user\tests\TestCase;
 use yii\db\Connection;
 use yii\db\Schema;
 
 /**
- * Class LoginFormTest
+ * Class PasswordChangeFormTest
  * @package sorokinmedia\user\tests\forms
  *
- * тест формы логина
+ * тест формы смены пароля
  */
-class LoginFormTest extends TestCase
+class PasswordChangeFormTest extends TestCase
 {
     /**
      * @throws \yii\base\InvalidConfigException
@@ -26,15 +26,13 @@ class LoginFormTest extends TestCase
     {
         $this->initDb();
         $user = User::findOne(1);
-        $form = new LoginForm([
-            'email' => 'test@yandex.ru',
-            'password' => 'Snegp4oli',
-            'remember' => true,
+        $form = new PasswordChangeForm([
+            'password' => 'new_password',
+            'password_repeat' => 'new_password',
         ], $user);
-        $this->assertInstanceOf(LoginForm::class, $form);
-        $this->assertEquals($form->email, 'test@yandex.ru');
-        $this->assertEquals($form->password, 'Snegp4oli');
-        $this->assertEquals($form->remember, true);
+        $this->assertInstanceOf(PasswordChangeForm::class, $form);
+        $this->assertEquals($form->password, 'new_password');
+        $this->assertEquals($form->password_repeat, 'new_password');
         $this->assertInstanceOf(UserInterface::class, $form->getUser());
     }
 
@@ -42,62 +40,50 @@ class LoginFormTest extends TestCase
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      */
-    public function testValidatePassword()
+    public function testCheckRepeatTrue()
     {
         $this->initDb();
         $user = User::findOne(1);
-        $form = new LoginForm([
-            'email' => 'test@yandex.ru',
-            'password' => 'wrong_password',
-            'remember' => true,
+        $form = new PasswordChangeForm([
+            'password' => 'new_password',
+            'password_repeat' => 'new_password',
         ], $user);
-        $form->validatePassword('password', []);
-        $this->assertNotNull($form->errors);
-        $this->assertEquals($form->errors['password'][0], 'Логин или пароль указан не верно. Попробуйте еще раз.');
+        $this->assertTrue($form->checkRepeat());
     }
 
     /**
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      */
-    public function testValidateStatus()
+    public function testCheckRepeatFalse()
     {
         $this->initDb();
         $user = User::findOne(1);
-        $form = new LoginForm([
-            'email' => 'test@yandex.ru',
-            'password' => 'Snegp4oli',
-            'remember' => true,
+        $form = new PasswordChangeForm([
+            'password' => 'new_password',
+            'password_repeat' => 'new_password1',
         ], $user);
-        $form->validateStatus();
-        $this->assertNotNull($form->errors);
-        $this->assertEquals($form->errors['login'][0], 'Ваш аккаунт не подтвержден. Необходимо подтвердить e-mail.');
-
-        $user = User::findOne(2);
-        $form = new LoginForm([
-            'email' => 'test@yandex.ru',
-            'password' => 'Snegp4oli',
-            'remember' => true,
-        ], $user);
-        $form->validateStatus();
-        $this->assertNotNull($form->errors);
-        $this->assertEquals($form->errors['login'][0], 'Ваш аккаунт заблокирован. Обратитесь к тех.поддержке.');
+        $this->assertFalse($form->checkRepeat());
     }
 
     /**
+     * @throws \yii\base\Exception
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      */
-    public function testLoginFalse()
+    public function testChangePassword()
     {
         $this->initDb();
         $user = User::findOne(1);
-        $form = new LoginForm([
-            'email' => 'test@yandex.ru',
-            'password' => 'Snegp4oli',
-            'remember' => true,
+        $form = new PasswordChangeForm([
+            'password' => 'new_password',
+            'password_repeat' => 'new_password',
         ], $user);
-        $this->assertFalse($form->login());
+        $this->assertTrue($form->checkRepeat());
+        $old_password = $user->password_hash;
+        $form->changePassword();
+        $user->refresh();
+        $this->assertNotEquals($old_password, $user->password_hash);
     }
 
     /**
@@ -131,7 +117,7 @@ class LoginFormTest extends TestCase
             'id' => 1,
             'email' => 'test@yandex.ru',
             'password_hash' => '$2y$13$965KGf0VPtTcQqflsIEDtu4kmvM4mstARSbtRoZRiwYZkUqCQWmcy',
-            'password_reset_token' => null,
+            'password_reset_token' => 'test_token',
             'auth_key' => 'NdLufkTZDHMPH8Sw3p5f7ukUXSXllYwM',
             'username' => 'IvanSidorov',
             'status_id' => AbstractUser::STATUS_WAIT,

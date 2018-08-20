@@ -43,6 +43,25 @@ class PasswordChangeForm extends Model
     }
 
     /**
+     * PasswordChangeForm constructor.
+     * @param array $config
+     * @param UserInterface $user
+     */
+    public function __construct(array $config = [], UserInterface $user)
+    {
+        parent::__construct($config);
+        $this->_user = $user;
+    }
+
+    /**
+     * @return UserInterface
+     */
+    public function getUser()
+    {
+        return $this->_user;
+    }
+
+    /**
      * @return bool
      */
     public function checkRepeat() : bool
@@ -50,19 +69,8 @@ class PasswordChangeForm extends Model
         if ($this->password === $this->password_repeat) {
             return true;
         }
-        $this->addError('repeat', \Yii::t('app','Пароли не совпадают'));
+        $this->addError('password_repeat', \Yii::t('app','Пароли не совпадают'));
         return false;
-    }
-
-    /**
-     * PasswordChangeForm constructor.
-     * @param array $config
-     * @param UserInterface $user
-     */
-    public function __construct(array $config = [], UserInterface $user)
-    {
-        $this->_user = $user;
-        parent::__construct($config);
     }
 
     /**
