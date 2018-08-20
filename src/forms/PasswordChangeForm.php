@@ -79,7 +79,7 @@ class PasswordChangeForm extends Model
      */
     public function changePassword() : bool
     {
-        $user = $this->_user;
+        $user = $this->getUser();
         if (!$this->checkRepeat()){
             return false;
         }
