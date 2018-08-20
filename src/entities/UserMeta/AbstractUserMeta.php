@@ -1,6 +1,7 @@
 <?php
 namespace sorokinmedia\user\entities\UserMeta;
 
+use sorokinmedia\ar_relations\RelationInterface;
 use sorokinmedia\helpers\TextHelper;
 use sorokinmedia\user\entities\{
     User\AbstractUser,User\UserInterface
@@ -27,7 +28,7 @@ use yii\db\Exception;
  * @property UserInterface $user
  * @property UserMetaForm $form
  */
-abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterface
+abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterface, RelationInterface
 {
     public $form;
 

@@ -1,6 +1,7 @@
 <?php
 namespace sorokinmedia\user\entities\UserAccessToken;
 
+use sorokinmedia\ar_relations\RelationInterface;
 use sorokinmedia\user\entities\User\AbstractUser;
 use sorokinmedia\user\handlers\UserAccessToken\UserAccessTokenHandler;
 use yii\behaviors\TimestampBehavior;
@@ -18,7 +19,7 @@ use yii\db\Exception;
  * @property int $expired_at
  * @property int $is_active
  */
-abstract class AbstractUserAccessToken extends ActiveRecord implements UserAccessTokenInterface
+abstract class AbstractUserAccessToken extends ActiveRecord implements UserAccessTokenInterface, RelationInterface
 {
     /**
      * @inheritdoc
