@@ -332,6 +332,13 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     }
 
     /**
+     * отправка письма со ссылкой на подтверждение e-mail'а
+     * необходима реализация метода в дочернем классе
+     * @return bool
+     */
+    abstract public function sendEmailConfirmMail() : bool;
+
+    /**
      * ищет пользователя по токену подтверждения мыла
      * @param string $email_confirm_token
      * @return static|null

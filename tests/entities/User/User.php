@@ -11,4 +11,11 @@ class User extends AbstractUser
     {
         return true;
     }
+
+    public function sendEmailConfirmMail() : bool
+    {
+        return true;
+    }
+
+
 }
