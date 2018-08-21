@@ -4,6 +4,7 @@ namespace sorokinmedia\user\forms;
 use sorokinmedia\helpers\DateHelper;
 use sorokinmedia\user\entities\User\AbstractUser;
 use sorokinmedia\user\entities\User\UserInterface;
+use yii\base\InvalidArgumentException;
 use yii\base\Model;
 
 /**
@@ -103,6 +104,22 @@ class LoginForm extends Model
         } elseif ($user && $user->status_id == AbstractUser::STATUS_WAIT) {
             $this->addError('login', \Yii::t('app', 'Ваш аккаунт не подтвержден. Необходимо подтвердить e-mail.'));
         }
+    }
+
+    /**
+     * валидация статусов для API
+     * @return bool
+     */
+    public function validateStatusApi() : bool
+    {
+        /** @var AbstractUser $user */
+        $user = $this->getUser();
+        if ($user && $user->status_id == AbstractUser::STATUS_BLOCKED) {
+            throw new InvalidArgumentException(\Yii::t('app', 'Ваш аккаунт заблокирован. Обратитесь к тех.поддержке.'));
+        } elseif ($user && $user->status_id == AbstractUser::STATUS_WAIT) {
+            throw new InvalidArgumentException(\Yii::t('app', 'Ваш аккаунт не подтвержден. Необходимо подтвердить e-mail.'));
+        }
+        return true;
     }
 
     /**
