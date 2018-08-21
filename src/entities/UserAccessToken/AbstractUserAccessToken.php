@@ -72,6 +72,7 @@ abstract class AbstractUserAccessToken extends ActiveRecord implements UserAcces
     }
 
     /**
+     * TODO: need test
      * @return mixed|\yii\db\ActiveQuery
      */
     public function getUser()
