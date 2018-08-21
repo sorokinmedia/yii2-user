@@ -289,7 +289,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
         }
         return static::findOne([
             'password_reset_token' => $token,
-            'status' => self::STATUS_ACTIVE,
+            'status_id' => self::STATUS_ACTIVE,
         ]);
     }
 
