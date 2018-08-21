@@ -329,7 +329,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * @param string $email
      * @return UserInterface|null
      */
-    public static function findByEmail(string $email) : UserInterface
+    public static function findByEmail(string $email)
     {
         return static::findOne(['email' => $email]);
     }
