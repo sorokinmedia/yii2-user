@@ -10,6 +10,12 @@ use sorokinmedia\user\entities\User\AbstractUser;
 interface UserAccessTokenInterface
 {
     /**
+     * получает пользователя по токену
+     * @return mixed
+     */
+    public function getUser();
+
+    /**
      * генерирует токен
      * @param string $string
      * @return string

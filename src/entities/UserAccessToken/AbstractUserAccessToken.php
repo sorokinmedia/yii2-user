@@ -18,6 +18,8 @@ use yii\db\Exception;
  * @property int $updated_at
  * @property int $expired_at
  * @property int $is_active
+ *
+ * @property AbstractUser $user
  */
 abstract class AbstractUserAccessToken extends ActiveRecord implements UserAccessTokenInterface, RelationInterface
 {
@@ -67,6 +69,14 @@ abstract class AbstractUserAccessToken extends ActiveRecord implements UserAcces
             'expired_at' => \Yii::t('app', 'Срок действия'),
             'is_active' => \Yii::t('app', 'Активен'),
         ];
+    }
+
+    /**
+     * @return mixed|\yii\db\ActiveQuery
+     */
+    public function getUser()
+    {
+        return $this->hasOne($this->__userClass, ['id' => 'user_id']);
     }
 
     /**
