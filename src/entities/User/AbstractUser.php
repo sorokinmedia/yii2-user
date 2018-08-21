@@ -589,6 +589,21 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
         return true;
     }
 
+    /**
+     * TODO: need test
+     * обновление времени последнего захода пользователя
+     * @return bool
+     * @throws Exception
+     */
+    public function updateLastEntering(): bool
+    {
+        $this->last_entering_date = time();
+        if (!$this->save()){
+            throw new Exception(\Yii::t('app', 'Ошибка обновления даты входа'));
+        }
+        return true;
+    }
+
     /******************************************************************************************************************
      * РЕГИСТРАЦИЯ
      *****************************************************************************************************************/

@@ -153,6 +153,7 @@ abstract class AbstractUserAccessToken extends ActiveRecord implements UserAcces
         ]);
         (new UserAccessTokenHandler($new_token))->create();
         $new_token->refresh();
+        $user->updateLastEntering();
         return $new_token;
     }
 }
