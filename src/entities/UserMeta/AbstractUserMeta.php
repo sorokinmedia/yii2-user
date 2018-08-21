@@ -64,7 +64,6 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
     public function attributeLabels()
     {
         return [
-            'id' => \Yii::t('app', 'ID'),
             'user_id' => \Yii::t('app', 'Пользователь'),
             'notification_email' => \Yii::t('app', 'E-mail для уведомлений'),
             'notification_phone' => \Yii::t('app', 'Телефон для уведомлений'),
