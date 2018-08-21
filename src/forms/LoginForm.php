@@ -23,7 +23,7 @@ class LoginForm extends Model
     public $password;
     public $remember = true;
 
-    private $_user = false;
+    private $_user;
 
     /**
      * @return array

@@ -31,7 +31,8 @@ class PasswordResetRequestFormTest extends TestCase
         $form = new PasswordResetRequestForm([
             'email' => 'test@yandex.ru',
             'password_reset_token_expire' => DateHelper::TIME_HOUR_ONE
-        ], $user);
+        ]);
+        $form->setUser($user);
         $this->assertInstanceOf(PasswordResetRequestForm::class, $form);
         $this->assertEquals($form->email, 'test@yandex.ru');
         $this->assertInstanceOf(UserInterface::class, $form->getUser());
@@ -50,7 +51,8 @@ class PasswordResetRequestFormTest extends TestCase
         $form = new PasswordResetRequestForm([
             'email' => 'test@yandex.ru',
             'password_reset_token_expire' => DateHelper::TIME_HOUR_ONE
-        ], $user);
+        ]);
+        $form->setUser($user);
         $this->assertTrue($form->sendEmail());
         $user->refresh();
         $this->assertNotNull($user->email_confirm_token);

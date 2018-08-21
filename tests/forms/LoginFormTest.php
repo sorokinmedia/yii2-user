@@ -31,7 +31,8 @@ class LoginFormTest extends TestCase
             'email' => 'test@yandex.ru',
             'password' => 'Snegp4oli',
             'remember' => true,
-        ], $user);
+        ]);
+        $form->setUser($user);
         $this->assertInstanceOf(LoginForm::class, $form);
         $this->assertEquals($form->email, 'test@yandex.ru');
         $this->assertEquals($form->password, 'Snegp4oli');
@@ -52,7 +53,8 @@ class LoginFormTest extends TestCase
             'email' => 'test@yandex.ru',
             'password' => 'wrong_password',
             'remember' => true,
-        ], $user);
+        ]);
+        $form->setUser($user);
         $form->validatePassword('password', []);
         $this->assertNotNull($form->errors);
         $this->assertEquals($form->errors['password'][0], 'Логин или пароль указан не верно. Попробуйте еще раз.');
@@ -71,7 +73,8 @@ class LoginFormTest extends TestCase
             'email' => 'test@yandex.ru',
             'password' => 'Snegp4oli',
             'remember' => true,
-        ], $user);
+        ]);
+        $form->setUser($user);
         $form->validateStatus();
         $this->assertNotNull($form->errors);
         $this->assertEquals($form->errors['login'][0], 'Ваш аккаунт не подтвержден. Необходимо подтвердить e-mail.');
@@ -81,7 +84,8 @@ class LoginFormTest extends TestCase
             'email' => 'test@yandex.ru',
             'password' => 'Snegp4oli',
             'remember' => true,
-        ], $user);
+        ]);
+        $form->setUser($user);
         $form->validateStatus();
         $this->assertNotNull($form->errors);
         $this->assertEquals($form->errors['login'][0], 'Ваш аккаунт заблокирован. Обратитесь к тех.поддержке.');
@@ -100,7 +104,8 @@ class LoginFormTest extends TestCase
             'email' => 'test@yandex.ru',
             'password' => 'Snegp4oli',
             'remember' => true,
-        ], $user);
+        ]);
+        $form->setUser($user);
         $this->assertFalse($form->login());
     }
 
