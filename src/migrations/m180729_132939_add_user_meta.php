@@ -1,6 +1,10 @@
 <?php
 use yii\db\Migration;
 
+/**
+ * Class m180729_132939_add_user_meta
+ * use rbac migration as php yii migrate --migrationPath=@sorokinmedia/user/migrations/
+ */
 class m180729_132939_add_user_meta extends Migration
 {
     public function safeUp()

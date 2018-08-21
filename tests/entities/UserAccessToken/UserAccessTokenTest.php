@@ -44,7 +44,7 @@ class UserAccessTokenTest extends TestCase
         $this->initDb();
         $user_access_token = UserAccessToken::findOne(['user_id' => 1]);
         $this->assertInstanceOf(UserAccessTokenInterface::class, $user_access_token);
-        $this->assertInstanceOf(UserInterface::class, $user_access_token->getUser()->one());
+        $this->assertInstanceOf(UserInterface::class, $user_access_token->user);
     }
 
     /**

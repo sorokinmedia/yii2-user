@@ -225,6 +225,17 @@ class UserTest extends TestCase
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      */
+    public function testSendPasswordResetEmail()
+    {
+        $this->initDb();
+        $user = User::findOne(1);
+        $this->assertTrue($user->sendPasswordResetMail());
+    }
+
+    /**
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\db\Exception
+     */
     public function testFindByEmail()
     {
         $this->initDb();
@@ -378,6 +389,41 @@ class UserTest extends TestCase
             'password' => 'test_password',
         ], $user);
         $this->assertTrue($user->signUp($signip_form));
+    }
+
+    /**
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\db\Exception
+     */
+    public function testSendEmailConfirmation()
+    {
+        $this->initDb();
+        $user = new User();
+        $this->assertTrue($user->sendEmailConfirmation());
+    }
+
+    /**
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\db\Exception
+     */
+    public function testGetUsersArray()
+    {
+        $this->initDb();
+        $array = User::getUsersArray();
+        $this->assertNotNull($array);
+        $this->assertEquals($array[1], 'IvanSidorov');
+    }
+
+    /**
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\db\Exception
+     */
+    public function testGetActiveUsers()
+    {
+        $this->initDb();
+        $models = User::getActiveUsers();
+        $this->assertNotNull($models);
+        $this->assertInstanceOf(UserInterface::class, $models[0]);
     }
 
     /**

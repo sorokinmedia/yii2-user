@@ -3,6 +3,7 @@ use yii\db\Migration;
 
 /**
  * Class m180728_132939_add_user_access_token
+ * use rbac migration as php yii migrate --migrationPath=@sorokinmedia/user/migrations/
  */
 class m180728_132939_add_user_access_token extends Migration
 {

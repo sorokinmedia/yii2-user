@@ -2,15 +2,18 @@
 namespace sorokinmedia\user\entities\User;
 
 use sorokinmedia\ar_relations\RelationInterface;
+use sorokinmedia\helpers\DateHelper;
 use sorokinmedia\user\entities\UserAccessToken\{AbstractUserAccessToken, UserAccessTokenInterface};
-use sorokinmedia\user\forms\SignupForm;
 use sorokinmedia\user\handlers\UserAccessToken\UserAccessTokenHandler;
+use sorokinmedia\user\forms\SignupForm;
 use yii\behaviors\TimestampBehavior;
-use yii\db\ActiveRecord;
-use yii\db\Exception;
+use yii\db\{
+    ActiveRecord,Exception
+};
+use yii\web\{
+    IdentityInterface,ServerErrorHttpException
+};
 use yii\rbac\Role;
-use yii\web\IdentityInterface;
-use yii\web\ServerErrorHttpException;
 
 /**
  * Модель пользователя для работы с таблицей 'user'
@@ -181,10 +184,10 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     }
 
     /**
+     * TODO: need test
      * получает объект роли по ее названию
      * @param string $role_name
      * @return null|Role
-     * //TODO: need test
      */
     public static function getRole(string $role_name)
     {
@@ -315,7 +318,6 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     }
 
     /**
-     * TODO: need test
      * отправка письма с ссылкой сброса пароля
      * необходима реализация метода в дочернем классе
      * @return bool
@@ -333,10 +335,10 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     }
 
     /**
+     * TODO: need test
      * возвращает всех пользователей заданной роли
      * @param string $role
      * @return array
-     * //TODO: need test
      */
     public static function findByRole(string $role) : array
     {
@@ -431,11 +433,11 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      *****************************************************************************************************************/
 
     /**
+     * TODO: need test
      * Апгрейд пользователя до нужной роли
      * @param Role $role
      * @return bool
      * @throws \Exception
-     * //TODO: need test
      */
     public function upgradeToRole(Role $role) : bool
     {
@@ -447,10 +449,10 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     }
 
     /**
+     * TODO: need test
      * Даунгрейд пользователя до нужной роли
      * @param Role $role
      * @return bool
-     * //TODO: need test
      */
     public function downgradeFromRole(Role $role) : bool
     {
@@ -505,13 +507,14 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     }
 
     /**
+     * TODO: need test
      * Проставляем токены и куки после логина
+     * @param string $cookie_url
      * @return bool
      * @throws \Throwable
      * @deprecated spa
-     * //TODO: need test
      */
-    public function afterLogin() : bool
+    public function afterLogin(string $cookie_url) : bool
     {
         $this->deactivateTokens();
         $token = $this->__userAccessTokenClass::create($this, true);
@@ -520,27 +523,26 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
             if (\Yii::$app->getRequest()->getCookies()->getValue('auth_token')) {
                 \Yii::$app->getResponse()->getCookies()->remove('auth_token');
             }
-            //TODO: настройку урла брать из настроек компонента
-            setcookie('auth_token', $token->access_token, time()+60*60*24*30, '/', \Yii::$app->params['cookieUrl'], false, false);
+            setcookie('auth_token', $token->access_token, time() + DateHelper::TIME_DAY_THIRTY, '/', $cookie_url, false, false);
             return true;
         }
         return false;
     }
 
     /**
+     * TODO: need test
      * Заменяет токен при заходе под другим юзером
      * @param string $token
+     * @param string $cookie_url
      * @return bool
      * @deprecated spa
-     * //TODO: need test
      */
-    public function addCheckToken(string $token) : bool
+    public function addCheckToken(string $token, string $cookie_url) : bool
     {
         if (\Yii::$app->getRequest()->getCookies()->getValue('auth_token')) {
             \Yii::$app->getResponse()->getCookies()->remove('auth_token');
         }
-        //TODO: настройку урла брать из настроек компонента
-        setcookie('auth_token', $token, time()+60*60*24*30, '/', \Yii::$app->params['cookieUrl'], false, false);
+        setcookie('auth_token', $token, DateHelper::TIME_DAY_THIRTY, '/', $cookie_url, false, false);
         return true;
     }
 
@@ -630,7 +632,6 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     abstract public function afterSignUp();
 
     /**
-     * TODO: need test
      * отправка письма с подтверждением e-mail
      * @return bool
      */
@@ -641,7 +642,6 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      *****************************************************************************************************************/
 
     /**
-     * TODO: need test
      * список пользователей в виде id=>username
      * @return array
      */
@@ -651,7 +651,6 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     }
 
     /**
-     * TODO: need test
      * список всех активных пользователей
      * @return array|mixed|AbstractUser[]|ActiveRecord[]
      */

@@ -3,10 +3,10 @@ use yii\db\Migration;
 
 /**
  * Class m180727_132939_add_user_table
+ * use rbac migration as php yii migrate --migrationPath=@sorokinmedia/user/migrations/
  */
 class m180727_132939_add_user_table extends Migration
 {
-    //TODO: use rbac migration as php yii migrate --migrationPath=@yii/rbac/migrations/
     /**
      * {@inheritdoc}
      */

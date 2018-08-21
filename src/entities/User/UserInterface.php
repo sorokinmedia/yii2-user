@@ -248,13 +248,16 @@ interface UserInterface
 
     /**
      * проставляет куку и токен после логина
+     * @param string $cookie_url
      * @return bool
+     * @deprecated spa
      */
-    public function afterLogin() : bool;
+    public function afterLogin(string $cookie_url) : bool;
 
     /**
      * деактиваирует токен и удаляет куку при логауте
      * @return bool
+     * @deprecated spa
      */
     public function afterLogout() : bool;
 
@@ -267,9 +270,10 @@ interface UserInterface
     /**
      * заменяет токен при заходе под другим пользователем
      * @param string $token
+     * @param string $cookie_url
      * @return bool
      */
-    public function addCheckToken(string $token) : bool;
+    public function addCheckToken(string $token, string $cookie_url) : bool;
 
     /******************************************************************************************************************
      * РЕГИСТРАЦИЯ
