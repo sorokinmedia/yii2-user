@@ -46,12 +46,10 @@ class PasswordResetRequestForm extends Model
     /**
      * PasswordResetRequestForm constructor.
      * @param array $config
-     * @param UserInterface $user
      */
-    public function __construct(array $config = [], UserInterface $user)
+    public function __construct(array $config = [])
     {
         parent::__construct($config);
-        $this->_user = $user;
     }
 
     /**
@@ -60,6 +58,15 @@ class PasswordResetRequestForm extends Model
     public function getUser()
     {
         return $this->_user;
+    }
+
+    /**
+     * сеттер для $_user
+     * @param UserInterface $user
+     */
+    public function setUser(UserInterface $user)
+    {
+        $this->_user = $user;
     }
 
     /**
