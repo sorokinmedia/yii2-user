@@ -52,11 +52,18 @@ class LoginForm extends Model
     /**
      * LoginForm constructor.
      * @param array $config
-     * @param UserInterface $user
      */
-    public function __construct(array $config = [], UserInterface $user)
+    public function __construct(array $config = [])
     {
         parent::__construct($config);
+    }
+
+    /**
+     * сеттер
+     * @param UserInterface $user
+     */
+    public function setUser(UserInterface $user)
+    {
         $this->_user = $user;
     }
 
@@ -76,7 +83,7 @@ class LoginForm extends Model
     public function validatePassword($attribute, $params)
     {
         if (!$this->hasErrors()) {
-            /** @var UserInterface $user */
+            /** @var AbstractUser $user */
             $user = $this->getUser();
             if (!$user || !$user->validatePassword($this->password)) {
                 $this->addError('password', \Yii::t('app', 'Логин или пароль указан не верно. Попробуйте еще раз.'));
@@ -89,14 +96,12 @@ class LoginForm extends Model
      */
     public function validateStatus()
     {
-        if (!$this->hasErrors()){
-            /** @var AbstractUser $user */
-            $user = $this->getUser();
-            if ($user && $user->status_id == AbstractUser::STATUS_BLOCKED) {
-                $this->addError('login', \Yii::t('app', 'Ваш аккаунт заблокирован. Обратитесь к тех.поддержке.'));
-            } elseif ($user && $user->status_id == AbstractUser::STATUS_WAIT) {
-                $this->addError('login', \Yii::t('app', 'Ваш аккаунт не подтвержден. Необходимо подтвердить e-mail.'));
-            }
+        /** @var AbstractUser $user */
+        $user = $this->getUser();
+        if ($user && $user->status_id == AbstractUser::STATUS_BLOCKED) {
+            $this->addError('login', \Yii::t('app', 'Ваш аккаунт заблокирован. Обратитесь к тех.поддержке.'));
+        } elseif ($user && $user->status_id == AbstractUser::STATUS_WAIT) {
+            $this->addError('login', \Yii::t('app', 'Ваш аккаунт не подтвержден. Необходимо подтвердить e-mail.'));
         }
     }
 
