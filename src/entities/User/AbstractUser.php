@@ -514,7 +514,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * @throws \Throwable
      * @deprecated spa
      */
-    public function afterLoginPublic() : bool
+    public function afterLoginPublic(string $cookie_url) : bool
     {
         $this->deactivateTokens();
         $token = $this->__userAccessTokenClass::create($this, true);
