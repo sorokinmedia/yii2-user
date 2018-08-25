@@ -252,7 +252,7 @@ interface UserInterface
      * @return bool
      * @deprecated spa
      */
-    //function afterLogin($identity, $cookieBased, $duration, string $cookie_url) : bool;
+    public function afterLogin(string $cookie_url) : bool;
 
     /**
      * деактиваирует токен и удаляет куку при логауте
