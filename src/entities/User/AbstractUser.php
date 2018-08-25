@@ -514,7 +514,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * @throws \Throwable
      * @deprecated spa
      */
-    public function afterLogin()
+    public function afterLogin() : bool
     {
         $this->deactivateTokens();
         $token = $this->__userAccessTokenClass::create($this, true);
@@ -523,7 +523,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
             if (\Yii::$app->getRequest()->getCookies()->getValue('auth_token')) {
                 \Yii::$app->getResponse()->getCookies()->remove('auth_token');
             }
-            setcookie('auth_token', $token->access_token, time() + DateHelper::TIME_DAY_THIRTY, '/', $cookie_url, false, false);
+            setcookie('auth_token', $token->access_token, time() + DateHelper::TIME_DAY_THIRTY, '/', '.kosmoz.online', false, false);
             return true;
         }
         return false;
