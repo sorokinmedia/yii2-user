@@ -99,10 +99,10 @@ class UserTest extends TestCase
         $user = User::findOne(1);
         $this->assertTrue($user->blockUser());
         $user->refresh();
-        $this->assertEquals(User::STATUS_ACTIVE, $user->status_id);
+        $this->assertEquals(User::STATUS_BLOCKED, $user->status_id);
         $this->assertTrue($user->unblockUser());
         $user->refresh();
-        $this->assertEquals(User::STATUS_BLOCKED, $user->status_id);
+        $this->assertEquals(User::STATUS_ACTIVE, $user->status_id);
     }
 
     /**

@@ -161,7 +161,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      */
     public function blockUser() : bool
     {
-        $this->activate();
+        $this->deactivate();
         if (!$this->save()){
             print_r($this->getErrors());
             throw new Exception(\Yii::t('app','Ошибка при блокировании пользователя'));
@@ -176,7 +176,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      */
     public function unblockUser() : bool
     {
-        $this->deactivate();
+        $this->activate();
         if (!$this->save()){
             throw new Exception(\Yii::t('app','Ошибка при разблокировке пользователя'));
         }
