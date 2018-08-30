@@ -10,11 +10,12 @@ use yii\base\Model;
  * @package sorokinmedia\user\forms
  *
  * @property string $notification_email
- * @property string $notification_phone
- * @property string $full_name
+ * @property array $notification_phone
+ * @property array $full_name
  * @property string $tz
  * @property string $location
  * @property string $about
+ * @property array $custom_fields
  */
 class UserMetaForm extends Model
 {
@@ -24,6 +25,7 @@ class UserMetaForm extends Model
     public $tz;
     public $location;
     public $about;
+    public $custom_fields;
 
     /**
      * @inheritdoc
@@ -31,13 +33,12 @@ class UserMetaForm extends Model
     public function rules()
     {
         return [
-            [['notification_phone', ], 'integer'],
-            [['full_name', 'tz', 'location', 'about'], 'string'],
+            [['tz', 'location', 'about'], 'string'],
             [['notification_email'], 'email'],
             [['tz'], 'string', 'max' => 100],
             [['tz'], 'default', 'value' => 'Europe/Moscow'],
             [['location'], 'string', 'max' => 250],
-            [['notification_email', 'full_name'], 'string', 'max' => 255],
+            [['notification_email'], 'string', 'max' => 255],
         ];
     }
 
@@ -53,6 +54,7 @@ class UserMetaForm extends Model
             'tz' => \Yii::t('app', 'Часовой пояс'),
             'location' => \Yii::t('app', 'Страна/Город'),
             'about' => \Yii::t('app', 'О себе'),
+            'custom_fields' => \Yii::t('app', 'Дополнительные данные'),
         ];
     }
 
@@ -71,6 +73,7 @@ class UserMetaForm extends Model
             $this->tz = $userMeta->tz;
             $this->location = $userMeta->location;
             $this->about = $userMeta->about;
+            $this->custom_fields = $userMeta->custom_fields;
         }
         parent::__construct($config);
     }

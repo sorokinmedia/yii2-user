@@ -3,9 +3,10 @@ namespace sorokinmedia\user\entities\UserMeta;
 
 use sorokinmedia\ar_relations\RelationInterface;
 use sorokinmedia\helpers\TextHelper;
-use sorokinmedia\user\entities\{
-    User\AbstractUser,User\UserInterface
-};
+use sorokinmedia\user\entities\{User\AbstractUser,
+    User\UserInterface,
+    UserMeta\json\UserMetaFullName,
+    UserMeta\json\UserMetaPhone};
 use sorokinmedia\user\forms\UserMetaForm;
 use sorokinmedia\user\handlers\UserMeta\UserMetaHandler;
 use yii\db\ActiveRecord;
@@ -15,15 +16,15 @@ use yii\db\Exception;
  * Class AbstractUserMeta
  * @package sorokinmedia\user\entities\UserMeta
  *
- * @property integer $user_id
+ * @property int $user_id
  * @property string $notification_email
- * @property integer $notification_phone
- * @property integer $notification_telegram
- * @property string $full_name
- * @property string $display_name
+ * @property UserMetaPhone $notification_phone
+ * @property int $notification_telegram
+ * @property UserMetaFullName $full_name
  * @property string $tz
  * @property string $location
  * @property string $about
+ * @property array $custom_fields
  *
  * @property UserInterface $user
  * @property UserMetaForm $form
@@ -47,13 +48,13 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
     {
         return [
             [['user_id'], 'required'],
-            [['user_id', 'notification_phone', 'notification_telegram',], 'integer'],
-            [['full_name', 'display_name', 'tz', 'location', 'about'], 'string'],
+            [['user_id', 'notification_telegram',], 'integer'],
+            [['tz', 'location', 'about'], 'string'],
             [['notification_email'], 'email'],
             [['tz'], 'string', 'max' => 100],
             [['tz'], 'default', 'value' => 'Europe/Moscow'],
             [['location'], 'string', 'max' => 250],
-            [['notification_email', 'full_name', 'display_name'], 'string', 'max' => 255],
+            [['notification_email', 'full_name'], 'string', 'max' => 255],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => AbstractUser::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
@@ -69,10 +70,10 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
             'notification_phone' => \Yii::t('app', 'Телефон для уведомлений'),
             'notification_telegram' => \Yii::t('app', 'Telegram для уведомлений'),
             'full_name' => \Yii::t('app', 'Полное имя'),
-            'display_name' => \Yii::t('app', 'Отображаемое имя'),
             'tz' => \Yii::t('app', 'Часовой пояс'),
             'location' => \Yii::t('app', 'Страна/Город'),
             'about' => \Yii::t('app', 'О себе'),
+            'custom_fields' => \Yii::t('app', 'Дополнительные данные')
         ];
     }
 
@@ -109,6 +110,7 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
             $this->tz = $this->form->tz;
             $this->location = TextHelper::clearText($this->form->location);
             $this->about = TextHelper::clearText($this->form->about);
+            $this->custom_fields = $this->form->custom_fields;
         }
     }
 
