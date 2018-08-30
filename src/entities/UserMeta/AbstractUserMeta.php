@@ -54,7 +54,7 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
             [['tz'], 'string', 'max' => 100],
             [['tz'], 'default', 'value' => 'Europe/Moscow'],
             [['location'], 'string', 'max' => 250],
-            [['notification_email', 'full_name'], 'string', 'max' => 255],
+            [['notification_email'], 'string', 'max' => 255],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => AbstractUser::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
