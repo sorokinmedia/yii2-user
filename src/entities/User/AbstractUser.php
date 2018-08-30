@@ -127,6 +127,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
             self::STATUS_BLOCKED => \Yii::t('app', 'Заблокирован'),
             self::STATUS_ACTIVE => \Yii::t('app','Активен'),
             self::STATUS_WAIT_EMAIL => \Yii::t('app','Ожидает подтверждения e-mail'),
+            self::STATUS_WAIT_PHONE => \Yii::t('app','Ожидает подтверждения телефона'),
         ];
     }
 
