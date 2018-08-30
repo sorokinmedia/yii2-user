@@ -143,7 +143,7 @@ class LoginFormTest extends TestCase
             'password_reset_token' => null,
             'auth_key' => 'NdLufkTZDHMPH8Sw3p5f7ukUXSXllYwM',
             'username' => 'IvanSidorov',
-            'status_id' => AbstractUser::STATUS_WAIT,
+            'status_id' => AbstractUser::STATUS_WAIT_EMAIL,
             'created_at' => 1460902430,
             'last_entering_date' => 1532370359,
             'email_confirm_token' => 'vzixa24PHbxmz0RXeGaRys1IOuPzyiXq',

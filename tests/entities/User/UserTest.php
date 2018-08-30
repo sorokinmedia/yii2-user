@@ -60,7 +60,7 @@ class UserTest extends TestCase
         $this->assertEquals([
             User::STATUS_BLOCKED => \Yii::t('app', 'Заблокирован'),
             User::STATUS_ACTIVE => \Yii::t('app','Активен'),
-            User::STATUS_WAIT => \Yii::t('app','Ожидает подтверждения'),
+            User::STATUS_WAIT_EMAIL => \Yii::t('app','Ожидает подтверждения e-mail'),
         ], User::getStatusesArray());
     }
 

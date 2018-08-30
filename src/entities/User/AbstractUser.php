@@ -35,7 +35,8 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
 {
     const STATUS_BLOCKED = 0;
     const STATUS_ACTIVE = 1;
-    const STATUS_WAIT = 2;
+    const STATUS_WAIT_EMAIL = 2;
+    const STATUS_WAIT_PHONE = 3;
 
     public $newPassword;
     public $newPasswordRepeat;
@@ -125,7 +126,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
         return [
             self::STATUS_BLOCKED => \Yii::t('app', 'Заблокирован'),
             self::STATUS_ACTIVE => \Yii::t('app','Активен'),
-            self::STATUS_WAIT => \Yii::t('app','Ожидает подтверждения'),
+            self::STATUS_WAIT_EMAIL => \Yii::t('app','Ожидает подтверждения e-mail'),
         ];
     }
 
@@ -352,7 +353,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      */
     public static function findByEmailConfirmToken(string $email_confirm_token)
     {
-        return static::findOne(['email_confirm_token' => $email_confirm_token, 'status_id' => self::STATUS_WAIT]);
+        return static::findOne(['email_confirm_token' => $email_confirm_token, 'status_id' => [self::STATUS_WAIT_EMAIL, self::STATUS_WAIT_PHONE]]);
     }
 
     /**
@@ -623,7 +624,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
             $this->username = $form->username;
             $this->email = $form->email;
             $this->setPassword($form->password);
-            $this->status_id = self::STATUS_WAIT;
+            $this->status_id = self::STATUS_WAIT_EMAIL;
             $this->generateAuthKey();
             $this->generateEmailConfirmToken();
             if (!$this->save()) {

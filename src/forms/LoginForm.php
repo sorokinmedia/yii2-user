@@ -101,7 +101,7 @@ class LoginForm extends Model
         $user = $this->getUser();
         if ($user && $user->status_id == AbstractUser::STATUS_BLOCKED) {
             $this->addError('login', \Yii::t('app', 'Ваш аккаунт заблокирован. Обратитесь к тех.поддержке.'));
-        } elseif ($user && $user->status_id == AbstractUser::STATUS_WAIT) {
+        } elseif ($user && $user->status_id == AbstractUser::STATUS_WAIT_EMAIL) {
             $this->addError('login', \Yii::t('app', 'Ваш аккаунт не подтвержден. Необходимо подтвердить e-mail.'));
         }
     }
@@ -116,7 +116,7 @@ class LoginForm extends Model
         $user = $this->getUser();
         if ($user && $user->status_id == AbstractUser::STATUS_BLOCKED) {
             throw new InvalidArgumentException(\Yii::t('app', 'Ваш аккаунт заблокирован. Обратитесь к тех.поддержке.'));
-        } elseif ($user && $user->status_id == AbstractUser::STATUS_WAIT) {
+        } elseif ($user && $user->status_id == AbstractUser::STATUS_WAIT_EMAIL) {
             throw new InvalidArgumentException(\Yii::t('app', 'Ваш аккаунт не подтвержден. Необходимо подтвердить e-mail.'));
         }
         return true;
