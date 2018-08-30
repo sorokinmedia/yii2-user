@@ -159,9 +159,6 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
     public function updateModel() : bool
     {
         $this->getFromForm();
-        if ($this->full_name != ''){
-            $this->display_name = $this->full_name;
-        }
         if (!$this->save()){
             throw new Exception(\Yii::t('app', 'Ошибка при обновлении модели в БД'));
         }
