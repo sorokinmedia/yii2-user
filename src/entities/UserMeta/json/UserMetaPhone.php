@@ -9,11 +9,13 @@ use yii\base\Model;
  *
  * @property int $country
  * @property int $number
+ * @property bool $is_verified
  */
 class UserMetaPhone extends Model
 {
     public $country;
     public $number;
+    public $is_verified;
 
     /**
      * UserMetaPhone constructor.
@@ -33,7 +35,9 @@ class UserMetaPhone extends Model
             [['country', 'number'], 'required'],
             [['country'], 'in', 'range' => [7]],
             [['number'], 'match', 'pattern' => '/^\d{10}$/'],
-            [['number'], 'unique']
+            [['number'], 'unique'],
+            [['is_verified'], 'boolean'],
+            [['is_verified'], 'default', 'value' => false]
         ];
     }
 
@@ -43,15 +47,9 @@ class UserMetaPhone extends Model
     public function attributeLabels()
     {
         return [
-            'user_id' => \Yii::t('app', 'Пользователь'),
-            'notification_email' => \Yii::t('app', 'E-mail для уведомлений'),
-            'notification_phone' => \Yii::t('app', 'Телефон для уведомлений'),
-            'notification_telegram' => \Yii::t('app', 'Telegram для уведомлений'),
-            'full_name' => \Yii::t('app', 'Полное имя'),
-            'tz' => \Yii::t('app', 'Часовой пояс'),
-            'location' => \Yii::t('app', 'Страна/Город'),
-            'about' => \Yii::t('app', 'О себе'),
-            'custom_fields' => \Yii::t('app', 'Дополнительные данные')
+            'country' => \Yii::t('app', 'Код страны'),
+            'number' => \Yii::t('app', 'Номер телефона'),
+            'is_verified' => \Yii::t('app', 'Подтвержден'),
         ];
     }
 }

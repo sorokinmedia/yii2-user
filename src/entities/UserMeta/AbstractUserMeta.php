@@ -73,7 +73,7 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
             'tz' => \Yii::t('app', 'Часовой пояс'),
             'location' => \Yii::t('app', 'Страна/Город'),
             'about' => \Yii::t('app', 'О себе'),
-            'custom_fields' => \Yii::t('app', 'Дополнительные данные')
+            'custom_fields' => \Yii::t('app', 'Дополнительные данные'),
         ];
     }
 
