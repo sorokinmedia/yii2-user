@@ -127,7 +127,6 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
             self::STATUS_BLOCKED => \Yii::t('app', 'Заблокирован'),
             self::STATUS_ACTIVE => \Yii::t('app','Активен'),
             self::STATUS_WAIT_EMAIL => \Yii::t('app','Ожидает подтверждения e-mail'),
-            self::STATUS_WAIT_PHONE => \Yii::t('app','Ожидает подтверждения телефона'),
         ];
     }
 
@@ -368,7 +367,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      */
     public static function findByEmailConfirmToken(string $email_confirm_token)
     {
-        return static::findOne(['email_confirm_token' => $email_confirm_token, 'status_id' => [self::STATUS_WAIT_EMAIL, self::STATUS_WAIT_PHONE]]);
+        return static::findOne(['email_confirm_token' => $email_confirm_token, 'status_id' => [self::STATUS_WAIT_EMAIL]]);
     }
 
     /**
