@@ -2,7 +2,7 @@
 namespace sorokinmedia\user\handlers\User;
 
 use sorokinmedia\user\forms\SignupForm;
-use sorokinmedia\user\handlers\User\interfaces\{Create};
+use sorokinmedia\user\handlers\User\interfaces\{Create, VerifyAccount};
 use sorokinmedia\user\entities\User\UserInterface;
 
 /**
@@ -11,7 +11,7 @@ use sorokinmedia\user\entities\User\UserInterface;
  *
  * @property UserInterface $user
  */
-class UserHandler implements Create
+class UserHandler implements Create, VerifyAccount
 {
     public $user;
 
@@ -35,5 +35,14 @@ class UserHandler implements Create
     public function create(SignupForm $signup_form) : bool
     {
         return (new actions\Create($this->user, $signup_form))->execute();
+    }
+
+    /**
+     * верификация аккаунта
+     * @return bool
+     */
+    public function verifyAccount() : bool
+    {
+        return (new actions\VerifyAccount($this->user))->execute();
     }
 }

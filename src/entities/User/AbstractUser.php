@@ -186,6 +186,20 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     }
 
     /**
+     * активация аккаунта после всех верификаций
+     * @return bool
+     * @throws Exception
+     */
+    public function verifyAccount() : bool
+    {
+        $this->activate();
+        if (!$this->save()){
+            throw new Exception(\Yii::t('app', 'Ошибка при активации аккаунат'));
+        }
+        return true;
+    }
+
+    /**
      * TODO: need test
      * получает объект роли по ее названию
      * @param string $role_name

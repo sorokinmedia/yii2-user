@@ -51,6 +51,12 @@ interface UserInterface
     public function unblockUser() : bool;
 
     /**
+     * верифицировать аккаунт - пройдены все проверки
+     * @return bool
+     */
+    public function verifyAccount() : bool;
+
+    /**
      * получает объект роли по ее названию
      * @param string $role_name
      * @return null|Role
