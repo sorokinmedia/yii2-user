@@ -134,7 +134,7 @@ abstract class AbstractSmsCode extends ActiveRecord implements RelationInterface
     {
         $this->getFromForm();
         if (!$this->insert()){
-            throw new Exception(\Yii::t('app', 'Ошибка при добавлении в БД'));
+            throw new Exception(\Yii::t('app', $this->getMessage()));
         }
         return true;
     }
