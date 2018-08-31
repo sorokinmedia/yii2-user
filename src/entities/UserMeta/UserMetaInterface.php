@@ -39,4 +39,10 @@ interface UserMetaInterface
      * @return UserMetaInterface
      */
     public static function create(UserInterface $user) : UserMetaInterface;
+
+    /**
+     * верификация телефона
+     * @return bool
+     */
+    public function verifyPhone() : bool;
 }
