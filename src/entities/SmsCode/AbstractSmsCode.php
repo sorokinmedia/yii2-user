@@ -70,7 +70,7 @@ abstract class AbstractSmsCode extends ActiveRecord implements RelationInterface
             [['ip'], 'ip'],
             [['phone'], 'string', 'max' => 12],
             [['is_validated', 'is_deleted'], 'boolean'],
-            [['is_user'], 'default', 'value' => 1],
+            [['is_used'], 'default', 'value' => 0],
             [['is_validated', 'is_deleted'], 'default', 'value' => false],
         ];
     }
