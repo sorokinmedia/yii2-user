@@ -10,7 +10,6 @@ use yii\base\Model;
  * @package sorokinmedia\user\forms
  *
  * @property string $notification_email
- * @property array $notification_phone
  * @property array $full_name
  * @property string $tz
  * @property string $location
@@ -20,7 +19,6 @@ use yii\base\Model;
 class UserMetaForm extends Model
 {
     public $notification_email;
-    public $notification_phone;
     public $full_name;
     public $tz;
     public $location;
@@ -49,7 +47,6 @@ class UserMetaForm extends Model
     {
         return [
             'notification_email' => \Yii::t('app', 'E-mail для уведомлений'),
-            'notification_phone' => \Yii::t('app', 'Телефон для уведомлений'),
             'full_name' => \Yii::t('app', 'Полное имя'),
             'tz' => \Yii::t('app', 'Часовой пояс'),
             'location' => \Yii::t('app', 'Страна/Город'),
@@ -68,7 +65,6 @@ class UserMetaForm extends Model
         if (!is_null($userMeta)){
             /** @var AbstractUserMeta $userMeta */
             $this->notification_email = $userMeta->notification_email;
-            $this->notification_phone = $userMeta->notification_phone;
             $this->full_name = $userMeta->full_name;
             $this->tz = $userMeta->tz;
             $this->location = $userMeta->location;

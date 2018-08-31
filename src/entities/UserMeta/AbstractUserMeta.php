@@ -105,7 +105,6 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
     {
         if (!is_null($this->form)){
             $this->notification_email = $this->form->notification_email;
-            $this->notification_phone = $this->form->notification_phone;
             $this->full_name = $this->form->full_name;
             $this->tz = $this->form->tz;
             $this->location = TextHelper::clearText($this->form->location);
