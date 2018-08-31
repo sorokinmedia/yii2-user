@@ -20,7 +20,7 @@ class m180730_132939_add_sms_code extends Migration
             'code' => $this->integer(4),
             'type_id' => $this->integer(1),
             'ip' => $this->string(20),
-            'is_user' => $this->integer(2),
+            'is_used' => $this->integer(2),
             'is_validated' => $this->boolean(),
             'is_deleted' => $this->boolean()
         ]);
