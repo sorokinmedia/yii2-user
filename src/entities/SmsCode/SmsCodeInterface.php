@@ -2,6 +2,7 @@
 namespace sorokinmedia\user\entities\SmsCode;
 
 use sorokinmedia\user\entities\User\AbstractUser;
+use sorokinmedia\user\entities\UserMeta\json\UserMetaPhone;
 
 /**
  * Interface SmsCodeInterface
@@ -74,10 +75,16 @@ interface SmsCodeInterface
     public static function getRequestedTodayForUser(AbstractUser $user);
 
     /**
+     * перенос данных из формы в модель
+     * @return mixed
+     */
+    public function getFromForm();
+
+    /**
      * добавление модели в БД
      * @return bool
      */
-    public function inserModel() : bool;
+    public function insertModel() : bool;
 
     /**
      * обновление модели в БД
@@ -90,4 +97,31 @@ interface SmsCodeInterface
      * @return bool
      */
     public function deleteModel() : bool;
+
+    /**
+     * отправка кода
+     * @return bool
+     */
+    public function sendCode() : bool;
+
+    /**
+     * сброс дневного лимита для пользователя
+     * @param AbstractUser $user
+     * @return bool
+     */
+    public static function resetLimit(AbstractUser $user) : bool;
+
+    /**
+     * отметить как использованный
+     * @param bool $is_validated
+     * @return bool
+     */
+    public function checkUse(bool $is_validated) : bool;
+
+    /**
+     * форматтер для номера телефона. пока только россия
+     * @param UserMetaPhone $userMetaPhone
+     * @return string
+     */
+    public static function phoneFormatter(UserMetaPhone $userMetaPhone) : string;
 }

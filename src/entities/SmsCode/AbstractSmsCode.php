@@ -6,15 +6,17 @@ use sorokinmedia\helpers\DateHelper;
 use sorokinmedia\user\entities\{
     User\AbstractUser,UserMeta\json\UserMetaPhone
 };
+use sorokinmedia\user\forms\SmsCodeForm;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use yii\db\Exception;
 
 /**
  * This is the model class for table "sms_code".
  *
  * @property integer $id
  * @property integer $user_id
- * @property integer $phone
+ * @property string $phone
  * @property string $created_at
  * @property string $code
  * @property integer $type_id
@@ -25,14 +27,14 @@ use yii\db\ActiveRecord;
  *
  * @property AbstractUser $user
  * @property string $type
+ * @property SmsCodeForm $form
  */
-abstract class SmsCode extends ActiveRecord implements RelationInterface, SmsCodeInterface
+abstract class AbstractSmsCode extends ActiveRecord implements RelationInterface, SmsCodeInterface
 {
-    const TYPE_VERIFY = 1; // подтверждение телефона
-    const TYPE_RESTORE = 2; // восстановление пароля
-
     const MAX_PER_DAY = 3;
     const MAX_PER_IP = 7;
+
+    public $form;
 
     /**
      * @inheritdoc
@@ -62,11 +64,14 @@ abstract class SmsCode extends ActiveRecord implements RelationInterface, SmsCod
     public function rules()
     {
         return [
-            [['user_id', 'phone', 'type_id', 'is_used'], 'integer'],
+            [['user_id', 'type_id', 'is_used'], 'integer'],
             [['created_at'], 'safe'],
             [['code'], 'string', 'max' => 10],
             [['ip'], 'ip'],
+            [['phone'], 'string', 'max' => 12],
             [['is_validated', 'is_deleted'], 'boolean'],
+            [['is_user'], 'default', 'value' => 1],
+            [['is_validated', 'is_deleted'], 'default', 'value' => false],
         ];
     }
 
@@ -79,7 +84,7 @@ abstract class SmsCode extends ActiveRecord implements RelationInterface, SmsCod
             'id' => \Yii::t('app', 'ID'),
             'user_id' => \Yii::t('app', 'Пользователь'),
             'phone' => \Yii::t('app', 'Номер телефона'),
-            'create_date' => \Yii::t('app', 'Дата'),
+            'created_at' => \Yii::t('app', 'Дата'),
             'code' => \Yii::t('app', 'Код'),
             'type_id' => \Yii::t('app', 'Тип'),
             'ip' => \Yii::t('app', 'IP'),
@@ -90,20 +95,85 @@ abstract class SmsCode extends ActiveRecord implements RelationInterface, SmsCod
     }
 
     /**
+     * AbstractSmsCode constructor.
+     * @param array $config
+     * @param SmsCodeForm|null $form
+     */
+    public function __construct(array $config = [], SmsCodeForm $form = null)
+    {
+        if (!is_null($form)){
+            $this->form = $form;
+        }
+        parent::__construct($config);
+    }
+
+    /**
+     * перенсти данные из формы в модель
+     */
+    public function getFromForm()
+    {
+        if (!is_null($this->form)){
+            $this->user_id = $this->form->user_id;
+            $this->phone = $this->form->phone;
+            $this->code = $this->form->code;
+            $this->type_id = $this->form->type_id;
+            $this->ip = $this->form->ip;
+            $this->is_used = $this->form->is_used;
+            $this->is_validated = $this->form->is_validated;
+            $this->is_deleted = $this->form->is_deleted;
+        }
+    }
+
+    /**
+     * добавление модели в БД
+     * @return bool
+     * @throws Exception
+     * @throws \Throwable
+     */
+    public function insertModel() : bool
+    {
+        $this->getFromForm();
+        if (!$this->insert()){
+            throw new Exception(\Yii::t('app', 'Ошибка при добавлении в БД'));
+        }
+        return true;
+    }
+
+    /**
+     * обновление модели
+     * @return bool
+     * @throws Exception
+     */
+    public function updateModel() : bool
+    {
+        $this->getFromForm();
+        if (!$this->save()){
+            throw new Exception(\Yii::t('app', 'Ошибка при обновлении в БД'));
+        }
+        return true;
+    }
+
+    /**
+     * пометить как удаленный. при сбросе лимитов
+     * @return bool
+     * @throws \Exception
+     */
+    public function deleteModel(): bool
+    {
+        $this->getFromForm();
+        $this->is_deleted = true;
+        if (!$this->save()) {
+            throw new \Exception(\Yii::t('app', 'Ошибка при удалении кода'));
+        }
+        return true;
+    }
+
+    /**
+     * требует реализации в наследуемом классе
      * @param int|null $type_id
      * @return array|mixed
      */
-    public static function getTypes(int $type_id = null)
-    {
-        $types = [
-            self::TYPE_VERIFY => \Yii::t('app', 'Подтверждение номера телефона'),
-            self::TYPE_RESTORE => \Yii::t('app', 'Восстановление пароля')
-        ];
-        if (!is_null($type_id)){
-            return $types[$type_id];
-        }
-        return $types;
-    }
+    abstract public static function getTypes(int $type_id = null);
 
     /**
      * @return string
@@ -122,54 +192,16 @@ abstract class SmsCode extends ActiveRecord implements RelationInterface, SmsCod
     }
 
     /**
+     * требует реализации в наследуемом классе
      * генерирует 4х значный код из цифр
      * @return int
      */
-    public function generateCode() : int
-    {
-        return rand(1000, 9999);
-    }
-
-    /**
-     * Добаляет новый код
-     * @param AbstractUser|null $user
-     * @param integer $phone
-     * @param $type
-     * @param string|null $ip
-     * @return bool
-     * @throws \Exception
-     */
-    public function addCode(AbstractUser $user = null, $phone, int $type_id, string $ip = '')
-    {
-        $this->code = $this->generateCode();
-        $this->user_id = ($user) ? $user->id : null;
-        $this->phone = $phone;
-        $this->type_id = $type_id;
-        $this->ip = $ip;
-        if (!$this->save()) {
-            throw new \Exception(\Yii::t('app', 'Ошибка при добавлении кода в БД'));
-        }
-        $this->sendCode();
-        return true;
-    }
+    abstract public function generateCode() : int;
 
     /**
      * отправка смс с кодом
      */
-    public function sendCode()
-    {
-        $sms = new Sms();
-        switch ($this->type_id) {
-            case self::TYPE_WALLET_WITHDRAW:
-            case self::TYPE_REG_V2:
-            case self::TYPE_RESTORE_V2:
-                $message = "Код подтверждения: {$this->code}";
-                break;
-            default:
-                $message = "Код подтверждения: {$this->code}";
-        }
-        $sms->sendWithoutLog($this->phone, $message);
-    }
+    abstract public function sendCode() : bool;
 
     /**
      * получает последний код заданного типа для пользователя
@@ -255,7 +287,7 @@ abstract class SmsCode extends ActiveRecord implements RelationInterface, SmsCod
      * @return bool
      * @throws \Exception
      */
-    public static function resetCodes(AbstractUser $user): bool
+    public static function resetLimit(AbstractUser $user): bool
     {
         $query = self::find()
             ->where([
@@ -264,7 +296,7 @@ abstract class SmsCode extends ActiveRecord implements RelationInterface, SmsCod
             ]);
         $sms_codes = $query->all();
         foreach ($sms_codes as $sms_code) {
-            /** @var $sms_code SmsCode */
+            /** @var $sms_code AbstractSmsCode */
             $sms_code->deleteModel();
         }
         return true;
@@ -274,28 +306,14 @@ abstract class SmsCode extends ActiveRecord implements RelationInterface, SmsCod
      * отметить как использованный
      * @param bool $is_validated
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
-    public function checkUse($is_validated = false): bool
+    public function checkUse(bool $is_validated = false): bool
     {
         $this->is_used = $this->is_used + 1;
         $this->is_validated = $is_validated;
         if (!$this->save()) {
-            throw new \Exception(\Yii::t('app', 'Ошибка при сохранении статуса кода'));
-        }
-        return true;
-    }
-
-    /**
-     * пометить как удаленный. при сбросе лимитов
-     * @return bool
-     * @throws \Exception
-     */
-    public function deleteModel(): bool
-    {
-        $this->is_deleted = true;
-        if (!$this->save()) {
-            throw new \Exception(\Yii::t('app', 'Ошибка при удалении кода'));
+            throw new Exception(\Yii::t('app', 'Ошибка при сохранении статуса кода'));
         }
         return true;
     }
@@ -305,7 +323,7 @@ abstract class SmsCode extends ActiveRecord implements RelationInterface, SmsCod
      * @param UserMetaPhone $userMetaPhone
      * @return string
      */
-    public static function formatPhone(UserMetaPhone $userMetaPhone) : string
+    public static function phoneFormatter(UserMetaPhone $userMetaPhone) : string
     {
         $phone = $userMetaPhone->country . $userMetaPhone->number;
         if (strlen($phone) == 11) {
