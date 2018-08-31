@@ -64,9 +64,7 @@ abstract class AbstractSmsCode extends ActiveRecord implements RelationInterface
     public function rules()
     {
         return [
-            [['user_id', 'type_id', 'is_used'], 'integer'],
-            [['created_at'], 'safe'],
-            [['code'], 'string', 'max' => 10],
+            [['user_id', 'type_id', 'is_used', 'code'], 'integer'],
             [['ip'], 'ip'],
             [['phone'], 'string', 'max' => 12],
             [['is_validated', 'is_deleted'], 'boolean'],

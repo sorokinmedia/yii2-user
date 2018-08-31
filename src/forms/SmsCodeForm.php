@@ -34,8 +34,7 @@ class SmsCodeForm extends Model
     public function rules()
     {
         return [
-            [['user_id', 'type_id', 'is_used'], 'integer'],
-            [['code'], 'string', 'max' => 10],
+            [['user_id', 'type_id', 'is_used', 'code'], 'integer'],
             [['ip'], 'ip'],
             [['phone'], 'string', 'max' => 12],
             [['is_validated', 'is_deleted'], 'boolean'],
