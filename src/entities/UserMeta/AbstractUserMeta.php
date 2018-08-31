@@ -201,7 +201,7 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
     public function verifyPhone(): bool
     {
         $phone = new UserMetaPhone($this->notification_phone);
-        $phone->is_verified = true;
+        $phone->verifyPhone();
         $this->notification_phone = $phone;
         return $this->updateModel();
     }

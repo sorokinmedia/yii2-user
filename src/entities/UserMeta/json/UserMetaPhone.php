@@ -52,4 +52,12 @@ class UserMetaPhone extends Model
             'is_verified' => \Yii::t('app', 'Подтвержден'),
         ];
     }
+
+    /**
+     * верификация телефона
+     */
+    public function verifyPhone()
+    {
+        $this->is_verified = true;
+    }
 }
