@@ -99,6 +99,12 @@ interface SmsCodeInterface
     public function deleteModel() : bool;
 
     /**
+     * сформировать текст сообщения исходя из типа кода
+     * @return string
+     */
+    public function getMessage() : string;
+
+    /**
      * отправка кода
      * @return bool
      */

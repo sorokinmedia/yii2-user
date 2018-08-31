@@ -199,6 +199,13 @@ abstract class AbstractSmsCode extends ActiveRecord implements RelationInterface
     abstract public function generateCode() : int;
 
     /**
+     * требует реализации в наслудуемом классе
+     * сформировать сообщение исходя их типа кода
+     * @return string
+     */
+    abstract public function getMessage() : string;
+
+    /**
      * отправка смс с кодом
      */
     abstract public function sendCode() : bool;
