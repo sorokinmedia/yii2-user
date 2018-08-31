@@ -19,6 +19,8 @@ class Create extends AbstractAction
     public function execute() : bool
     {
         $this->sms_code->insertModel();
+        $this->sms_code->refresh();
+        $this->sms_code->sendCode();
         return true;
     }
 }
