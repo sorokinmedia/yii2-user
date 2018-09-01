@@ -1,7 +1,8 @@
 <?php
 namespace sorokinmedia\user\handlers\UserMeta;
 
-use sorokinmedia\user\handlers\UserMeta\interfaces\{Create, Update, VerifyPhone};
+use sorokinmedia\user\entities\UserMeta\json\UserMetaPhone;
+use sorokinmedia\user\handlers\UserMeta\interfaces\{Create, SetPhone, Update, VerifyPhone};
 use sorokinmedia\user\entities\UserMeta\UserMetaInterface;
 
 /**
@@ -10,7 +11,7 @@ use sorokinmedia\user\entities\UserMeta\UserMetaInterface;
  *
  * @property UserMetaInterface $user_meta
  */
-class UserMetaHandler implements Create, Update, VerifyPhone
+class UserMetaHandler implements Create, Update, SetPhone, VerifyPhone
 {
     public $user_meta;
 
@@ -43,6 +44,18 @@ class UserMetaHandler implements Create, Update, VerifyPhone
     public function update() : bool
     {
         return (new actions\Update($this->user_meta))->execute();
+    }
+
+    /**
+     * добавление телефона
+     * @param UserMetaPhone $userMetaPhone
+     * @return bool
+     * @throws \Throwable
+     * @throws \yii\db\Exception
+     */
+    public function setPhone(UserMetaPhone $userMetaPhone) : bool
+    {
+        return (new actions\SetPhone($this->user_meta, $userMetaPhone))->execute();
     }
 
     /**

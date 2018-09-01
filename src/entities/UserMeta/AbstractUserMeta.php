@@ -194,6 +194,18 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
     }
 
     /**
+     * добавить номер телефона в профиль
+     * @param UserMetaPhone $userMetaPhone
+     * @return bool
+     * @throws Exception
+     */
+    public function setPhone(UserMetaPhone $userMetaPhone) : bool
+    {
+        $this->notification_phone = $userMetaPhone;
+        return $this->updateModel();
+    }
+
+    /**
      * верификация номер телефона
      * @return bool
      * @throws Exception

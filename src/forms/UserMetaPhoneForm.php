@@ -1,36 +1,36 @@
 <?php
-namespace sorokinmedia\user\entities\UserMeta\json;
+namespace sorokinmedia\user\forms;
 
-use sorokinmedia\user\forms\UserMetaPhoneForm;
+use sorokinmedia\user\entities\UserMeta\json\UserMetaPhone;
 use yii\base\Model;
 
 /**
- * Class UserMetaPhone
- * @package sorokinmedia\user\entities\UserMeta\json
+ * Class UserMetaPhoneForm
+ * @package sorokinmedia\user\forms
  *
  * @property int $country
  * @property int $number
  * @property bool $is_verified
  */
-class UserMetaPhone extends Model
+class UserMetaPhoneForm extends Model
 {
     public $country;
     public $number;
     public $is_verified;
 
     /**
-     * UserMetaPhone constructor.
+     * UserMetaPhoneForm constructor.
      * @param array $config
-     * @param UserMetaPhoneForm|null $form
+     * @param UserMetaPhone|null $userMetaPhone
      */
-    public function __construct(array $config = [], UserMetaPhoneForm $form = null)
+    public function __construct(array $config = [], UserMetaPhone $userMetaPhone = null)
     {
-        parent::__construct($config);
-        if (!is_null($form)){
-            $this->country = $form->country;
-            $this->number = $form->number;
-            $this->is_verified = $form->is_verified;
+        if (!is_null($userMetaPhone)){
+            $this->country = $userMetaPhone->country;
+            $this->number = $userMetaPhone->number;
+            $this->is_verified = $userMetaPhone->is_verified;
         }
+        parent::__construct($config);
     }
 
     /**
@@ -58,13 +58,5 @@ class UserMetaPhone extends Model
             'number' => \Yii::t('app', 'Номер телефона'),
             'is_verified' => \Yii::t('app', 'Подтвержден'),
         ];
-    }
-
-    /**
-     * верификация телефона
-     */
-    public function verifyPhone()
-    {
-        $this->is_verified = true;
     }
 }

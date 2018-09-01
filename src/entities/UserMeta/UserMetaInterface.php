@@ -2,6 +2,7 @@
 namespace sorokinmedia\user\entities\UserMeta;
 
 use sorokinmedia\user\entities\User\UserInterface;
+use sorokinmedia\user\entities\UserMeta\json\UserMetaPhone;
 
 /**
  * Interface UserMetaInterface
@@ -39,6 +40,13 @@ interface UserMetaInterface
      * @return UserMetaInterface
      */
     public static function create(UserInterface $user) : UserMetaInterface;
+
+    /**
+     * установить номер телефона
+     * @param UserMetaPhone $userMetaPhone
+     * @return bool
+     */
+    public function setPhone(UserMetaPhone $userMetaPhone) : bool;
 
     /**
      * верификация телефона
