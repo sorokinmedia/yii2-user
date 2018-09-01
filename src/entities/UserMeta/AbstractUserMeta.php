@@ -131,7 +131,6 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
         $user_meta = new static([
             'user_id' => $user->id,
             'notification_email' => $user->email,
-            'display_name' => $user->username,
         ]);
         (new UserMetaHandler($user_meta))->create();
         $user_meta->refresh();
