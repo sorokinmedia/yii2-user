@@ -42,7 +42,6 @@ class UserMetaPhoneForm extends Model
             [['country', 'number'], 'required'],
             [['country'], 'in', 'range' => [7]],
             [['number'], 'match', 'pattern' => '/^\d{10}$/'],
-            [['number'], 'unique'],
             [['is_verified'], 'boolean'],
             [['is_verified'], 'default', 'value' => false]
         ];
