@@ -2,8 +2,9 @@
 namespace sorokinmedia\user\handlers\User;
 
 use sorokinmedia\user\forms\SignupForm;
-use sorokinmedia\user\handlers\User\interfaces\{Create, VerifyAccount};
+use sorokinmedia\user\handlers\User\interfaces\{AddRole, Block, Create, RevokeRole, Unblock, VerifyAccount};
 use sorokinmedia\user\entities\User\UserInterface;
+use yii\rbac\Role;
 
 /**
  * Class UserHandler
@@ -11,7 +12,7 @@ use sorokinmedia\user\entities\User\UserInterface;
  *
  * @property UserInterface $user
  */
-class UserHandler implements Create, VerifyAccount
+class UserHandler implements Create, VerifyAccount, Block, Unblock, AddRole, RevokeRole
 {
     public $user;
 
@@ -44,5 +45,43 @@ class UserHandler implements Create, VerifyAccount
     public function verifyAccount() : bool
     {
         return (new actions\VerifyAccount($this->user))->execute();
+    }
+
+    /**
+     * блокировка пользователя
+     * @return bool
+     */
+    public function block() : bool
+    {
+        return (new actions\Block($this->user))->execute();
+    }
+
+    /**
+     * разблокировка пользователя
+     * @return bool
+     */
+    public function unblock() : bool
+    {
+        return (new actions\Unblock($this->user))->execute();
+    }
+
+    /**
+     * добавление роли
+     * @param Role $role
+     * @return bool
+     */
+    public function addRole(Role $role) : bool
+    {
+        return (new actions\AddRole($this->user, $role))->execute();
+    }
+
+    /**
+     * удаление роли
+     * @param Role $role
+     * @return bool
+     */
+    public function revokeRole(Role $role) : bool
+    {
+        return (new actions\RevokeRole($this->user, $role))->execute();
     }
 }
