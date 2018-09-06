@@ -11,7 +11,6 @@ use sorokinmedia\user\forms\UserMetaForm;
 use sorokinmedia\user\handlers\UserMeta\UserMetaHandler;
 use yii\db\ActiveRecord;
 use yii\db\Exception;
-use yii\helpers\Json;
 
 /**
  * Class AbstractUserMeta
@@ -201,7 +200,7 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
      */
     public function setPhone(UserMetaPhone $userMetaPhone) : bool
     {
-        $this->notification_phone = Json::encode($userMetaPhone);
+        $this->notification_phone = $userMetaPhone;
         return $this->updateModel();
     }
 
@@ -212,13 +211,9 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
      */
     public function verifyPhone(): bool
     {
-        if (!is_array($this->notification_phone)){
-            $phone = new UserMetaPhone(Json::decode($this->notification_phone));
-        } else {
-            $phone = new UserMetaPhone($this->notification_phone);
-        }
+        $phone = new UserMetaPhone($this->notification_phone);
         $phone->verifyPhone();
-        $this->notification_phone = Json::encode($phone);
+        $this->notification_phone = $phone;
         return $this->updateModel();
     }
 }
