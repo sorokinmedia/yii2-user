@@ -178,7 +178,7 @@ abstract class AbstractSmsCode extends ActiveRecord implements RelationInterface
      */
     public function getType() : string
     {
-        return self::getTypes($this->type_id);
+        return static::getTypes($this->type_id);
     }
 
     /**
@@ -242,11 +242,12 @@ abstract class AbstractSmsCode extends ActiveRecord implements RelationInterface
         $query = self::find()
             ->where([
                 'ip' => $ip,
-                'is_validated' => 'false',
-                'is_deleted' => 'false',
+                'is_validated' => 0,
+                'is_deleted' => 0,
             ])
             ->andWhere(['between', 'created_at', time() - DateHelper::TIME_DAY_ONE, time()])
             ->andWhere(['type_id' => $type_id]);
+
         return $query->count();
     }
 
@@ -262,8 +263,8 @@ abstract class AbstractSmsCode extends ActiveRecord implements RelationInterface
         $query = self::find()
             ->where([
                 'user_id' => $user->id,
-                'is_validated' => 'false',
-                'is_deleted' => 'false',
+                'is_validated' => 0,
+                'is_deleted' => 0,
             ])
             ->andWhere(['between', 'created_at', time() - DateHelper::TIME_DAY_ONE, time()])
             ->andWhere(['type_id' => $type_id]);
@@ -280,7 +281,7 @@ abstract class AbstractSmsCode extends ActiveRecord implements RelationInterface
         $query = self::find()
             ->where([
                 'user_id' => $user->id,
-                'is_deleted' => 'false',
+                'is_deleted' => 0,
             ])
             ->andWhere(['between', 'created_at', time() - DateHelper::TIME_DAY_ONE, time()]);
         return $query->all();
@@ -297,7 +298,7 @@ abstract class AbstractSmsCode extends ActiveRecord implements RelationInterface
         $query = self::find()
             ->where([
                 'user_id' => $user->id,
-                'is_deleted' => false,
+                'is_deleted' => 0,
             ]);
         $sms_codes = $query->all();
         foreach ($sms_codes as $sms_code) {

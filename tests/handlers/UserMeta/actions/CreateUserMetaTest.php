@@ -24,7 +24,7 @@ class CreateUserMetaTest extends TestCase
     public function testCreate()
     {
         $this->initDb();
-        $this->initDbUser();
+        $this->initDbAdditional();
         $user_meta = new UserMeta([
             'user_id' => 2
         ]);

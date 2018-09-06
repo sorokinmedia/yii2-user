@@ -136,7 +136,7 @@ class UserMetaTest extends TestCase
     public function testInsertModel()
     {
         $this->initDb();
-        $this->initDbUser();
+        $this->initDbAdditional();
         /** @var UserMeta $user_meta */
         $user_meta = new UserMeta([
             'user_id' => 2

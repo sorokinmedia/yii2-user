@@ -54,7 +54,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * таблиц и данные по нужным таблицам
+     * инициализация нужных таблиц
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      */
@@ -81,40 +81,6 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             'last_entering_date' => Schema::TYPE_INTEGER . '(11)',
             'email_confirm_token' => Schema::TYPE_STRING . '(255)'
         ])->execute();
-        $db->createCommand()->insert('user', [
-            'id' => 1,
-            'email' => 'test@yandex.ru',
-            'password_hash' => '$2y$13$965KGf0VPtTcQqflsIEDtu4kmvM4mstARSbtRoZRiwYZkUqCQWmcy',
-            'password_reset_token' => null,
-            'auth_key' => 'NdLufkTZDHMPH8Sw3p5f7ukUXSXllYwM',
-            'username' => 'IvanSidorov',
-            'status_id' => 1,
-            'created_at' => 1460902430,
-            'last_entering_date' => 1532370359,
-            'email_confirm_token' => null,
-        ])->execute();
-
-        if ($db->getTableSchema('user_access_token')){
-            $db->createCommand()->dropTable('user_access_token')->execute();
-        }
-        $db->createCommand()->createTable('user_access_token', [
-            'user_id' => Schema::TYPE_INTEGER,
-            'access_token' => Schema::TYPE_STRING . '(32) NOT NULL',
-            'created_at' => Schema::TYPE_INTEGER . '(11)',
-            'updated_at' => Schema::TYPE_INTEGER . '(11)',
-            'expired_at' => Schema::TYPE_INTEGER . '(11)',
-            'is_active' => Schema::TYPE_TINYINT,
-            'PRIMARY KEY(user_id, access_token)',
-        ])->execute();
-        $db->createCommand()->insert('user_access_token', [
-            'user_id' => 1,
-            'access_token' => 'a188dd6d0a16071691c0a6247ed76ed4',
-            'created_at' => 1528365638,
-            'updated_at' => null,
-            'expired_at' => null,
-            'is_active' => 1,
-        ])->execute();
-
         if ($db->getTableSchema('user_meta')){
             $db->createCommand()->dropTable('user_meta')->execute();
         }
@@ -130,6 +96,69 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             'custom_fields' => Schema::TYPE_JSON,
             'PRIMARY KEY(user_id)',
         ])->execute();
+        if ($db->getTableSchema('user_access_token')){
+            $db->createCommand()->dropTable('user_access_token')->execute();
+        }
+        $db->createCommand()->createTable('user_access_token', [
+            'user_id' => Schema::TYPE_INTEGER,
+            'access_token' => Schema::TYPE_STRING . '(32) NOT NULL',
+            'created_at' => Schema::TYPE_INTEGER . '(11)',
+            'updated_at' => Schema::TYPE_INTEGER . '(11)',
+            'expired_at' => Schema::TYPE_INTEGER . '(11)',
+            'is_active' => Schema::TYPE_TINYINT,
+            'PRIMARY KEY(user_id, access_token)',
+        ])->execute();
+        if ($db->getTableSchema('sms_code')){
+            $db->createCommand()->dropTable('sms_code')->execute();
+        }
+        $db->createCommand()->createTable('sms_code', [
+            'id' => Schema::TYPE_PK,
+            'user_id' => Schema::TYPE_INTEGER,
+            'phone' => Schema::TYPE_STRING . '(12) NOT NULL',
+            'created_at' => Schema::TYPE_INTEGER . '(11)',
+            'code' => Schema::TYPE_INTEGER . '(4)',
+            'type_id' => Schema::TYPE_INTEGER . '(1)',
+            'ip' => Schema::TYPE_STRING . '(15)',
+            'is_used' => Schema::TYPE_INTEGER . '(2)',
+            'is_validated' => Schema::TYPE_INTEGER . '(1)',
+            'is_deleted' => Schema::TYPE_INTEGER . '(1)',
+        ])->execute();
+
+        $this->initDefaultData();
+    }
+
+    /**
+     * дефолтный набор данных для тестов
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\db\Exception
+     */
+    public function initDefaultData()
+    {
+        $db = new Connection([
+            'dsn' => 'sqlite:' . \Yii::$app->getRuntimePath() . '/sqlite.db',
+            'charset' => 'utf8',
+        ]);
+        \Yii::$app->set('db', $db);
+        $db->createCommand()->insert('user', [
+            'id' => 1,
+            'email' => 'test@yandex.ru',
+            'password_hash' => '$2y$13$965KGf0VPtTcQqflsIEDtu4kmvM4mstARSbtRoZRiwYZkUqCQWmcy',
+            'password_reset_token' => null,
+            'auth_key' => 'NdLufkTZDHMPH8Sw3p5f7ukUXSXllYwM',
+            'username' => 'IvanSidorov',
+            'status_id' => 1,
+            'created_at' => 1460902430,
+            'last_entering_date' => 1532370359,
+            'email_confirm_token' => null,
+        ])->execute();
+        $db->createCommand()->insert('user_access_token', [
+            'user_id' => 1,
+            'access_token' => 'a188dd6d0a16071691c0a6247ed76ed4',
+            'created_at' => 1528365638,
+            'updated_at' => null,
+            'expired_at' => null,
+            'is_active' => 1,
+        ])->execute();
         $db->createCommand()->insert('user_meta', [
             'user_id' => 1,
             'notification_email' => 'test1@yandex.ru',
@@ -141,6 +170,18 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             'about' => 'О себе: текст',
             'custom_fields' => '[{"name": "Афвф", "value": "аывфыы 34"}]',
         ])->execute();
+        $db->createCommand()->insert('sms_code', [
+            'id' => 1,
+            'user_id' => 1,
+            'phone' => '79198078281',
+            'created_at' => 1536009859,
+            'code' => 3244,
+            'type_id' => 1,
+            'ip' => '109.124.226.156',
+            'is_used' => 0,
+            'is_validated' => 0,
+            'is_deleted' => 0,
+        ])->execute();
     }
 
     /**
@@ -148,7 +189,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      */
-    public function initDbUser()
+    public function initDbAdditional()
     {
         $db = new Connection([
             'dsn' => 'sqlite:' . \Yii::$app->getRuntimePath() . '/sqlite.db',
@@ -166,6 +207,19 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             'created_at' => 1460902430,
             'last_entering_date' => 1532370359,
             'email_confirm_token' => null,
+        ])->execute();
+
+        $db->createCommand()->insert('sms_code', [
+            'id' => 2,
+            'user_id' => 1,
+            'phone' => '79198078281',
+            'created_at' => time() - 3600,
+            'code' => 4432,
+            'type_id' => 1,
+            'ip' => '109.124.226.156',
+            'is_used' => 0,
+            'is_validated' => 0,
+            'is_deleted' => 0,
         ])->execute();
     }
 }
