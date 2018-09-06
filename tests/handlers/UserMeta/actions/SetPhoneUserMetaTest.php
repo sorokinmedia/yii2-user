@@ -1,0 +1,37 @@
+<?php
+namespace sorokinmedia\user\tests\handlers\UserMeta\actions;
+
+use sorokinmedia\user\entities\UserMeta\json\UserMetaPhone;
+use sorokinmedia\user\handlers\UserMeta\UserMetaHandler;
+use sorokinmedia\user\tests\entities\UserMeta\UserMeta;
+use sorokinmedia\user\tests\TestCase;
+
+/**
+ * Class UpdateUserMetaTest
+ * @package sorokinmedia\user\tests\handlers\UserMeta\actions
+ *
+ * тестирование action update
+ */
+class VerifyPhoneUserMetaTest extends TestCase
+{
+    /**
+     * @group user-meta-handler
+     * @throws \Throwable
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\db\Exception
+     */
+    public function testAction()
+    {
+        $this->initDb();
+        $user_meta = UserMeta::findOne(['user_id' => 1]);
+        $phone = new UserMetaPhone([
+            'country' => 7,
+            'number' => 9172298129,
+            'is_verified' => false
+        ]);
+        $handler = new UserMetaHandler($user_meta);
+        $this->assertTrue($handler->setPhone($phone));
+        $this->assertTrue($handler->verifyPhone());
+        $this->assertEquals('{"country":7,"number":9172298129,"is_verified":true}', $user_meta->notification_phone);
+    }
+}

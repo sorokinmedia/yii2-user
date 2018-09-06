@@ -21,7 +21,7 @@ class CreateUserMetaTest extends TestCase
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      */
-    public function testCreate()
+    public function testAction()
     {
         $this->initDb();
         $this->initDbAdditional();

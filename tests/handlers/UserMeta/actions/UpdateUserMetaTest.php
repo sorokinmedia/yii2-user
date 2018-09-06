@@ -20,7 +20,7 @@ class UpdateUserMetaTest extends TestCase
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      */
-    public function testUpdate()
+    public function testAction()
     {
         $this->initDb();
         $user_meta = UserMeta::findOne(1);
