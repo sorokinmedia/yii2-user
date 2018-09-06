@@ -27,7 +27,6 @@ class UpdateUserMetaTest extends TestCase
         $user_meta = UserMeta::findOne(1);
         $user_meta_form = new UserMetaForm([], $user_meta);
         $user_meta_form->notification_email = 'test_email@yandex.ru';
-        $user_meta_form->notification_phone = '79198078281';
         $user_meta_form->full_name = 'test_full_name';
         $user_meta_form->tz = 'Europe/London';
         $user_meta_form->location = 'Europe/London';
@@ -36,7 +35,6 @@ class UpdateUserMetaTest extends TestCase
         $this->assertTrue((new UserMetaHandler($user_meta))->update());
         $user_meta->refresh();
         $this->assertEquals('test_email@yandex.ru', $user_meta->notification_email);
-        $this->assertEquals('79198078281', $user_meta->notification_phone);
         $this->assertEquals('test_full_name', $user_meta->full_name);
         $this->assertEquals('Europe/London', $user_meta->tz);
         $this->assertEquals('Europe/London', $user_meta->location);
@@ -101,25 +99,25 @@ class UpdateUserMetaTest extends TestCase
         $db->createCommand()->createTable('user_meta', [
             'user_id' => Schema::TYPE_INTEGER,
             'notification_email' => Schema::TYPE_STRING . '(255)',
-            'notification_phone' => Schema::TYPE_INTEGER . '(255)',
+            'notification_phone' => Schema::TYPE_JSON,
             'notification_telegram' => Schema::TYPE_INTEGER,
-            'full_name' => Schema::TYPE_STRING . '(255)',
-            'display_name' => Schema::TYPE_STRING . '(255)',
+            'full_name' => Schema::TYPE_JSON,
             'tz' => Schema::TYPE_STRING . '(100)',
             'location' => Schema::TYPE_STRING . '(200)',
             'about' => Schema::TYPE_TEXT,
+            'custom_fields' => Schema::TYPE_JSON,
             'PRIMARY KEY(user_id)',
         ])->execute();
         $db->createCommand()->insert('user_meta', [
             'user_id' => 1,
             'notification_email' => 'test1@yandex.ru',
-            'notification_phone' => '+79198078281',
+            'notification_phone' => '{"number": 9198078281, "country": 7, "is_verified": true}',
             'notification_telegram' => 12345678,
-            'full_name' => 'Вася Пупкин',
-            'display_name' => 'Вася Пупкин',
+            'full_name' => '{"name": "Руслан", "surname": "Гилязетдинов", "patronymic": "Рашидович"}',
             'tz' => 'Europe/Samara',
             'location' => 'Russia/Samara',
             'about' => 'О себе: текст',
+            'custom_fields' => '[{"name": "Афвф", "value": "аывфыы 34"}]',
         ])->execute();
     }
 }

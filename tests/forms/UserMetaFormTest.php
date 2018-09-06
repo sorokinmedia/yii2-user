@@ -31,11 +31,11 @@ class UserMetaFormTest extends TestCase
         $form = new UserMetaForm([], $user_meta);
         $this->assertInstanceOf(UserMetaForm::class, $form);
         $this->assertEquals($form->notification_email, $user_meta->notification_email);
-        $this->assertEquals($form->notification_phone, $user_meta->notification_phone);
         $this->assertEquals($form->full_name, $user_meta->full_name);
         $this->assertEquals($form->tz, $user_meta->tz);
         $this->assertEquals($form->location, $user_meta->location);
         $this->assertEquals($form->about, $user_meta->about);
+        $this->assertEquals($form->custom_fields, $user_meta->custom_fields);
     }
 
     /**
@@ -96,25 +96,25 @@ class UserMetaFormTest extends TestCase
         $db->createCommand()->createTable('user_meta', [
             'user_id' => Schema::TYPE_INTEGER,
             'notification_email' => Schema::TYPE_STRING . '(255)',
-            'notification_phone' => Schema::TYPE_INTEGER . '(255)',
+            'notification_phone' => Schema::TYPE_JSON,
             'notification_telegram' => Schema::TYPE_INTEGER,
-            'full_name' => Schema::TYPE_STRING . '(255)',
-            'display_name' => Schema::TYPE_STRING . '(255)',
+            'full_name' => Schema::TYPE_JSON,
             'tz' => Schema::TYPE_STRING . '(100)',
             'location' => Schema::TYPE_STRING . '(200)',
             'about' => Schema::TYPE_TEXT,
+            'custom_fields' => Schema::TYPE_JSON,
             'PRIMARY KEY(user_id)',
         ])->execute();
         $db->createCommand()->insert('user_meta', [
             'user_id' => 1,
             'notification_email' => 'test1@yandex.ru',
-            'notification_phone' => '+79198078281',
+            'notification_phone' => '{"number": 9198078281, "country": 7, "is_verified": true}',
             'notification_telegram' => 12345678,
-            'full_name' => 'Вася Пупкин',
-            'display_name' => 'Вася Пупкин',
+            'full_name' => '{"name": "Руслан", "surname": "Гилязетдинов", "patronymic": "Рашидович"}',
             'tz' => 'Europe/Samara',
             'location' => 'Russia/Samara',
             'about' => 'О себе: текст',
+            'custom_fields' => '[{"name": "Афвф", "value": "аывфыы 34"}]',
         ])->execute();
     }
 }
