@@ -36,7 +36,6 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     const STATUS_BLOCKED = 0;
     const STATUS_ACTIVE = 1;
     const STATUS_WAIT_EMAIL = 2;
-    const STATUS_WAIT_PHONE = 3;
 
     public $newPassword;
     public $newPasswordRepeat;

@@ -115,6 +115,20 @@ class UserTest extends TestCase
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      */
+    public function testVerifyAccount()
+    {
+        $this->initDb();
+        $user = User::findOne(1);
+        $user->blockUser();
+        $this->assertTrue($user->verifyAccount());
+        $this->assertEquals(User::STATUS_ACTIVE, $user->status_id);
+    }
+
+    /**
+     * @group user
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\db\Exception
+     */
     public function testFindIdentity()
     {
         $this->initDb();
@@ -361,6 +375,30 @@ class UserTest extends TestCase
 
     /**
      * @group user
+     */
+    public function testGetRolesArray()
+    {
+        $roles = User::getRolesArray();
+        $this->assertNotEmpty($roles);
+        $this->assertEquals($roles[User::ROLE_ADMIN], \Yii::t('app', 'Администратор'));
+        $role = User::getRolesArray(User::ROLE_ADMIN);
+        $this->assertEquals($role, \Yii::t('app', 'Администратор'));
+    }
+
+    /**
+     * @group user
+     */
+    public function testGetRoleLink()
+    {
+        $links = User::getRoleLink();
+        $this->assertNotEmpty($links);
+        $this->assertEquals($links[User::ROLE_ADMIN], 'admin');
+        $link = User::getRoleLink(User::ROLE_ADMIN);
+        $this->assertEquals($link, 'admin');
+    }
+
+    /**
+     * @group user
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      */
@@ -385,6 +423,19 @@ class UserTest extends TestCase
         $this->initDb();
         $user = User::findOne(1);
         $this->assertInternalType('string', $user->getCheckToken());
+    }
+
+    /**
+     * @group user
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\db\Exception
+     */
+    public function testUpdateLastEntering()
+    {
+        $this->initDb();
+        $user = User::findOne(1);
+        $this->assertTrue($user->updateLastEntering());
+        $this->assertEquals(time(), $user->last_entering_date);
     }
 
     /**

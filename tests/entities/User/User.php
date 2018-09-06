@@ -7,6 +7,8 @@ class User extends AbstractUser
 {
     use RelationClassTrait;
 
+    const ROLE_ADMIN = 'roleAdmin';
+
     public function afterSignUp()
     {
         return true;
@@ -24,13 +26,13 @@ class User extends AbstractUser
 
     public function getPrimaryRole() : string
     {
-        return 'roleAdmin';
+        return self::ROLE_ADMIN;
     }
 
     public static function getRoleLink(string $role = null)
     {
         $roles = [
-            'roleAdmin' => 'admin'
+            self::ROLE_ADMIN => 'admin'
         ];
         if (!is_null($role)){
             return $roles[$role];
@@ -41,7 +43,7 @@ class User extends AbstractUser
     public static function getRolesArray(string $role = null)
     {
         $roles = [
-            'roleAdmin' => \Yii::t('app', 'Администратор')
+            self::ROLE_ADMIN => \Yii::t('app', 'Администратор')
         ];
         if (!is_null($role)){
             return $roles[$role];

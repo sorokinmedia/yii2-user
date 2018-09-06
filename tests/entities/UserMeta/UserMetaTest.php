@@ -1,9 +1,11 @@
 <?php
 namespace sorokinmedia\user\tests\entities\UserMeta;
 
+use sorokinmedia\user\entities\UserMeta\json\UserMetaPhone;
 use sorokinmedia\user\forms\UserMetaForm;
 use sorokinmedia\user\tests\entities\User\User;
 use sorokinmedia\user\tests\TestCase;
+use yii\helpers\Json;
 
 /**
  * Class UserMetaTest
@@ -196,5 +198,42 @@ class UserMetaTest extends TestCase
         /** @var UserMeta $user_meta */
         $user_meta_telegram = UserMeta::getTelegram(12345678);
         $this->assertEquals(12345678, $user_meta_telegram);
+    }
+
+    /**
+     * @group user-meta
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\db\Exception
+     */
+    public function testSetPhone()
+    {
+        $this->initDb();
+        $user_meta = UserMeta::findOne(['user_id' => 1]);
+        $phone = new UserMetaPhone([
+            'country' => 7,
+            'number' => 9172298129,
+            'is_verified' => false
+        ]);
+        $this->assertTrue($user_meta->setPhone($phone));
+        $this->assertEquals('{"country":7,"number":9172298129,"is_verified":false}', $user_meta->notification_phone);
+    }
+
+    /**
+     * @group user-meta
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\db\Exception
+     */
+    public function testVerifyPhone()
+    {
+        $this->initDb();
+        $user_meta = UserMeta::findOne(['user_id' => 1]);
+        $phone = new UserMetaPhone([
+            'country' => 7,
+            'number' => 9172298129,
+            'is_verified' => false
+        ]);
+        $this->assertTrue($user_meta->setPhone($phone));
+        $this->assertTrue($user_meta->verifyPhone());
+        $this->assertEquals('{"country":7,"number":9172298129,"is_verified":true}', $user_meta->notification_phone);
     }
 }
