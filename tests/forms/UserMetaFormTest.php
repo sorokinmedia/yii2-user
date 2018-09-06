@@ -42,7 +42,7 @@ class UserMetaFormTest extends TestCase
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      */
-    private function initDb()
+    public function initDb()
     {
         @unlink(__DIR__ . '/runtime/sqlite.db');
         $db = new Connection([
