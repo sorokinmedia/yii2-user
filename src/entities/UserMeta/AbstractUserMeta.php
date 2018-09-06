@@ -212,7 +212,11 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
      */
     public function verifyPhone(): bool
     {
-        $phone = new UserMetaPhone(Json::decode($this->notification_phone));
+        if (!is_array($this->notification_phone)){
+            $phone = new UserMetaPhone(Json::decode($this->notification_phone));
+        } else {
+            $phone = new UserMetaPhone($this->notification_phone);
+        }
         $phone->verifyPhone();
         $this->notification_phone = Json::encode($phone);
         return $this->updateModel();
