@@ -32,4 +32,21 @@ class UserMetaPhoneFormTest extends TestCase
         $this->assertEquals($form->number, $phone->number);
         $this->assertEquals($form->is_verified, $phone->is_verified);
     }
+
+    /**
+     * @group forms
+     */
+    public function testValidateFalse()
+    {
+        $form = new UserMetaPhoneForm([
+            'country' => 8,
+            'number' => 12398129381239123,
+            'is_verified' => 12
+        ]);
+        $this->assertFalse($form->validate());
+        $errors = $form->getErrors();
+        $this->assertEquals('Код страны is invalid.', $errors['country'][0]);
+        $this->assertEquals('Номер телефона is invalid.', $errors['number'][0]);
+        $this->assertEquals('Подтвержден must be either "true" or "false".', $errors['is_verified'][0]);
+    }
 }
