@@ -4,6 +4,7 @@ namespace sorokinmedia\user\tests\entities\User;
 use sorokinmedia\user\entities\User\UserInterface;
 use sorokinmedia\user\entities\UserAccessToken\UserAccessTokenInterface;
 use sorokinmedia\user\forms\SignupForm;
+use sorokinmedia\user\forms\SignUpFormEmail;
 use sorokinmedia\user\tests\TestCase;
 use yii\web\IdentityInterface;
 
@@ -454,6 +455,18 @@ class UserTest extends TestCase
      * @group user
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
+     */
+    public function testAfterSignUpEmail()
+    {
+        $this->initDb();
+        $user = new User();
+        $this->assertTrue($user->afterSignUpEmail());
+    }
+
+    /**
+     * @group user
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\db\Exception
      * @throws \yii\web\ServerErrorHttpException
      */
     public function testSignUp()
@@ -470,6 +483,24 @@ class UserTest extends TestCase
 
     /**
      * @group user
+     * @throws \yii\base\Exception
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\db\Exception
+     * @throws \yii\web\ServerErrorHttpException
+     */
+    public function testSignUpEmail()
+    {
+        $this->initDb();
+        $user = new User();
+        $signip_form = new SignUpFormEmail([
+            'email' => 'Ma3oBblu@gmail.com',
+        ], $user);
+        $signip_form->prepareUsernameAndPassword();
+        $this->assertTrue($user->signUpEmail($signip_form));
+    }
+
+    /**
+     * @group user
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      */
@@ -478,6 +509,18 @@ class UserTest extends TestCase
         $this->initDb();
         $user = new User();
         $this->assertTrue($user->sendEmailConfirmation());
+    }
+
+    /**
+     * @group user
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\db\Exception
+     */
+    public function testSendEmailConfirmationWithPassword()
+    {
+        $this->initDb();
+        $user = new User();
+        $this->assertTrue($user->sendEmailConfirmationWithPassword());
     }
 
     /**

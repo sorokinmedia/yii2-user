@@ -2,6 +2,7 @@
 namespace sorokinmedia\user\handlers\User\actions;
 
 use sorokinmedia\user\forms\SignupForm;
+use sorokinmedia\user\forms\SignUpFormEmail;
 use sorokinmedia\user\handlers\User\interfaces\ActionExecutable;
 use sorokinmedia\user\entities\User\UserInterface;
 
@@ -10,7 +11,7 @@ use sorokinmedia\user\entities\User\UserInterface;
  * @package sorokinmedia\user\handlers\User\actions
  *
  * @property UserInterface $user
- * @property SignupForm $signup_form
+ * @property SignupForm|SignUpFormEmail $signup_form
  */
 abstract class AbstractAction implements ActionExecutable
 {
@@ -21,12 +22,16 @@ abstract class AbstractAction implements ActionExecutable
      * AbstractAction constructor.
      * @param UserInterface $user
      * @param SignupForm|null $signup_form
+     * @param SignUpFormEmail|null $signup_form_email
      */
-    public function __construct(UserInterface $user, SignupForm $signup_form = null)
+    public function __construct(UserInterface $user, SignupForm $signup_form = null, SignUpFormEmail $signup_form_email = null)
     {
         $this->user = $user;
         if (!is_null($signup_form)){
             $this->signup_form = $signup_form;
+        }
+        if (!is_null($signup_form_email)){
+            $this->signup_form = $signup_form_email;
         }
         return $this;
     }

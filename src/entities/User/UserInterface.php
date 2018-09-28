@@ -2,6 +2,7 @@
 namespace sorokinmedia\user\entities\User;
 
 use sorokinmedia\user\forms\SignupForm;
+use sorokinmedia\user\forms\SignUpFormEmail;
 use yii\rbac\Role;
 
 /**
@@ -141,6 +142,12 @@ interface UserInterface
      * @return bool
      */
     public function sendEmailConfirmation() : bool;
+
+    /**
+     * отправка письма с ссылкой на подтверждение e-mail'a и сгенерированным паролем
+     * @return bool
+     */
+    public function sendEmailConfirmationWithPassword() : bool;
 
     /******************************************************************************************************************
      * ПОДТВЕРЖДЕНИЕ НОМЕРА ТЕЛЕФОНА
@@ -298,17 +305,33 @@ interface UserInterface
 
     /**
      * регистрация пользователя. данные берутся из формы и создается сущность пользователя
-     * @param SignupForm $signupForm
+     * @param SignupForm $form
      * @return bool
      */
-    public function signUp(SignupForm $signupForm) : bool;
+    public function signUp(SignupForm $form) : bool;
+
+    /**
+     * регистрация пользователя по email
+     * логином будет email с замененнными символами @ и . на _
+     * пароль будет сгенерирован и выслан на email
+     * @param SignUpFormEmail $form
+     * @return bool
+     */
+    public function signUpEmail(SignUpFormEmail $form) : bool;
 
     /**
      * метод вызывается после создания нового пользователя
-     * сюда вписывать доп действия - создание связанных сущностей, отсылку писем, уведомлений и прочее
+     * сюда вписывать доп действия - назначение роли, создание связанных сущностей, отсылку писем, уведомлений и прочее
      * @return mixed
      */
     public function afterSignUp();
+
+    /**
+     * метод, вызываемой после создания сущности пользователя по email. требует реализации в дочернем классе.
+     * сюда вписывать доп действия - назначение роли, создание связанных сущностей, отсылку писем, уведомлений и прочее
+     * @return mixed
+     */
+    public function afterSignUpEmail();
 
     /******************************************************************************************************************
      * СПИСКИ ПОЛЬЗОВАТЕЛЕЙ

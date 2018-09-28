@@ -4,6 +4,7 @@ namespace sorokinmedia\user\entities\User;
 use sorokinmedia\ar_relations\RelationInterface;
 use sorokinmedia\helpers\DateHelper;
 use sorokinmedia\user\entities\UserAccessToken\{AbstractUserAccessToken, UserAccessTokenInterface};
+use sorokinmedia\user\forms\SignUpFormEmail;
 use sorokinmedia\user\handlers\UserAccessToken\UserAccessTokenHandler;
 use sorokinmedia\user\forms\SignupForm;
 use yii\behaviors\TimestampBehavior;
@@ -655,17 +656,62 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     }
 
     /**
+     * регистрация пользователя по email. логином будет email с замененнными символами @ и . на _
+     * пароль будет сгенерирован и выслан на email
+     * @param SignUpFormEmail $form
+     * @return bool
+     * @throws Exception
+     * @throws ServerErrorHttpException
+     */
+    public function signUpEmail(SignUpFormEmail $form) : bool
+    {
+        $transaction = \Yii::$app->db->beginTransaction();
+        try {
+            $this->username = $form->username;
+            $this->email = $form->email;
+            $this->setPassword($form->password);
+            $this->status_id = self::STATUS_WAIT_EMAIL;
+            $this->generateAuthKey();
+            $this->generateEmailConfirmToken();
+            if (!$this->save()) {
+                throw new \Exception('Ошибка при регистрации #1');
+            }
+            $transaction->commit();
+            $this->afterSignUpEmail();
+            $this->sendEmailConfirmationWithPassword();
+        }
+        catch(\Exception $e){
+            $transaction->rollBack();
+            throw new ServerErrorHttpException($e->getMessage());
+        }
+        return true;
+    }
+
+    /**
      * метод, вызываемой после создания сущности пользователя. требует реализации в дочернем классе.
-     * сюда вписывать доп действия - создание связанных сущностей, отсылку писем, уведомлений и прочее
+     * сюда вписывать доп действия - назначение роли, создание связанных сущностей, отсылку писем, уведомлений и прочее
      * @return mixed
      */
     abstract public function afterSignUp();
+
+    /**
+     * метод, вызываемой после создания сущности пользователя по email. требует реализации в дочернем классе.
+     * сюда вписывать доп действия - назначение роли, создание связанных сущностей, отсылку писем, уведомлений и прочее
+     * @return mixed
+     */
+    abstract public function afterSignUpEmail();
 
     /**
      * отправка письма с подтверждением e-mail
      * @return bool
      */
     abstract public function sendEmailConfirmation() : bool;
+
+    /**
+     * отправка письма с подтверждением e-mail и сгенерированным паролем
+     * @return bool
+     */
+    abstract public function sendEmailConfirmationWithPassword() : bool;
 
     /******************************************************************************************************************
      * СПИСКИ ПОЛЬЗОВАТЕЛЕЙ

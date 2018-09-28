@@ -14,7 +14,17 @@ class User extends AbstractUser
         return true;
     }
 
+    public function afterSignUpEmail()
+    {
+        return true;
+    }
+
     public function sendEmailConfirmation() : bool
+    {
+        return true;
+    }
+
+    public function sendEmailConfirmationWithPassword() : bool
     {
         return true;
     }

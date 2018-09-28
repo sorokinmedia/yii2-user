@@ -2,7 +2,14 @@
 namespace sorokinmedia\user\handlers\User;
 
 use sorokinmedia\user\forms\SignupForm;
-use sorokinmedia\user\handlers\User\interfaces\{AddRole, Block, Create, RevokeRole, Unblock, VerifyAccount};
+use sorokinmedia\user\forms\SignUpFormEmail;
+use sorokinmedia\user\handlers\User\interfaces\{AddRole,
+    Block,
+    Create,
+    CreateFromEmail,
+    RevokeRole,
+    Unblock,
+    VerifyAccount};
 use sorokinmedia\user\entities\User\UserInterface;
 use yii\rbac\Role;
 
@@ -12,7 +19,7 @@ use yii\rbac\Role;
  *
  * @property UserInterface $user
  */
-class UserHandler implements Create, VerifyAccount, Block, Unblock, AddRole, RevokeRole
+class UserHandler implements Create, CreateFromEmail, VerifyAccount, Block, Unblock, AddRole, RevokeRole
 {
     public $user;
 
@@ -36,6 +43,18 @@ class UserHandler implements Create, VerifyAccount, Block, Unblock, AddRole, Rev
     public function create(SignupForm $signup_form) : bool
     {
         return (new actions\Create($this->user, $signup_form))->execute();
+    }
+
+    /**
+     * регистрация пользователя через форму с email
+     * @param SignUpFormEmail $sign_up_form_email
+     * @return bool
+     * @throws \yii\db\Exception
+     * @throws \yii\web\ServerErrorHttpException
+     */
+    public function createFromEmail(SignUpFormEmail $sign_up_form_email) : bool
+    {
+        return (new actions\CreateFromEmail($this->user, null, $sign_up_form_email))->execute();
     }
 
     /**
