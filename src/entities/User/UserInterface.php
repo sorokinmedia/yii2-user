@@ -145,9 +145,10 @@ interface UserInterface
 
     /**
      * отправка письма с ссылкой на подтверждение e-mail'a и сгенерированным паролем
+     * @param string $password
      * @return bool
      */
-    public function sendEmailConfirmationWithPassword() : bool;
+    public function sendEmailConfirmationWithPassword(string $password) : bool;
 
     /******************************************************************************************************************
      * ПОДТВЕРЖДЕНИЕ НОМЕРА ТЕЛЕФОНА
@@ -322,16 +323,18 @@ interface UserInterface
     /**
      * метод вызывается после создания нового пользователя
      * сюда вписывать доп действия - назначение роли, создание связанных сущностей, отсылку писем, уведомлений и прочее
+     * @param string $role
      * @return mixed
      */
-    public function afterSignUp();
+    public function afterSignUp(string $role);
 
     /**
      * метод, вызываемой после создания сущности пользователя по email. требует реализации в дочернем классе.
      * сюда вписывать доп действия - назначение роли, создание связанных сущностей, отсылку писем, уведомлений и прочее
+     * @param Role $role
      * @return mixed
      */
-    public function afterSignUpEmail();
+    public function afterSignUpEmail(string $role);
 
     /******************************************************************************************************************
      * СПИСКИ ПОЛЬЗОВАТЕЛЕЙ

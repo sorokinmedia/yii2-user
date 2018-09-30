@@ -9,12 +9,12 @@ class User extends AbstractUser
 
     const ROLE_ADMIN = 'roleAdmin';
 
-    public function afterSignUp()
+    public function afterSignUp(string $role)
     {
         return true;
     }
 
-    public function afterSignUpEmail()
+    public function afterSignUpEmail(string $role)
     {
         return true;
     }
@@ -24,7 +24,7 @@ class User extends AbstractUser
         return true;
     }
 
-    public function sendEmailConfirmationWithPassword() : bool
+    public function sendEmailConfirmationWithPassword(string $password) : bool
     {
         return true;
     }

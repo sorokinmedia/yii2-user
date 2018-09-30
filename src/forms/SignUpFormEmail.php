@@ -6,6 +6,7 @@ use sorokinmedia\user\handlers\User\UserHandler;
 use sorokinmedia\user\entities\User\UserInterface;
 use yii\base\Model;
 use yii\db\Exception;
+use yii\rbac\Role;
 
 /**
  * Class SignUpFormEmail
@@ -14,6 +15,7 @@ use yii\db\Exception;
  * @property string $username
  * @property string $email
  * @property string $password
+ * @property Role $role
  * @property UserInterface $_user
  */
 class SignUpFormEmail extends Model
@@ -21,6 +23,7 @@ class SignUpFormEmail extends Model
     public $username;
     public $email;
     public $password;
+    public $role;
 
     private $_user;
 
@@ -50,14 +53,16 @@ class SignUpFormEmail extends Model
     }
 
     /**
-     * SignupForm constructor.
+     * SignUpFormEmail constructor.
      * @param array $config
      * @param UserInterface $user
+     * @param Role $role
      */
-    public function __construct(array $config = [], UserInterface $user)
+    public function __construct(array $config = [], UserInterface $user, string $role)
     {
         parent::__construct($config);
         $this->_user = $user;
+        $this->role = $role;
     }
 
     /**

@@ -448,7 +448,8 @@ class UserTest extends TestCase
     {
         $this->initDb();
         $user = new User();
-        $this->assertTrue($user->afterSignUp());
+        $role = User::ROLE_ADMIN;
+        $this->assertTrue($user->afterSignUp($role));
     }
 
     /**
@@ -460,7 +461,8 @@ class UserTest extends TestCase
     {
         $this->initDb();
         $user = new User();
-        $this->assertTrue($user->afterSignUpEmail());
+        $role = User::ROLE_ADMIN;
+        $this->assertTrue($user->afterSignUpEmail($role));
     }
 
     /**
@@ -477,7 +479,7 @@ class UserTest extends TestCase
             'email' => 'Ma3oBblu@gmail.com',
             'username' => 'Ma3oBblu',
             'password' => 'test_password',
-        ], $user);
+        ], $user, User::ROLE_ADMIN);
         $this->assertTrue($user->signUp($signip_form));
     }
 
@@ -494,7 +496,7 @@ class UserTest extends TestCase
         $user = new User();
         $signip_form = new SignUpFormEmail([
             'email' => 'Ma3oBblu@gmail.com',
-        ], $user);
+        ], $user, User::ROLE_ADMIN);
         $signip_form->prepareUsernameAndPassword();
         $this->assertTrue($user->signUpEmail($signip_form));
     }
@@ -520,7 +522,8 @@ class UserTest extends TestCase
     {
         $this->initDb();
         $user = new User();
-        $this->assertTrue($user->sendEmailConfirmationWithPassword());
+        $password = 'test_password';
+        $this->assertTrue($user->sendEmailConfirmationWithPassword($password));
     }
 
     /**

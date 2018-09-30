@@ -645,7 +645,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
                 throw new \Exception('Ошибка при регистрации #1');
             }
             $transaction->commit();
-            $this->afterSignUp();
+            $this->afterSignUp($form->role);
             $this->sendEmailConfirmation();
         }
         catch(\Exception $e){
@@ -677,8 +677,8 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
                 throw new \Exception('Ошибка при регистрации #1');
             }
             $transaction->commit();
-            $this->afterSignUpEmail();
-            $this->sendEmailConfirmationWithPassword();
+            $this->afterSignUpEmail($form->role);
+            $this->sendEmailConfirmationWithPassword($form->password);
         }
         catch(\Exception $e){
             $transaction->rollBack();
@@ -690,16 +690,18 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     /**
      * метод, вызываемой после создания сущности пользователя. требует реализации в дочернем классе.
      * сюда вписывать доп действия - назначение роли, создание связанных сущностей, отсылку писем, уведомлений и прочее
+     * @param string $role
      * @return mixed
      */
-    abstract public function afterSignUp();
+    abstract public function afterSignUp(string $role);
 
     /**
      * метод, вызываемой после создания сущности пользователя по email. требует реализации в дочернем классе.
      * сюда вписывать доп действия - назначение роли, создание связанных сущностей, отсылку писем, уведомлений и прочее
+     * @param Role $role
      * @return mixed
      */
-    abstract public function afterSignUpEmail();
+    abstract public function afterSignUpEmail(string $role);
 
     /**
      * отправка письма с подтверждением e-mail
@@ -709,9 +711,10 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
 
     /**
      * отправка письма с подтверждением e-mail и сгенерированным паролем
+     * @param string $password
      * @return bool
      */
-    abstract public function sendEmailConfirmationWithPassword() : bool;
+    abstract public function sendEmailConfirmationWithPassword(string $password) : bool;
 
     /******************************************************************************************************************
      * СПИСКИ ПОЛЬЗОВАТЕЛЕЙ
