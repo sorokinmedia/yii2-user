@@ -1,11 +1,12 @@
 <?php
 namespace sorokinmedia\user\entities\Company;
 
-use common\components\company\entities\CompanyUser\CompanyUser;
-use sorokinmedia\user\entities\User\AbstractUser;
-use sorokinmedia\ar_relations\RelationInterface;
-use sorokinmedia\user\entities\User\UserInterface;
+use sorokinmedia\user\entities\{
+    CompanyUser\AbstractCompanyUser,User\AbstractUser, User\UserInterface
+};
 use sorokinmedia\user\forms\CompanyUserForm;
+use sorokinmedia\user\handlers\CompanyUser\CompanyUserHandler;
+use sorokinmedia\ar_relations\RelationInterface;
 use yii\db\ActiveRecord;
 use yii\db\Exception;
 
@@ -18,7 +19,7 @@ use yii\db\Exception;
  * @property string $description
  *
  * @property AbstractUser $owner
- * @property CompanyUser[] $users
+ * @property AbstractCompanyUser[] $users
  */
 abstract class AbstractCompany extends ActiveRecord implements CompanyInterface, RelationInterface
 {
@@ -100,7 +101,7 @@ abstract class AbstractCompany extends ActiveRecord implements CompanyInterface,
             'user_id' => $company->owner_id,
             'role' => $role,
         ]);
-        $company_user = new CompanyUser([], $form);
+        $company_user = AbstractCompanyUser::create($form);
         if (!(new CompanyUserHandler($company_user))->create()){
             throw new Exception(\Yii::t('app', 'Ошибка при добавлении сотрудника в компанию'));
         }

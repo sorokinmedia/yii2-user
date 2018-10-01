@@ -1,10 +1,11 @@
 <?php
 namespace sorokinmedia\user\entities\CompanyUser;
 
-use sorokinmedia\user\entities\Company\AbstractCompany;
-use sorokinmedia\user\entities\User\AbstractUser;
-use sorokinmedia\ar_relations\RelationInterface;
+use sorokinmedia\user\entities\{
+    Company\AbstractCompany,User\AbstractUser
+};
 use sorokinmedia\user\forms\CompanyUserForm;
+use sorokinmedia\ar_relations\RelationInterface;
 use yii\db\ActiveRecord;
 use yii\db\Exception;
 use yii\rbac\Role;
@@ -93,6 +94,16 @@ abstract class AbstractCompanyUser extends ActiveRecord implements CompanyUserIn
             $this->form = $form;
         }
         parent::__construct($config);
+    }
+
+    /**
+     * статический конструктор
+     * @param CompanyUserForm|null $form
+     * @return CompanyUserInterface|AbstractCompanyUser
+     */
+    public static function create(CompanyUserForm $form = null) : CompanyUserInterface
+    {
+        return new static([], $form);
     }
 
     /**

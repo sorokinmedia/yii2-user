@@ -1,6 +1,8 @@
 <?php
 namespace sorokinmedia\user\entities\CompanyUser;
 
+use sorokinmedia\user\forms\CompanyUserForm;
+
 /**
  * Interface CompanyUserInterface
  * @package sorokinmedia\user\entities\CompanyUser
@@ -26,6 +28,13 @@ interface CompanyUserInterface
      * @return mixed
      */
     public function getRoleObject();
+
+    /**
+     * статический конструктор
+     * @param CompanyUserForm|null $form
+     * @return CompanyUserInterface
+     */
+    public static function create(CompanyUserForm $form = null) : CompanyUserInterface;
 
     /**
      * трансфер данных из формы в модель
