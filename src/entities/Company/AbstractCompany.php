@@ -20,6 +20,7 @@ use yii\db\Exception;
  *
  * @property AbstractUser $owner
  * @property AbstractCompanyUser[] $users
+ * @property array $userIdsArray
  */
 abstract class AbstractCompany extends ActiveRecord implements CompanyInterface, RelationInterface
 {
@@ -72,6 +73,17 @@ abstract class AbstractCompany extends ActiveRecord implements CompanyInterface,
     public function getUsers()
     {
         return $this->hasMany($this->__companyUserClass, ['company_id' => 'id']);
+    }
+
+    /**
+     * @return array
+     */
+    public function getUserIdsArray() : array
+    {
+        return $this->__companyUserClass::find()
+            ->select(['user_id'])
+            ->where(['company_id' => $this->id])
+            ->column();
     }
 
     /**

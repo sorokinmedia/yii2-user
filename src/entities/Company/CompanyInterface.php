@@ -24,6 +24,12 @@ interface CompanyInterface
     public function getUsers();
 
     /**
+     * получить список ID сотрудников компании
+     * @return array
+     */
+    public function getUserIdsArray() : array;
+
+    /**
      * статический конструктор
      * @param UserInterface $owner
      * @param string $role
