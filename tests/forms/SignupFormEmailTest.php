@@ -27,7 +27,7 @@ class SignupFormEmailTest extends TestCase
         $user = User::findOne(1);
         $form = new SignUpFormEmail([
             'email' => 'test@yandex.ru',
-        ], $user);
+        ], $user,  User::ROLE_WORKER);
         $this->assertInstanceOf(SignUpFormEmail::class, $form);
         $this->assertEquals($form->email, 'test@yandex.ru');
         $this->assertInstanceOf(UserInterface::class, $form->getUser());
@@ -47,7 +47,7 @@ class SignupFormEmailTest extends TestCase
         $user = new User();
         $form = new SignUpFormEmail([
             'email' => 'test@yandex.ru',
-        ], $user);
+        ], $user, User::ROLE_WORKER);
         $this->assertFalse($form->signUp());
         $this->assertNotNull($form->errors);
         $this->assertEquals($form->errors['email'][0], 'Этот E-mail уже зарегистрирован в системе. Попробуйте использовать другой или восстановить пароль, указав текущий.');
@@ -67,7 +67,7 @@ class SignupFormEmailTest extends TestCase
         $user = new User();
         $form = new SignUpFormEmail([
             'email' => 'vasya@yandex.ru',
-        ], $user);
+        ], $user, User::ROLE_WORKER);
         $this->assertTrue($form->signUp());
     }
 }

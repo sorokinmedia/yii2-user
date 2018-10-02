@@ -27,8 +27,8 @@ class SignupFormTest extends TestCase
         $form = new SignupForm([
             'username' => 'test',
             'email' => 'test@yandex.ru',
-            'password' => 'test_password'
-        ], $user);
+            'password' => 'test_password',
+        ], $user,  User::ROLE_ADMIN);
         $this->assertInstanceOf(SignupForm::class, $form);
         $this->assertEquals($form->username, 'test');
         $this->assertEquals($form->email, 'test@yandex.ru');
@@ -50,7 +50,7 @@ class SignupFormTest extends TestCase
             'username' => 'IvanSidorov',
             'email' => 'test@yandex.ru',
             'password' => 'test_password'
-        ], $user);
+        ], $user,  User::ROLE_ADMIN);
         $this->assertFalse($form->signUp());
         $this->assertNotNull($form->errors);
         $this->assertEquals($form->errors['email'][0], 'Этот E-mail уже зарегистрирован в системе. Попробуйте использовать другой или восстановить пароль, указав текущий.');
@@ -74,7 +74,7 @@ class SignupFormTest extends TestCase
             'username' => 'VasyaPupkin',
             'email' => 'vasya@yandex.ru',
             'password' => 'test_password'
-        ], $user);
+        ], $user,  User::ROLE_ADMIN);
         $this->assertTrue($form->signUp());
     }
 }
