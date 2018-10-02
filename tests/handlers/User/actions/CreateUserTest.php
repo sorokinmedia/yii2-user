@@ -28,7 +28,7 @@ class CreateUserTest extends TestCase
             'email' => 'Ma3oBblu@gmail.com',
             'username' => 'Ma3oBblu',
             'password' => 'test_password',
-        ], $user);
+        ], $user, User::ROLE_ADMIN);
         $handler = new UserHandler($user);
         $this->assertTrue($handler->create($signip_form));
     }
