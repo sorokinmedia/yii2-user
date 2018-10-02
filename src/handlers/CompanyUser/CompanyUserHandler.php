@@ -12,7 +12,7 @@ use sorokinmedia\user\entities\CompanyUser\AbstractCompanyUser;
  */
 class CompanyUserHandler implements Create, Update, Delete
 {
-    private $company_user;
+    public $company_user;
 
     /**
      * CompanyUserHandler constructor.
