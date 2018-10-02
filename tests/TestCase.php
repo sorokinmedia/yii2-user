@@ -1,6 +1,7 @@
 <?php
 namespace sorokinmedia\user\tests;
 
+use sorokinmedia\user\tests\entities\User\User;
 use yii\console\Application;
 use yii\db\Connection;
 use yii\db\Schema;
@@ -81,8 +82,8 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             'last_entering_date' => Schema::TYPE_INTEGER . '(11)',
             'email_confirm_token' => Schema::TYPE_STRING . '(255)'
         ])->execute();
-        if ($db->getTableSchema('user_meta')){
-            $db->createCommand()->dropTable('user_meta')->execute();
+        if ($db->getTableSchema('company')){
+            $db->createCommand()->dropTable('company')->execute();
         }
         $db->createCommand()->createTable('user_meta', [
             'user_id' => Schema::TYPE_INTEGER,
@@ -122,6 +123,25 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             'is_used' => Schema::TYPE_INTEGER . '(2)',
             'is_validated' => Schema::TYPE_INTEGER . '(1)',
             'is_deleted' => Schema::TYPE_INTEGER . '(1)',
+        ])->execute();
+        if ($db->getTableSchema('company')){
+            $db->createCommand()->dropTable('company')->execute();
+        }
+        $db->createCommand()->createTable('company', [
+            'id' => Schema::TYPE_INTEGER,
+            'owner_id' => Schema::TYPE_INTEGER,
+            'name' => Schema::TYPE_STRING . '(500)',
+            'description' => Schema::TYPE_TEXT,
+            'PRIMARY KEY(id)',
+        ])->execute();
+        if ($db->getTableSchema('company_user')){
+            $db->createCommand()->dropTable('company_user')->execute();
+        }
+        $db->createCommand()->createTable('company_user', [
+            'company_id' => Schema::TYPE_INTEGER,
+            'user_id' => Schema::TYPE_INTEGER,
+            'role' => Schema::TYPE_STRING . '(255)',
+            'PRIMARY KEY(company_id, user_id, role)',
         ])->execute();
 
         $this->initDefaultData();
@@ -181,6 +201,17 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             'is_used' => 0,
             'is_validated' => 0,
             'is_deleted' => 0,
+        ])->execute();
+        $db->createCommand()->insert('company', [
+            'id' => 1,
+            'owner_id' => 1,
+            'name' => 'Моя компания',
+            'description' => null
+        ])->execute();
+        $db->createCommand()->insert('company_user', [
+            'company_id' => 1,
+            'user_id' => 1,
+            'role' => User::ROLE_OWNER
         ])->execute();
     }
 

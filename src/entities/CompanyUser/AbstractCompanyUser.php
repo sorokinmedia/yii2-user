@@ -25,6 +25,8 @@ use yii\rbac\Role;
  */
 abstract class AbstractCompanyUser extends ActiveRecord implements CompanyUserInterface, RelationInterface
 {
+    public $form;
+
     /**
      * {@inheritdoc}
      */

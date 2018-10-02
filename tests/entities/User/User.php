@@ -8,6 +8,8 @@ class User extends AbstractUser
     use RelationClassTrait;
 
     const ROLE_ADMIN = 'roleAdmin';
+    const ROLE_OWNER = 'roleOwner';
+    const ROLE_WORKER = 'roleWorker';
 
     public function afterSignUp(string $role)
     {
