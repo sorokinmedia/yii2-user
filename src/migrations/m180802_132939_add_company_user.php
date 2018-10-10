@@ -15,7 +15,8 @@ class m180802_132939_add_company_user extends Migration
         $this->createTable('company_user', [
             'company_id' => $this->integer(),
             'user_id' => $this->integer(),
-            'role' => $this->string(255)
+            'role' => $this->string(255),
+            'permissions' => $this->json()
         ]);
         $this->addPrimaryKey('pk-company_user', 'company_user', ['company_id', 'user_id', 'role']);
     }

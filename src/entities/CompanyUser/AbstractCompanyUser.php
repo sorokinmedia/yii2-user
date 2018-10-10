@@ -16,6 +16,7 @@ use yii\rbac\Role;
  * @property int $company_id
  * @property int $user_id
  * @property string $role
+ * @property array $permissions
  *
  * @property AbstractCompany $company
  * @property AbstractUser $user
@@ -58,6 +59,7 @@ abstract class AbstractCompanyUser extends ActiveRecord implements CompanyUserIn
             'company_id' => \Yii::t('app', 'Компания'),
             'user_id' => \Yii::t('app', 'Пользователь'),
             'role' => \Yii::t('app', 'Роль'),
+            'permissions' => \Yii::t('app', 'Разрешения'),
         ];
     }
 
