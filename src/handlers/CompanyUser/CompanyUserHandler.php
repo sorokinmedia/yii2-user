@@ -1,7 +1,8 @@
 <?php
 namespace sorokinmedia\user\handlers\CompanyUser;
 
-use sorokinmedia\user\handlers\CompanyUser\interfaces\{Create, Delete, Update};
+use sorokinmedia\user\entities\CompanyUser\AbstractCompanyUserPermission;
+use sorokinmedia\user\handlers\CompanyUser\interfaces\{AddPermission, Create, Delete, RemovePermission, Update};
 use sorokinmedia\user\entities\CompanyUser\AbstractCompanyUser;
 
 /**
@@ -10,7 +11,7 @@ use sorokinmedia\user\entities\CompanyUser\AbstractCompanyUser;
  *
  * @property AbstractCompanyUser $company_user
  */
-class CompanyUserHandler implements Create, Update, Delete
+class CompanyUserHandler implements Create, Update, Delete, AddPermission, RemovePermission
 {
     public $company_user;
 
@@ -51,5 +52,25 @@ class CompanyUserHandler implements Create, Update, Delete
     public function delete() : bool
     {
         return (new actions\Delete($this->company_user))->execute();
+    }
+
+    /**
+     * @param AbstractCompanyUserPermission $permission
+     * @return bool
+     * @throws \yii\db\Exception
+     */
+    public function addPermission(AbstractCompanyUserPermission $permission) : bool
+    {
+        return (new actions\AddPermission($this->company_user, $permission))->execute();
+    }
+
+    /**
+     * @param AbstractCompanyUserPermission $permission
+     * @return bool
+     * @throws \yii\db\Exception
+     */
+    public function removePermission(AbstractCompanyUserPermission $permission) : bool
+    {
+        return (new actions\RemovePermission($this->company_user, $permission))->execute();
     }
 }

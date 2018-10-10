@@ -165,4 +165,39 @@ abstract class AbstractCompanyUser extends ActiveRecord implements CompanyUserIn
         }
         return true;
     }
+
+    /**
+     * добавление дополнительного разрешения
+     * @param AbstractCompanyUserPermission $permission
+     * @return bool
+     * @throws Exception
+     */
+    public function addPermission(AbstractCompanyUserPermission $permission) : bool
+    {
+        if (!empty($this->permissions)){
+            $this->permissions = array_merge($this->permissions, $permission);
+        } else {
+            $this->permissions = [$permission];
+        }
+        return $this->updateModel();
+    }
+
+    /**
+     * удаление дополнительного разрешения
+     * @param AbstractCompanyUserPermission $permission
+     * @return bool
+     * @throws Exception
+     */
+    public function removePermission(AbstractCompanyUserPermission $permission) : bool
+    {
+        if (empty($this->permissions)){
+            throw new Exception(\Yii::t('app', 'У сотрудника отсутствует данное разрешение'));
+        }
+        $permissions = $this->permissions;
+        $key = array_search($permission->id, array_column($permissions, 'id'));
+        unset($permissions[$key]); // удаление элемента
+        $permissions = array_values($permissions);
+        $this->permissions = $permissions;
+        return $this->updateModel();
+    }
 }
