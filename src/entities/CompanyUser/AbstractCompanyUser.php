@@ -175,10 +175,6 @@ abstract class AbstractCompanyUser extends ActiveRecord implements CompanyUserIn
     public function addPermission(AbstractCompanyUserPermission $permission) : bool
     {
         if (!empty($this->permissions)){
-            $key = array_search($permission->id, array_column($this->permissions, 'id'));
-            if ($key !== false){
-                throw new Exception(\Yii::t('app', 'Это разрешение уже добавлено'));
-            }
             $this->permissions = array_merge($this->permissions, $permission);
         } else {
             $this->permissions = [$permission];
