@@ -191,7 +191,7 @@ abstract class AbstractCompanyUser extends ActiveRecord implements CompanyUserIn
     public function removePermission(AbstractCompanyUserPermission $permission) : bool
     {
         if (empty($this->permissions)){
-            throw new Exception(\Yii::t('app', 'У сотрудника отсутствует данное разрешение'));
+            return true;
         }
         $permissions = $this->permissions;
         $key = array_search($permission->id, array_column($permissions, 'id'));
