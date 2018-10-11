@@ -351,4 +351,10 @@ interface UserInterface
      * @return mixed
      */
     public static function getActiveUsers();
+
+    /**
+     * отображаемое имя
+     * @return string
+     */
+    public function getDisplayName() : string;
 }

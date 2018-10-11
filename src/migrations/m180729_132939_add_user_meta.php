@@ -15,6 +15,7 @@ class m180729_132939_add_user_meta extends Migration
             'notification_phone' => $this->json(),
             'notification_telegram' => $this->integer(),
             'full_name' => $this->json(),
+            'display_name' => $this->string(500),
             'tz' => $this->string(100),
             'location' => $this->string(250),
             'about' => $this->text(),

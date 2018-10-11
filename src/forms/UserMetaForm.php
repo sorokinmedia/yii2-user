@@ -11,6 +11,7 @@ use yii\base\Model;
  *
  * @property string $notification_email
  * @property array $full_name
+ * @property string $display_name
  * @property string $tz
  * @property string $location
  * @property string $about
@@ -20,6 +21,7 @@ class UserMetaForm extends Model
 {
     public $notification_email;
     public $full_name;
+    public $display_name;
     public $tz;
     public $location;
     public $about;
@@ -36,6 +38,7 @@ class UserMetaForm extends Model
             [['tz'], 'string', 'max' => 100],
             [['tz'], 'default', 'value' => 'Europe/Moscow'],
             [['location'], 'string', 'max' => 250],
+            [['display_name'], 'string', 'max' => 500],
             [['notification_email'], 'string', 'max' => 255],
         ];
     }
@@ -48,6 +51,7 @@ class UserMetaForm extends Model
         return [
             'notification_email' => \Yii::t('app', 'E-mail для уведомлений'),
             'full_name' => \Yii::t('app', 'Полное имя'),
+            'display_name' => \Yii::t('app', 'Отображаемое имя'),
             'tz' => \Yii::t('app', 'Часовой пояс'),
             'location' => \Yii::t('app', 'Страна/Город'),
             'about' => \Yii::t('app', 'О себе'),
@@ -66,6 +70,7 @@ class UserMetaForm extends Model
             /** @var AbstractUserMeta $userMeta */
             $this->notification_email = $userMeta->notification_email;
             $this->full_name = $userMeta->full_name;
+            $this->display_name = $userMeta->display_name;
             $this->tz = $userMeta->tz;
             $this->location = $userMeta->location;
             $this->about = $userMeta->about;

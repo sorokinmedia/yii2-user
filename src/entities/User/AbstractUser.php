@@ -31,6 +31,7 @@ use yii\rbac\Role;
  * @property string $email_confirm_token
  *
  * @property string $status
+ * @property string $displayName
  */
 abstract class AbstractUser extends ActiveRecord implements IdentityInterface, UserInterface, RelationInterface
 {
@@ -736,5 +737,15 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     public static function getActiveUsers()
     {
         return static::find()->where(['status_id' => self::STATUS_ACTIVE])->all();
+    }
+
+    /**
+     * //TODO: need test
+     * отображаемое имя
+     * @return string
+     */
+    public function getDisplayName() : string
+    {
+        return $this->userMeta->display_name;
     }
 }

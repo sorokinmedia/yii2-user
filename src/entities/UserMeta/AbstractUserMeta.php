@@ -21,6 +21,7 @@ use yii\db\Exception;
  * @property UserMetaPhone $notification_phone
  * @property int $notification_telegram
  * @property UserMetaFullName $full_name
+ * @property string $display_name
  * @property string $tz
  * @property string $location
  * @property string $about
@@ -55,6 +56,7 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
             [['tz'], 'default', 'value' => 'Europe/Moscow'],
             [['location'], 'string', 'max' => 250],
             [['notification_email'], 'string', 'max' => 255],
+            [['display_name'], 'string', 'max' => 255],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => AbstractUser::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
@@ -70,6 +72,7 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
             'notification_phone' => \Yii::t('app', 'Телефон для уведомлений'),
             'notification_telegram' => \Yii::t('app', 'Telegram для уведомлений'),
             'full_name' => \Yii::t('app', 'Полное имя'),
+            'display_name' => \Yii::t('app', 'Отображаемое имя'),
             'tz' => \Yii::t('app', 'Часовой пояс'),
             'location' => \Yii::t('app', 'Страна/Город'),
             'about' => \Yii::t('app', 'О себе'),
@@ -106,6 +109,7 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
         if (!is_null($this->form)){
             $this->notification_email = $this->form->notification_email;
             $this->full_name = $this->form->full_name;
+            $this->display_name = $this->form->display_name;
             $this->tz = $this->form->tz;
             $this->location = TextHelper::clearText($this->form->location);
             $this->about = TextHelper::clearText($this->form->about);
@@ -131,6 +135,7 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
         $user_meta = new static([
             'user_id' => $user->id,
             'notification_email' => $user->email,
+            'display_name' => $user->username,
         ]);
         (new UserMetaHandler($user_meta))->create();
         $user_meta->refresh();
@@ -215,5 +220,20 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
         $phone->verifyPhone();
         $this->notification_phone = $phone;
         return $this->updateModel();
+    }
+
+    /**
+     * //TODO: need test
+     * дает варианты для выбора отображаемое имени
+     * @return array
+     */
+    public function getDisplayNameVariants() : array
+    {
+        $array[] = $this->user->username;
+        if (!empty($this->full_name) && !is_null($this->full_name)){
+            $array[] = $this->full_name->surname . ' ' . $this->full_name->name;
+            $array[] = $this->full_name->name;
+        }
+        return $array;
     }
 }

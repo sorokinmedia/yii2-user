@@ -53,4 +53,10 @@ interface UserMetaInterface
      * @return bool
      */
     public function verifyPhone() : bool;
+
+    /**
+     * выдает варианты отображаемоего имени
+     * @return array
+     */
+    public function getDisplayNameVariants() : array;
 }
