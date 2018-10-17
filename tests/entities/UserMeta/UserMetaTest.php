@@ -29,6 +29,7 @@ class UserMetaTest extends TestCase
                 'notification_phone',
                 'notification_telegram',
                 'full_name',
+                'display_name',
                 'tz',
                 'location',
                 'about',
@@ -66,7 +67,8 @@ class UserMetaTest extends TestCase
             'full_name' => '{"name": "Руслан", "surname": "Гилязетдинов", "patronymic": "Рашидович"}',
             'tz' => 'Europe/Moscow',
             'location' => 'Europe/Moscow',
-            'about' => 'form_location'
+            'about' => 'form_location',
+            'display_name' => 'Ma3oBblu'
         ]);
         $user_meta->form = $form;
         $this->assertInstanceOf(UserMetaForm::class, $user_meta->form);

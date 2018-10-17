@@ -53,7 +53,8 @@ class CompanyTest extends TestCase
     public function testCreate()
     {
         $this->initDb();
-        $user = User::findOne(1);
+        $this->initDbAdditional();
+        $user = User::findOne(2);
         /** @var Company $new_company */
         $new_company = Company::create($user, User::ROLE_OWNER);
         $this->assertInstanceOf(Company::class, $new_company);

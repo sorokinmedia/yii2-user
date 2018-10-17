@@ -91,6 +91,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             'notification_phone' => Schema::TYPE_JSON,
             'notification_telegram' => Schema::TYPE_INTEGER,
             'full_name' => Schema::TYPE_JSON,
+            'display_name' => Schema::TYPE_STRING . '(500)',
             'tz' => Schema::TYPE_STRING . '(100)',
             'location' => Schema::TYPE_STRING . '(200)',
             'about' => Schema::TYPE_TEXT,
