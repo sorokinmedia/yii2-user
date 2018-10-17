@@ -101,16 +101,6 @@ abstract class AbstractCompanyUser extends ActiveRecord implements CompanyUserIn
     }
 
     /**
-     * статический конструктор
-     * @param CompanyUserForm|null $form
-     * @return CompanyUserInterface|AbstractCompanyUser
-     */
-    public static function create(CompanyUserForm $form = null) : CompanyUserInterface
-    {
-        return new static([], $form);
-    }
-
-    /**
      * трансфер данных из формы в модель
      */
     public function getFromForm()

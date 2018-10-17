@@ -113,7 +113,7 @@ abstract class AbstractCompany extends ActiveRecord implements CompanyInterface,
             'user_id' => $company->owner_id,
             'role' => $role,
         ]);
-        $company_user = $company->__companyUserClass::create($form);
+        $company_user = new $company->__companyUserClass([], $form);
         if (!(new CompanyUserHandler($company_user))->create()){
             throw new Exception(\Yii::t('app', 'Ошибка при добавлении сотрудника в компанию'));
         }

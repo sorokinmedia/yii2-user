@@ -30,13 +30,6 @@ interface CompanyUserInterface
     public function getRoleObject();
 
     /**
-     * статический конструктор
-     * @param CompanyUserForm|null $form
-     * @return CompanyUserInterface
-     */
-    public static function create(CompanyUserForm $form = null) : CompanyUserInterface;
-
-    /**
      * трансфер данных из формы в модель
      * @return mixed
      */
