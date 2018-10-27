@@ -32,7 +32,7 @@ class LoginForm extends Model
     {
         return [
             [['email', 'password'], 'required'],
-            [['email'], 'email'],
+            [['email'], 'string'],
             ['remember', 'boolean'],
             ['password', 'validatePassword'],
         ];
