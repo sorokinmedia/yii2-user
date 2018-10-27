@@ -67,11 +67,13 @@ class SignupForm extends Model
      * @param UserInterface $user
      * @param string $role
      */
-    public function __construct(array $config = [], UserInterface $user, string $role)
+    public function __construct(array $config = [], UserInterface $user, string $role = null)
     {
         parent::__construct($config);
         $this->_user = $user;
-        $this->role = $role;
+        if (!is_null($role)){
+            $this->role = $role;
+        }
     }
 
     /**

@@ -694,7 +694,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * @param string $role
      * @return mixed
      */
-    abstract public function afterSignUp(string $role);
+    abstract public function afterSignUp(string $role = null);
 
     /**
      * метод, вызываемой после создания сущности пользователя по email. требует реализации в дочернем классе.
@@ -702,7 +702,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * @param Role $role
      * @return mixed
      */
-    abstract public function afterSignUpEmail(string $role);
+    abstract public function afterSignUpEmail(string $role = null);
 
     /**
      * отправка письма с подтверждением e-mail
