@@ -326,15 +326,15 @@ interface UserInterface
      * @param string $role
      * @return mixed
      */
-    public function afterSignUp(string $role);
+    public function afterSignUp(string $role = null);
 
     /**
      * метод, вызываемой после создания сущности пользователя по email. требует реализации в дочернем классе.
      * сюда вписывать доп действия - назначение роли, создание связанных сущностей, отсылку писем, уведомлений и прочее
-     * @param Role $role
+     * @param string $role
      * @return mixed
      */
-    public function afterSignUpEmail(string $role);
+    public function afterSignUpEmail(string $role = null);
 
     /******************************************************************************************************************
      * СПИСКИ ПОЛЬЗОВАТЕЛЕЙ

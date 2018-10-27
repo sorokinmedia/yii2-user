@@ -699,7 +699,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     /**
      * метод, вызываемой после создания сущности пользователя по email. требует реализации в дочернем классе.
      * сюда вписывать доп действия - назначение роли, создание связанных сущностей, отсылку писем, уведомлений и прочее
-     * @param Role $role
+     * @param string $role
      * @return mixed
      */
     abstract public function afterSignUpEmail(string $role = null);
