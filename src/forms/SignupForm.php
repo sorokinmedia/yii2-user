@@ -1,12 +1,12 @@
 <?php
 namespace sorokinmedia\user\forms;
 
-use sorokinmedia\user\entities\User\AbstractUser;
+use sorokinmedia\user\entities\User\{
+    AbstractUser,UserInterface
+};
 use sorokinmedia\user\handlers\User\UserHandler;
-use sorokinmedia\user\entities\User\UserInterface;
 use yii\base\Model;
 use yii\db\Exception;
-use yii\rbac\Role;
 
 /**
  * Class SignupForm
@@ -15,7 +15,7 @@ use yii\rbac\Role;
  * @property string $username
  * @property string $email
  * @property string $password
- * @property Role $role
+ * @property string $role
  * @property UserInterface $_user
  */
 class SignupForm extends Model
