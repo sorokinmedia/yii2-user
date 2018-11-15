@@ -1,8 +1,10 @@
 <?php
 namespace sorokinmedia\user\handlers\UserMeta;
 
-use sorokinmedia\user\entities\UserMeta\json\UserMetaPhone;
-use sorokinmedia\user\handlers\UserMeta\interfaces\{Create, SetPhone, Update, VerifyPhone};
+use sorokinmedia\user\entities\UserMeta\json\{
+    UserMetaFullName,UserMetaPhone
+};
+use sorokinmedia\user\handlers\UserMeta\interfaces\{Create, SetFullName, SetPhone, Update, VerifyPhone};
 use sorokinmedia\user\entities\UserMeta\UserMetaInterface;
 
 /**
@@ -11,7 +13,7 @@ use sorokinmedia\user\entities\UserMeta\UserMetaInterface;
  *
  * @property UserMetaInterface $user_meta
  */
-class UserMetaHandler implements Create, Update, SetPhone, VerifyPhone
+class UserMetaHandler implements Create, Update, SetPhone, VerifyPhone, SetFullName
 {
     public $user_meta;
 
@@ -66,5 +68,16 @@ class UserMetaHandler implements Create, Update, SetPhone, VerifyPhone
     public function verifyPhone() : bool
     {
         return (new actions\VerifyPhone($this->user_meta))->execute();
+    }
+
+    /**
+     * @param UserMetaFullName $userMetaFullName
+     * @return bool
+     * @throws \Throwable
+     * @throws \yii\db\Exception
+     */
+    public function setFullName(UserMetaFullName $userMetaFullName) : bool
+    {
+        return (new actions\SetFullName($this->user_meta, $userMetaFullName))->execute();
     }
 }

@@ -2,6 +2,7 @@
 namespace sorokinmedia\user\entities\UserMeta;
 
 use sorokinmedia\user\entities\User\UserInterface;
+use sorokinmedia\user\entities\UserMeta\json\UserMetaFullName;
 use sorokinmedia\user\entities\UserMeta\json\UserMetaPhone;
 
 /**
@@ -55,8 +56,21 @@ interface UserMetaInterface
     public function verifyPhone() : bool;
 
     /**
-     * выдает варианты отображаемоего имени
+     * установить полное имя
+     * @param UserMetaFullName $userMetaFullName
+     * @return bool
+     */
+    public function setFullName(UserMetaFullName $userMetaFullName) : bool;
+
+    /**
+     * отдает варианты отображаемоего имени
      * @return array
      */
     public function getDisplayNameVariants() : array;
+
+    /**
+     * отдает варианты для выбора отображаемого имени, ассоциативный массив
+     * @return array
+     */
+    public function getDisplayNameVariantsArray() : array;
 }

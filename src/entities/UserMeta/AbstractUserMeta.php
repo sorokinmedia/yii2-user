@@ -223,8 +223,19 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
     }
 
     /**
+     * @param UserMetaFullName $userMetaFullName
+     * @return bool
+     * @throws Exception
+     */
+    public function setFullName(UserMetaFullName $userMetaFullName) : bool
+    {
+        $this->full_name = $userMetaFullName;
+        return $this->updateModel();
+    }
+
+    /**
      * //TODO: need test
-     * дает варианты для выбора отображаемое имени
+     * дает варианты для выбора отображаемого имени
      * @return array
      */
     public function getDisplayNameVariants() : array
@@ -236,5 +247,19 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
             $array[] = $full_name->name;
         }
         return $array;
+    }
+
+    /**
+     * дает варианты для выбора отображаемого имени, ассоциативный массив
+     * @return array
+     */
+    public function getDisplayNameVariantsArray() : array
+    {
+        $array = $this->getDisplayNameVariants();
+        $assoc_array = [];
+        foreach ($array as $value){
+            $assoc_array[$value] = $value;
+        }
+        return $assoc_array;
     }
 }
