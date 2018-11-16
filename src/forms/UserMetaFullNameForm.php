@@ -52,7 +52,7 @@ class UserMetaFullNameForm extends Model
         return [
             'surname' => \Yii::t('app', 'Фамилия'),
             'name' => \Yii::t('app', 'Имя'),
-            'patronymic' => \Yii::t('app', 'Фамилия'),
+            'patronymic' => \Yii::t('app', 'Отчетсво'),
         ];
     }
 }
