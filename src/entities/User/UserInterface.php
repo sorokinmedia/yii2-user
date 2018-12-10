@@ -374,4 +374,16 @@ interface UserInterface
      * @return bool
      */
     public function setTelegramId(int $id) : bool;
+
+    /**
+     * включить телеграм в уведомлениях
+     * @return bool
+     */
+    public function telegramOn() : bool;
+
+    /**
+     * включить телеграм в уведомлениях
+     * @return bool
+     */
+    public function telegramOff() : bool;
 }
