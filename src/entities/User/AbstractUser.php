@@ -748,4 +748,25 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     {
         return $this->userMeta->display_name;
     }
+
+    /**
+     * //TODO: need test
+     * получение ID телеграма пользователя
+     * @return int|null
+     */
+    public function getTelegramId()
+    {
+        return $this->userMeta->notification_telegram;
+    }
+
+    /**
+     * //TODO: need test
+     * установка ID телеграма пользователю
+     * @param int $id
+     * @return bool
+     */
+    public function setTelegramId(int $id) : bool
+    {
+        return $this->userMeta->setTelegram($id);
+    }
 }

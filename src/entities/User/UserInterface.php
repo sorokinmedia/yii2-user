@@ -357,4 +357,21 @@ interface UserInterface
      * @return string
      */
     public function getDisplayName() : string;
+
+    /******************************************************************************************************************
+     * РАБОТА С УВЕДОМЛЕНИЯМИ
+     *****************************************************************************************************************/
+
+    /**
+     * получение ID телеграма пользователя
+     * @return int|null
+     */
+    public function getTelegramId();
+
+    /**
+     * установка ID телеграма пользователю
+     * @param int $id
+     * @return bool
+     */
+    public function setTelegramId(int $id) : bool;
 }
