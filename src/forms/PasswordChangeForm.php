@@ -27,7 +27,9 @@ class PasswordChangeForm extends Model
     {
         return [
             [['password', 'password_repeat'], 'required'],
-            [['password', 'password_repeat'], 'string', 'min' => 6],
+            [['password'], 'string', 'min' => 6],
+            [['password_repeat'], 'string'],
+            [['password_repeat'], 'compare', 'compareAttribute' => 'password', 'message' => \Yii::t('app', 'Пароли не совпадают')]
         ];
     }
 
