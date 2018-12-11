@@ -364,10 +364,9 @@ interface UserInterface
 
     /**
      * получение ID телеграма пользователя
-     * @param int|null $chat_id
      * @return int|null
      */
-    public function getTelegramId(int $chat_id = null);
+    public function getTelegramId();
 
     /**
      * установка ID телеграма пользователю
