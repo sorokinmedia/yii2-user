@@ -364,16 +364,18 @@ interface UserInterface
 
     /**
      * получение ID телеграма пользователя
+     * @param int|null $chat_id
      * @return int|null
      */
-    public function getTelegramId();
+    public function getTelegramId(int $chat_id = null);
 
     /**
      * установка ID телеграма пользователю
      * @param int $id
-     * @return bool
+     * @param string $auth_key
+     * @return UserInterface|null
      */
-    public function setTelegramId(int $id) : bool;
+    public static function setTelegramId(int $id, string $auth_key);
 
     /**
      * включить телеграм в уведомлениях

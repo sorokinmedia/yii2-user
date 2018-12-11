@@ -750,31 +750,34 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     }
 
     /**
-     * //TODO: need test
+     * //todo: need test
      * получение ID телеграма пользователя
      * @return int|null
      */
-    public function getTelegramId()
+    public function getTelegramId(int $chat_id = null)
     {
+        if (!is_null($chat_id)){
+            $user_meta = $this->__userMetaClass::findOne(['notification_telegram' => $chat_id]);
+            if (!is_null($user_meta)){
+                return $user_meta->notification_telegram;
+            }
+        }
         return $this->userMeta->notification_telegram;
     }
 
     /**
-     * //TODO: need test
+     * //todo: need test
      * установка ID телеграма пользователю
      * @param int $id
-     * @return bool
+     * @param string $auth_key
+     * @return null|AbstractUser
      */
-    public function setTelegramId(int $id) : bool
-    {
-        return $this->userMeta->setTelegram($id);
-    }
-
-    public static function setTelegram(int $id, string $auth_key)
+    public static function setTelegramId(int $id, string $auth_key)
     {
         $user = static::findOne(['auth_key' => $auth_key]);
         if (!is_null($user)){
             $user->userMeta->setTelegram($id);
+            $user->telegramOn();
             return $user;
         }
         return null;
