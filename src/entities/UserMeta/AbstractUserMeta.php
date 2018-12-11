@@ -200,6 +200,20 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
     }
 
     /**
+     * сброс ID телеграма
+     * @return bool
+     * @throws Exception
+     */
+    public function resetTelegram() : bool
+    {
+        $this->notification_telegram = null;
+        if (!$this->save()){
+            throw new Exception(\Yii::t('app','Ошибка при сбросе ID телеграм'));
+        }
+        return true;
+    }
+
+    /**
      * добавить номер телефона в профиль
      * @param UserMetaPhone $userMetaPhone
      * @return bool
