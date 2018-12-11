@@ -188,15 +188,15 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
     /**
      * получает ID телеграм чата по user_id
      * @param integer $chat_id
-     * @return bool|int
+     * @return null|int
      */
-    public static function getTelegram(int $chat_id)
+    public static function checkTelegram(int $chat_id)
     {
         $user_meta = static::findOne(['notification_telegram' => $chat_id]);
         if ($user_meta){
             return $user_meta->notification_telegram;
         }
-        return false;
+        return null;
     }
 
     /**
