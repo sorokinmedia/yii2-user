@@ -4,6 +4,7 @@ namespace sorokinmedia\user\entities\User;
 use sorokinmedia\ar_relations\RelationInterface;
 use sorokinmedia\helpers\DateHelper;
 use sorokinmedia\user\entities\UserAccessToken\{AbstractUserAccessToken, UserAccessTokenInterface};
+use sorokinmedia\user\entities\UserMeta\json\UserMetaPhone;
 use sorokinmedia\user\forms\SignUpFormEmail;
 use sorokinmedia\user\handlers\UserAccessToken\UserAccessTokenHandler;
 use sorokinmedia\user\forms\SignupForm;
@@ -790,4 +791,19 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * @return bool
      */
     abstract public function telegramOff() : bool;
+
+    /**
+     * //todo: need test
+     * собрать номер телефона
+     * @return string
+     */
+    public function getPhone() : string
+    {
+        $string = '';
+        if (!is_null($this->userMeta->notification_phone)){
+            $phone = new UserMetaPhone($this->userMeta->notication_phone);
+            $string = $phone->country . $phone->number;
+        }
+        return $string;
+    }
 }

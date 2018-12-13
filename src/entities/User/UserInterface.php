@@ -387,4 +387,10 @@ interface UserInterface
      * @return bool
      */
     public function telegramOff() : bool;
+
+    /**
+     * собрать номер телефона
+     * @return string
+     */
+    public function getPhone() : string;
 }
