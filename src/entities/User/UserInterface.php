@@ -393,4 +393,10 @@ interface UserInterface
      * @return string
      */
     public function getPhone() : string;
+
+    /**
+     * получить e-mail, на который отправлять уведомления
+     * @return string
+     */
+    public function getNotificationEmail() : string;
 }

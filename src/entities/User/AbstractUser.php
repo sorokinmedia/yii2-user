@@ -800,10 +800,22 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     public function getPhone() : string
     {
         $string = '';
-        if (!is_null($this->userMeta->notification_phone)){
+        if ($this->userMeta->notification_phone !== null){
             $phone = new UserMetaPhone($this->userMeta->notification_phone);
             $string = $phone->country . $phone->number;
         }
         return $string;
+    }
+
+    /**
+     * получить e-mail, на который отправлять уведомления
+     * @return string
+     */
+    public function getNotificationEmail() : string
+    {
+        if ($this->userMeta->notification_email !== null && $this->userMeta->notification_email !== ''){
+            return $this->userMeta->notification_email;
+        }
+        return $this->email;
     }
 }
