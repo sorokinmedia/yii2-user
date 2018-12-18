@@ -1,6 +1,7 @@
 <?php
 namespace sorokinmedia\user\handlers\UserInvite;
 
+use sorokinmedia\user\entities\UserInvite\AbstractUserInvite;
 use sorokinmedia\user\forms\InviteForm;
 use sorokinmedia\user\handlers\UserInvite\interfaces\{Accept, InviteExistingUser, InviteNewUser, Reject};
 
@@ -8,26 +9,24 @@ use sorokinmedia\user\handlers\UserInvite\interfaces\{Accept, InviteExistingUser
  * Class UserInviteHandler
  * @package sorokinmedia\user\handlers\UserInvite
  */
-class UserInviteNewUserHandler implements Accept, Reject, InviteNewUser, InviteExistingUser
+class UserInviteHandler implements Accept, Reject, InviteNewUser, InviteExistingUser
 {
-    protected $company;
-    protected $owner;
-    protected $role;
-
     /**
+     * @param AbstractUserInvite $invite
      * @return bool
      */
-    public function accept() : bool
+    public function accept(AbstractUserInvite $invite) : bool
     {
-        return (new actions\Accept())->execute();
+        return (new actions\Accept($invite))->execute();
     }
 
     /**
+     * @param AbstractUserInvite $invite
      * @return bool
      */
-    public function reject() : bool
+    public function reject(AbstractUserInvite $invite) : bool
     {
-        return (new actions\Accept())->execute();
+        return (new actions\Accept($invite))->execute();
     }
 
     /**

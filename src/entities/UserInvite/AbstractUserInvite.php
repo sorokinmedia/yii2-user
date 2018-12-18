@@ -22,7 +22,6 @@ use yii\db\ActiveRecord;
 abstract class AbstractUserInvite extends ActiveRecord implements RelationInterface, UserInviteInterface
 {
     public const STATUS_NEW = 10;
-    public const STATUS_SENT = 20;
     public const STATUS_APPROVED = 30;
     public const STATUS_REJECTED = 40;
 

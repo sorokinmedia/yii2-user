@@ -35,4 +35,14 @@ interface UserInviteInterface
      */
     public function sendNotificationsToExistingUser(): bool;
 
+    /**
+     * @return bool
+     */
+    public function accept(): bool;
+
+    /**
+     * @return bool
+     */
+    public function reject(): bool;
+
 }

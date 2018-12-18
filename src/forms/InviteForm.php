@@ -6,7 +6,7 @@ use sorokinmedia\user\entities\Company\AbstractCompany;
 use sorokinmedia\user\entities\CompanyUser\AbstractCompanyUser;
 use sorokinmedia\user\entities\User\AbstractUser;
 use sorokinmedia\user\entities\UserInvite\AbstractUserInvite;
-use sorokinmedia\user\handlers\UserInvite\UserInviteNewUserHandler;
+use sorokinmedia\user\handlers\UserInvite\UserInviteHandler;
 use yii\base\Model;
 use yii\rbac\Role;
 
@@ -86,10 +86,10 @@ class InviteForm extends Model
     public function invite(): bool
     {
         if ($this->user) {
-            return (new UserInviteNewUserHandler())->inviteExistingUser($this);
+            return (new UserInviteHandler())->inviteExistingUser($this);
         }
 
-        return (new UserInviteNewUserHandler())->inviteNewUser($this);
+        return (new UserInviteHandler())->inviteNewUser($this);
     }
 
 }
