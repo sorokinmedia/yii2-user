@@ -26,7 +26,7 @@ class UserInviteHandler implements Accept, Reject, InviteNewUser, InviteExisting
      */
     public function reject(AbstractUserInvite $invite) : bool
     {
-        return (new actions\Accept($invite))->execute();
+        return (new actions\Reject($invite))->execute();
     }
 
     /**
