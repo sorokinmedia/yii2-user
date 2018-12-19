@@ -108,7 +108,7 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
     {
         if (!is_null($this->form)){
             $this->notification_email = $this->form->notification_email;
-            if ($this->form->full_name != ''){
+            if ($this->form->full_name !== ''){
                 $this->full_name = $this->form->full_name;
             }
             $this->display_name = $this->form->display_name;
@@ -246,7 +246,10 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
     public function setFullName(UserMetaFullName $userMetaFullName) : bool
     {
         $this->full_name = $userMetaFullName;
-        return $this->updateModel();
+        if (!$this->save()){
+            throw new Exception(\Yii::t('app', 'Ошибка при сохранении полного имени'));
+        }
+        return true;
     }
 
     /**
@@ -257,7 +260,7 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
     public function getDisplayNameVariants() : array
     {
         $array[] = $this->user->username;
-        if (!empty($this->full_name) && !is_null($this->full_name)){
+        if ($this->full_name !== null){
             $full_name = new UserMetaFullName($this->full_name);
             $array[] = $full_name->surname . ' ' . $full_name->name;
             $array[] = $full_name->name;
