@@ -8,6 +8,7 @@ use sorokinmedia\user\entities\UserMeta\json\UserMetaPhone;
 use sorokinmedia\user\forms\SignUpFormEmail;
 use sorokinmedia\user\handlers\UserAccessToken\UserAccessTokenHandler;
 use sorokinmedia\user\forms\SignupForm;
+use sorokinmedia\user\handlers\UserInvite\interfaces\ProcessInvitesInterface;
 use yii\behaviors\TimestampBehavior;
 use yii\db\{
     ActiveRecord,Exception
@@ -34,7 +35,7 @@ use yii\rbac\Role;
  * @property string $status
  * @property string $displayName
  */
-abstract class AbstractUser extends ActiveRecord implements IdentityInterface, UserInterface, RelationInterface
+abstract class AbstractUser extends ActiveRecord implements IdentityInterface, UserInterface, RelationInterface, ProcessInvitesInterface
 {
     const STATUS_BLOCKED = 0;
     const STATUS_ACTIVE = 1;
@@ -646,9 +647,10 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
             if (!$this->save()) {
                 throw new \Exception('Ошибка при регистрации #1');
             }
-            $transaction->commit();
             $this->afterSignUp($form->role);
             $this->sendEmailConfirmation();
+            $this->processInvites();
+            $transaction->commit();
         }
         catch(\Exception $e){
             $transaction->rollBack();
