@@ -8,6 +8,7 @@ use sorokinmedia\user\entities\User\AbstractUser;
 use sorokinmedia\user\entities\UserInvite\AbstractUserInvite;
 use sorokinmedia\user\handlers\UserInvite\UserInviteHandler;
 use yii\base\Model;
+use yii\db\Expression;
 use yii\rbac\Role;
 
 class InviteForm extends Model
@@ -23,6 +24,19 @@ class InviteForm extends Model
     /** @var Role */
     public $role;
 
+    /** @var array */
+    public $meta;
+
+    /** @var UserInviteHandler */
+    public $inviteHandler;
+
+    public function __construct(UserInviteHandler $handler, array $config = [])
+    {
+        $this->inviteHandler = $handler;
+
+        parent::__construct($config);
+    }
+
     /**
      * @return array
      */
@@ -35,7 +49,8 @@ class InviteForm extends Model
             [['user'], 'exist', 'targetClass' => AbstractUser::class, 'targetAttribute' => 'id'],
             [['email', 'user'], 'checkAtLeast'],
             [['email'], 'checkExistingInvite'],
-            [['email'], 'checkExistingLink']
+            [['email'], 'checkExistingLink'],
+            [['meta'], 'safe']
         ];
     }
 
@@ -51,11 +66,14 @@ class InviteForm extends Model
         $query = AbstractUserInvite::find()->where([
             'company_id' => $this->company->id,
             'status' => AbstractUserInvite::STATUS_NEW,
-            'role' => $this->role
-        ])->andWhere(['user_email' => $this->email]);
+            'role' => $this->role,
+            'meta' => new Expression('CAST(:meta as JSON)', [':meta' => json_encode($this->meta)])
+        ]);
 
         if ($this->user) {
-            $query->orWhere(['user_id' => $this->user->id]);
+            $query->andWhere(['or', ['user_email' => $this->email], ['user_id' => $this->user->id]]);
+        }else{
+            $query->andWhere(['user_email' => $this->email]);
         }
 
         if ($query->exists()) {
@@ -72,7 +90,7 @@ class InviteForm extends Model
                 'role' => $this->role,
             ]);
 
-            if ($query->exists()) {
+            if (empty($this->meta) && $query->exists()) {
                 $this->addError($attribute, \Yii::t('app', 'Пользователю уже выданы права'));
             }
         }
@@ -86,10 +104,10 @@ class InviteForm extends Model
     public function invite(): bool
     {
         if ($this->user) {
-            return (new UserInviteHandler())->inviteExistingUser($this);
+            return $this->inviteHandler->inviteExistingUser($this);
         }
 
-        return (new UserInviteHandler())->inviteNewUser($this);
+        return $this->inviteHandler->inviteNewUser($this);
     }
 
 }
