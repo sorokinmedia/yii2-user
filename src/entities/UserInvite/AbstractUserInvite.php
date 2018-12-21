@@ -2,7 +2,6 @@
 
 namespace sorokinmedia\user\entities\UserInvite;
 
-use common\components\behaviors\MetaBehavior;
 use sorokinmedia\ar_relations\RelationInterface;
 use yii\db\ActiveRecord;
 
@@ -42,10 +41,5 @@ abstract class AbstractUserInvite extends ActiveRecord implements RelationInterf
             [['user_email'], 'email'],
             [['status'], 'default', 'value' => self::STATUS_NEW]
         ];
-    }
-
-    public function behaviors()
-    {
-        return [MetaBehavior::class];
     }
 }
