@@ -14,7 +14,7 @@ class Accept extends AbstractAction
     /**
      * @var AbstractUserInvite
      */
-    private $invite;
+    protected $invite;
 
     /**
      * Accept constructor.

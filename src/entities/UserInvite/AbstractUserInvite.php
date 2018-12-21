@@ -16,6 +16,7 @@ use yii\db\ActiveRecord;
  * @property integer $status
  * @property integer $company_id
  * @property string $role
+ * @property array $meta
  *
  * @package sorokinmedia\user\entities\UserInvite
  */
