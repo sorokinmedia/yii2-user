@@ -7,8 +7,9 @@ use sorokinmedia\user\entities\{
 use sorokinmedia\user\forms\CompanyUserForm;
 use sorokinmedia\user\handlers\CompanyUser\CompanyUserHandler;
 use sorokinmedia\ar_relations\RelationInterface;
-use yii\db\ActiveRecord;
-use yii\db\Exception;
+use yii\db\{
+    ActiveQuery,ActiveRecord,Exception
+};
 
 /**
  * This is the model class for table "company".
@@ -39,7 +40,7 @@ abstract class AbstractCompany extends ActiveRecord implements CompanyInterface,
     {
         return [
             [['owner_id'], 'required'],
-            [['owner_id'], 'exist', 'skipOnError' => true, 'targetClass' => AbstractUser::class, 'targetAttribute' => ['owner_id' => 'id']],
+            [['owner_id'], 'exist', 'targetClass' => AbstractUser::class, 'targetAttribute' => ['owner_id' => 'id']],
             [['name'], 'default', 'value' => \Yii::t('app', 'Моя компания')],
             [['name'], 'string', 'max' => 500],
             [['description'], 'string']
@@ -60,17 +61,17 @@ abstract class AbstractCompany extends ActiveRecord implements CompanyInterface,
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getOwner()
+    public function getOwner() : ActiveQuery
     {
         return $this->hasOne($this->__userClass, ['id' => 'owner_id']);
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return array
      */
-    public function getUsers()
+    public function getUsers() : array
     {
         return $this->hasMany($this->__companyUserClass, ['company_id' => 'id']);
     }

@@ -6,8 +6,7 @@ use sorokinmedia\user\entities\{
 };
 use sorokinmedia\user\forms\CompanyUserForm;
 use sorokinmedia\ar_relations\RelationInterface;
-use yii\db\ActiveRecord;
-use yii\db\Exception;
+use yii\db\{ActiveQuery, ActiveRecord, Exception};
 use yii\rbac\Role;
 
 /**
@@ -45,8 +44,8 @@ abstract class AbstractCompanyUser extends ActiveRecord implements CompanyUserIn
             [['company_id', 'user_id', 'role'], 'required'],
             [['company_id', 'user_id'], 'integer'],
             [['role'], 'string', 'max' => 255],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => AbstractUser::class, 'targetAttribute' => ['user_id' => 'id']],
-            [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => AbstractCompany::class, 'targetAttribute' => ['company_id' => 'id']],
+            [['user_id'], 'exist', 'targetClass' => AbstractUser::class, 'targetAttribute' => ['user_id' => 'id']],
+            [['company_id'], 'exist', 'targetClass' => AbstractCompany::class, 'targetAttribute' => ['company_id' => 'id']],
         ];
     }
 
@@ -64,17 +63,17 @@ abstract class AbstractCompanyUser extends ActiveRecord implements CompanyUserIn
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getUser()
+    public function getUser() : ActiveQuery
     {
         return $this->hasOne($this->__userClass, ['id' => 'user_id']);
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getCompany()
+    public function getCompany() : ActiveQuery
     {
         return $this->hasOne($this->__companyClass, ['id' => 'company_id']);
     }
@@ -94,7 +93,7 @@ abstract class AbstractCompanyUser extends ActiveRecord implements CompanyUserIn
      */
     public function __construct(array $config = [], CompanyUserForm $form = null)
     {
-        if (!is_null($form)) {
+        if ($form !== null) {
             $this->form = $form;
         }
         parent::__construct($config);
@@ -105,7 +104,7 @@ abstract class AbstractCompanyUser extends ActiveRecord implements CompanyUserIn
      */
     public function getFromForm()
     {
-        if (!is_null($this->form)) {
+        if ($this->form !== null) {
             $this->company_id = $this->form->company_id;
             $this->user_id = $this->form->user_id;
             $this->role = $this->form->role;
@@ -165,7 +164,7 @@ abstract class AbstractCompanyUser extends ActiveRecord implements CompanyUserIn
     public function addPermission(AbstractCompanyUserPermission $permission) : bool
     {
         if (!empty($this->permissions)){
-            $this->permissions = array_merge($this->permissions, $permission);
+            $this->permissions = array_merge($this->permissions, [$permission]);
         } else {
             $this->permissions = [$permission];
         }
@@ -184,7 +183,7 @@ abstract class AbstractCompanyUser extends ActiveRecord implements CompanyUserIn
             return true;
         }
         $permissions = $this->permissions;
-        $key = array_search($permission->id, array_column($permissions, 'id'));
+        $key = array_search($permission->id, array_column($permissions, 'id'), true);
         unset($permissions[$key]); // удаление элемента
         $permissions = array_values($permissions);
         $this->permissions = $permissions;
