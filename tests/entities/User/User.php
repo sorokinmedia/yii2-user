@@ -11,12 +11,12 @@ class User extends AbstractUser
     const ROLE_OWNER = 'roleOwner';
     const ROLE_WORKER = 'roleWorker';
 
-    public function afterSignUp(string $role)
+    public function afterSignUp(string $role = null)
     {
         return true;
     }
 
-    public function afterSignUpEmail(string $role)
+    public function afterSignUpEmail(string $role = null)
     {
         return true;
     }
@@ -61,5 +61,15 @@ class User extends AbstractUser
             return $roles[$role];
         }
         return $roles;
+    }
+
+    public function telegramOn() : bool
+    {
+        return true;
+    }
+
+    public function telegramOff() : bool
+    {
+        return true;
     }
 }
