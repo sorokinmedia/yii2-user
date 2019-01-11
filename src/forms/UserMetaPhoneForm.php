@@ -1,4 +1,5 @@
 <?php
+
 namespace sorokinmedia\user\forms;
 
 use sorokinmedia\user\entities\UserMeta\json\UserMetaPhone;
@@ -25,7 +26,7 @@ class UserMetaPhoneForm extends Model
      */
     public function __construct(array $config = [], UserMetaPhone $userMetaPhone = null)
     {
-        if (!is_null($userMetaPhone)){
+        if ($userMetaPhone !== null) {
             $this->country = $userMetaPhone->country;
             $this->number = $userMetaPhone->number;
             $this->is_verified = $userMetaPhone->is_verified;
@@ -34,9 +35,9 @@ class UserMetaPhoneForm extends Model
     }
 
     /**
-     * @inheritdoc
+     * @return array
      */
-    public function rules()
+    public function rules() : array
     {
         return [
             [['country', 'number'], 'required'],
@@ -48,9 +49,9 @@ class UserMetaPhoneForm extends Model
     }
 
     /**
-     * @inheritdoc
+     * @return array
      */
-    public function attributeLabels()
+    public function attributeLabels() : array
     {
         return [
             'country' => \Yii::t('app', 'Код страны'),

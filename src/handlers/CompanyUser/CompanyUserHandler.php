@@ -1,9 +1,10 @@
 <?php
 namespace sorokinmedia\user\handlers\CompanyUser;
 
-use sorokinmedia\user\entities\CompanyUser\AbstractCompanyUserPermission;
+use sorokinmedia\user\entities\CompanyUser\{
+    AbstractCompanyUserPermission,AbstractCompanyUser
+};
 use sorokinmedia\user\handlers\CompanyUser\interfaces\{AddPermission, Create, Delete, RemovePermission, Update};
-use sorokinmedia\user\entities\CompanyUser\AbstractCompanyUser;
 
 /**
  * Class CompanyUserHandler

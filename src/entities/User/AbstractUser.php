@@ -1,20 +1,23 @@
 <?php
+
 namespace sorokinmedia\user\entities\User;
 
 use sorokinmedia\ar_relations\RelationInterface;
 use sorokinmedia\helpers\DateHelper;
 use sorokinmedia\user\entities\UserAccessToken\{AbstractUserAccessToken, UserAccessTokenInterface};
 use sorokinmedia\user\entities\UserMeta\json\UserMetaPhone;
-use sorokinmedia\user\forms\SignUpFormEmail;
-use sorokinmedia\user\handlers\UserAccessToken\UserAccessTokenHandler;
-use sorokinmedia\user\forms\SignupForm;
-use sorokinmedia\user\handlers\UserInvite\interfaces\ProcessInvitesInterface;
+use sorokinmedia\user\forms\{
+    SignUpFormEmail, SignupForm
+};
+use sorokinmedia\user\handlers\{
+    UserAccessToken\UserAccessTokenHandler, UserInvite\interfaces\ProcessInvitesInterface
+};
 use yii\behaviors\TimestampBehavior;
 use yii\db\{
-    ActiveRecord,Exception
+    ActiveRecord, Exception
 };
 use yii\web\{
-    IdentityInterface,ServerErrorHttpException
+    IdentityInterface, ServerErrorHttpException
 };
 use yii\rbac\Role;
 
@@ -47,7 +50,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     /**
      * @return string
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return 'user';
     }
@@ -55,7 +58,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     /**
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -68,7 +71,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
         return [
             ['username', 'required'],
             ['username', 'match', 'pattern' => '#^[\w_-]+$#i'],
-            ['username', 'unique', 'on' => 'create','targetClass' => AbstractUser::class, 'message' => \Yii::t('app', 'Такое имя пользователя уже занято')],
+            ['username', 'unique', 'on' => 'create', 'targetClass' => AbstractUser::class, 'message' => \Yii::t('app', 'Такое имя пользователя уже занято')],
             ['username', 'string', 'min' => 2, 'max' => 255],
 
             ['email', 'required'],
@@ -89,7 +92,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     /**
      * @return array
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => \Yii::t('app', 'ID'),
@@ -109,7 +112,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * обработка created_at/updated_at дат
      * @return array
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             [
@@ -124,12 +127,12 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * вернет массив статусов
      * @return array
      */
-    public static function getStatusesArray() : array
+    public static function getStatusesArray(): array
     {
         return [
             self::STATUS_BLOCKED => \Yii::t('app', 'Заблокирован'),
-            self::STATUS_ACTIVE => \Yii::t('app','Активен'),
-            self::STATUS_WAIT_EMAIL => \Yii::t('app','Ожидает подтверждения e-mail'),
+            self::STATUS_ACTIVE => \Yii::t('app', 'Активен'),
+            self::STATUS_WAIT_EMAIL => \Yii::t('app', 'Ожидает подтверждения e-mail'),
         ];
     }
 
@@ -137,7 +140,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * вернет текст статуса
      * @return string
      */
-    public function getStatus() : string
+    public function getStatus(): string
     {
         return (static::getStatusesArray())[$this->status_id];
     }
@@ -163,12 +166,12 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * @return bool
      * @throws \Exception
      */
-    public function blockUser() : bool
+    public function blockUser(): bool
     {
         $this->deactivate();
-        if (!$this->save()){
+        if (!$this->save()) {
             print_r($this->getErrors());
-            throw new Exception(\Yii::t('app','Ошибка при блокировании пользователя'));
+            throw new Exception(\Yii::t('app', 'Ошибка при блокировании пользователя'));
         }
         return true;
     }
@@ -178,11 +181,11 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * @return bool
      * @throws \Exception
      */
-    public function unblockUser() : bool
+    public function unblockUser(): bool
     {
         $this->activate();
-        if (!$this->save()){
-            throw new Exception(\Yii::t('app','Ошибка при разблокировке пользователя'));
+        if (!$this->save()) {
+            throw new Exception(\Yii::t('app', 'Ошибка при разблокировке пользователя'));
         }
         return true;
     }
@@ -192,10 +195,10 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * @return bool
      * @throws Exception
      */
-    public function verifyAccount() : bool
+    public function verifyAccount(): bool
     {
         $this->activate();
-        if (!$this->save()){
+        if (!$this->save()) {
             throw new Exception(\Yii::t('app', 'Ошибка при активации аккаунат'));
         }
         return true;
@@ -217,7 +220,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * требует реализации в дочернем классе
      * @return string
      */
-    abstract function getPrimaryRole() : string;
+    abstract public function getPrimaryRole(): string;
 
     /**********************************
      * реализация интерфейсных методов
@@ -241,12 +244,12 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        if (static::findOne(['auth_key' => $token])){
+        if (static::findOne(['auth_key' => $token])) {
             return static::findOne(['auth_key' => $token]);
         }
         $class = new static();
         $access_token = $class->__userAccessTokenClass::findOne(['access_token' => $token]);
-        if ($access_token instanceof $class->__userAccessTokenClass){
+        if ($access_token instanceof $class->__userAccessTokenClass) {
             return static::findOne($access_token->user_id);
         }
         return null;
@@ -256,7 +259,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * получение API ключа
      * @return string
      */
-    public function getAuthKey()
+    public function getAuthKey(): string
     {
         return $this->auth_key;
     }
@@ -266,7 +269,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * @param string $authKey
      * @return bool
      */
-    public function validateAuthKey($authKey)
+    public function validateAuthKey($authKey): bool
     {
         return $this->auth_key === $authKey;
     }
@@ -300,7 +303,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * @param string $token
      * @return AbstractUser
      */
-    public static function findByPasswordResetToken(int $expired, string $token = null)
+    public static function findByPasswordResetToken(int $expired, string $token = null): AbstractUser
     {
         if (!static::isPasswordResetTokenValid($expired, $token)) {
             throw new \RuntimeException(\Yii::t('app', 'Недействительный токен. Запросите сброс пароля еще раз.'));
@@ -317,13 +320,13 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * @param string $token
      * @return boolean
      */
-    public static function isPasswordResetTokenValid(int $expired, string $token = null) : bool
+    public static function isPasswordResetTokenValid(int $expired, string $token = null): bool
     {
-        if (is_null($token)) {
+        if ($token === null) {
             return false;
         }
         $parts = explode('_', $token);
-        $timestamp = (int) end($parts);
+        $timestamp = (int)end($parts);
         return $timestamp + $expired >= time();
     }
 
@@ -340,7 +343,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * необходима реализация метода в дочернем классе
      * @return bool
      */
-    abstract public function sendPasswordResetMail() : bool;
+    abstract public function sendPasswordResetMail(): bool;
 
     /**
      * поиск пользователя по e-mail
@@ -358,7 +361,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * @param string $role
      * @return array
      */
-    public static function findByRole(string $role) : array
+    public static function findByRole(string $role): array
     {
         return static::find()->where(['id' => \Yii::$app->authManager->getUserIdsByRole($role)])->all();
     }
@@ -406,11 +409,11 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * @param string $password
      * @return bool
      */
-    public function validatePassword(string $password) : bool
+    public function validatePassword(string $password): bool
     {
         return \Yii::$app->security->validatePassword($password, $this->password_hash);
     }
-    
+
     /**
      * Генерация и сохранение хэша пароля
      * @param string $password
@@ -431,7 +434,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     public function saveNewPassword(string $password, bool $reset_token = false): bool
     {
         $this->setPassword($password);
-        if ($reset_token === true){
+        if ($reset_token === true) {
             $this->removePasswordResetToken();
         }
         return $this->save();
@@ -457,7 +460,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * @return bool
      * @throws \Exception
      */
-    public function upgradeToRole(Role $role) : bool
+    public function upgradeToRole(Role $role): bool
     {
         $auth = \Yii::$app->getAuthManager();
         if ($auth->assign($role, $this->id)) {
@@ -472,7 +475,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * @param Role $role
      * @return bool
      */
-    public function downgradeFromRole(Role $role) : bool
+    public function downgradeFromRole(Role $role): bool
     {
         $auth = \Yii::$app->getAuthManager();
         if ($auth->revoke($role, $this->id)) {
@@ -512,11 +515,11 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * @return bool
      * @throws Exception
      */
-    public function deactivateTokens() : bool
+    public function deactivateTokens(): bool
     {
         $tokens = $this->getTokens()->all();
-        if ($tokens){
-            foreach ($tokens as $token){
+        if ($tokens) {
+            foreach ($tokens as $token) {
                 /** @var $token UserAccessTokenInterface */
                 (new UserAccessTokenHandler($token))->deactivate();
             }
@@ -532,12 +535,12 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * @throws \Throwable
      * @deprecated spa
      */
-    public function afterLogin(string $cookie_url) : bool
+    public function afterLogin(string $cookie_url): bool
     {
         $this->deactivateTokens();
         /** @var AbstractUserAccessToken $token */
         $token = $this->__userAccessTokenClass::create($this, true);
-        if($token instanceof $this->__userAccessTokenClass && $token->is_active == true) {
+        if ($token instanceof $this->__userAccessTokenClass && $token->is_active == true) {
             // записываем токен в куки
             if (\Yii::$app->getRequest()->getCookies()->getValue('auth_token')) {
                 \Yii::$app->getResponse()->getCookies()->remove('auth_token');
@@ -556,7 +559,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * @return bool
      * @deprecated spa
      */
-    public function addCheckToken(string $token, string $cookie_url) : bool
+    public function addCheckToken(string $token, string $cookie_url): bool
     {
         if (\Yii::$app->getRequest()->getCookies()->getValue('auth_token')) {
             \Yii::$app->getResponse()->getCookies()->remove('auth_token');
@@ -570,9 +573,9 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * @return bool|string
      * @deprecated spa
      */
-    public function getToken() : string
+    public function getToken(): string
     {
-        if (\Yii::$app->session->get('auth_token')){ // берем из куки
+        if (\Yii::$app->session->get('auth_token')) { // берем из куки
             $token = $this->__userAccessTokenClass::findOne(['access_token' => \Yii::$app->session->get('auth_token')]);
             return $token->access_token;
         }
@@ -584,7 +587,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * @return mixed|string
      * @throws \yii\db\Exception
      */
-    public function getCheckToken() : string
+    public function getCheckToken(): string
     {
         /** @var AbstractUserAccessToken $token */
         $token = $this->__userAccessTokenClass::create($this, false);
@@ -597,7 +600,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * @throws \Exception
      * @throws \Throwable
      */
-    public function afterLogout() : bool
+    public function afterLogout(): bool
     {
         $token = \Yii::$app->getRequest()->getCookies()->getValue('auth_token');
         $websiteToken = $this->__userAccessTokenClass::findOne(['user_id' => $this->id, 'access_token' => $token]);
@@ -617,7 +620,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     public function updateLastEntering(): bool
     {
         $this->last_entering_date = time();
-        if (!$this->save()){
+        if (!$this->save()) {
             throw new Exception(\Yii::t('app', 'Ошибка обновления даты входа'));
         }
         return true;
@@ -634,7 +637,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * @throws Exception
      * @throws ServerErrorHttpException
      */
-    public function signUp(SignupForm $form) : bool
+    public function signUp(SignupForm $form): bool
     {
         $transaction = \Yii::$app->db->beginTransaction();
         try {
@@ -651,8 +654,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
             $this->sendEmailConfirmation();
             $this->processInvites();
             $transaction->commit();
-        }
-        catch(\Exception $e){
+        } catch (\Exception $e) {
             $transaction->rollBack();
             throw new ServerErrorHttpException($e->getMessage());
         }
@@ -667,7 +669,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * @throws Exception
      * @throws ServerErrorHttpException
      */
-    public function signUpEmail(SignUpFormEmail $form) : bool
+    public function signUpEmail(SignUpFormEmail $form): bool
     {
         $transaction = \Yii::$app->db->beginTransaction();
         try {
@@ -683,8 +685,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
             $transaction->commit();
             $this->afterSignUpEmail($form->role);
             $this->sendEmailConfirmationWithPassword($form->password);
-        }
-        catch(\Exception $e){
+        } catch (\Exception $e) {
             $transaction->rollBack();
             throw new ServerErrorHttpException($e->getMessage());
         }
@@ -711,14 +712,14 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * отправка письма с подтверждением e-mail
      * @return bool
      */
-    abstract public function sendEmailConfirmation() : bool;
+    abstract public function sendEmailConfirmation(): bool;
 
     /**
      * отправка письма с подтверждением e-mail и сгенерированным паролем
      * @param string $password
      * @return bool
      */
-    abstract public function sendEmailConfirmationWithPassword(string $password) : bool;
+    abstract public function sendEmailConfirmationWithPassword(string $password): bool;
 
     /******************************************************************************************************************
      * СПИСКИ ПОЛЬЗОВАТЕЛЕЙ
@@ -728,9 +729,9 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * список пользователей в виде id=>username
      * @return array
      */
-    public static function getUsersArray() : array
+    public static function getUsersArray(): array
     {
-        return static::find()->select(['username', 'id'])->where(['status_id' => self::STATUS_ACTIVE])->indexBy('id')->orderBy(['id' =>SORT_ASC])->column();
+        return static::find()->select(['username', 'id'])->where(['status_id' => self::STATUS_ACTIVE])->indexBy('id')->orderBy(['id' => SORT_ASC])->column();
     }
 
     /**
@@ -747,7 +748,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * отображаемое имя
      * @return string
      */
-    public function getDisplayName() : string
+    public function getDisplayName(): string
     {
         return $this->userMeta->display_name;
     }
@@ -772,7 +773,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     public static function setTelegramId(int $id, string $auth_key)
     {
         $user = static::findOne(['auth_key' => $auth_key]);
-        if (!is_null($user)){
+        if ($user !== null) {
             $user->userMeta->setTelegram($id);
             $user->telegramOn();
             return $user;
@@ -785,24 +786,24 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * включение телеграма в уведомлениях
      * @return bool
      */
-    abstract public function telegramOn() : bool;
+    abstract public function telegramOn(): bool;
 
     /**
      * //todo: need test
      * выключение телеграма в уведомлениях
      * @return bool
      */
-    abstract public function telegramOff() : bool;
+    abstract public function telegramOff(): bool;
 
     /**
      * //todo: need test
      * собрать номер телефона
      * @return string
      */
-    public function getPhone() : string
+    public function getPhone(): string
     {
         $string = '';
-        if ($this->userMeta->notification_phone !== null){
+        if ($this->userMeta->notification_phone !== null) {
             $phone = new UserMetaPhone($this->userMeta->notification_phone);
             $string = $phone->country . $phone->number;
         }
@@ -813,9 +814,9 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * получить e-mail, на который отправлять уведомления
      * @return string
      */
-    public function getNotificationEmail() : string
+    public function getNotificationEmail(): string
     {
-        if ($this->userMeta->notification_email !== null && $this->userMeta->notification_email !== ''){
+        if ($this->userMeta->notification_email !== null && $this->userMeta->notification_email !== '') {
             return $this->userMeta->notification_email;
         }
         return $this->email;

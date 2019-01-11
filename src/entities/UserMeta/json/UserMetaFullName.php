@@ -27,9 +27,9 @@ class UserMetaFullName extends Model
     }
 
     /**
-     * @inheritdoc
+     * @return array
      */
-    public function rules()
+    public function rules() : array
     {
         return [
             [['surname', 'name', 'patronymic'], 'string'],
@@ -37,9 +37,9 @@ class UserMetaFullName extends Model
     }
 
     /**
-     * @inheritdoc
+     * @return array
      */
-    public function attributeLabels()
+    public function attributeLabels() : array
     {
         return [
             'surname' => \Yii::t('app', 'Фамилия'),

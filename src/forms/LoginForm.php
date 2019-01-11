@@ -1,11 +1,14 @@
 <?php
+
 namespace sorokinmedia\user\forms;
 
 use sorokinmedia\helpers\DateHelper;
-use sorokinmedia\user\entities\User\AbstractUser;
-use sorokinmedia\user\entities\User\UserInterface;
-use yii\base\InvalidArgumentException;
-use yii\base\Model;
+use sorokinmedia\user\entities\{
+    User\AbstractUser,User\UserInterface
+};
+use yii\base\{
+    InvalidArgumentException,Model
+};
 
 /**
  * Class LoginForm
@@ -28,7 +31,7 @@ class LoginForm extends Model
     /**
      * @return array
      */
-    public function rules()
+    public function rules() : array
     {
         return [
             [['email', 'password'], 'required'],
@@ -41,12 +44,12 @@ class LoginForm extends Model
     /**
      * @return array
      */
-    public function attributeLabels()
+    public function attributeLabels() : array
     {
         return [
             'email' => \Yii::t('app', 'Email'),
-            'password' => \Yii::t('app','Пароль'),
-            'remember' => \Yii::t('app','Запомнить меня'),
+            'password' => \Yii::t('app', 'Пароль'),
+            'remember' => \Yii::t('app', 'Запомнить меня'),
         ];
     }
 
@@ -72,7 +75,7 @@ class LoginForm extends Model
      * геттер
      * @return UserInterface
      */
-    public function getUser() : UserInterface
+    public function getUser(): UserInterface
     {
         return $this->_user;
     }
@@ -110,13 +113,14 @@ class LoginForm extends Model
      * валидация статусов для API
      * @return bool
      */
-    public function validateStatusApi() : bool
+    public function validateStatusApi(): bool
     {
         /** @var AbstractUser $user */
         $user = $this->getUser();
-        if ($user && $user->status_id == AbstractUser::STATUS_BLOCKED) {
+        if ($user && $user->status_id === AbstractUser::STATUS_BLOCKED) {
             throw new InvalidArgumentException(\Yii::t('app', 'Ваш аккаунт заблокирован. Обратитесь к тех.поддержке.'));
-        } elseif ($user && $user->status_id == AbstractUser::STATUS_WAIT_EMAIL) {
+        }
+        if ($user && $user->status_id === AbstractUser::STATUS_WAIT_EMAIL) {
             throw new InvalidArgumentException(\Yii::t('app', 'Ваш аккаунт не подтвержден. Необходимо подтвердить e-mail.'));
         }
         return true;
@@ -126,11 +130,11 @@ class LoginForm extends Model
      * логин пользователя
      * @return bool
      */
-    public function login() : bool
+    public function login(): bool
     {
         if ($this->validate()) {
             $this->validateStatus();
-            if (!$this->hasErrors()){
+            if (!$this->hasErrors()) {
                 return \Yii::$app->user->login($this->_user, $this->remember ? DateHelper::TIME_DAY_THIRTY : 0);
             }
         }

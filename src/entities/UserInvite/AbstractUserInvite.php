@@ -30,12 +30,15 @@ abstract class AbstractUserInvite extends ActiveRecord implements RelationInterf
     /**
      * @return string
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return 'user_invite';
     }
 
-    public function rules()
+    /**
+     * @return array
+     */
+    public function rules(): array
     {
         return [
             [['user_email'], 'email'],

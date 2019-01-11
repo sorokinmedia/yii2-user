@@ -1,8 +1,9 @@
 <?php
+
 namespace sorokinmedia\user\forms;
 
 use sorokinmedia\user\entities\User\{
-    AbstractUser,UserInterface
+    AbstractUser, UserInterface
 };
 use sorokinmedia\user\handlers\User\UserHandler;
 use yii\base\Model;
@@ -30,7 +31,7 @@ class SignUpFormEmail extends Model
     /**
      * @return array
      */
-    public function attributeLabels()
+    public function attributeLabels() : array
     {
         return [
             'username' => \Yii::t('app', 'Имя пользователя'),
@@ -42,7 +43,7 @@ class SignUpFormEmail extends Model
     /**
      * @return array
      */
-    public function rules()
+    public function rules() : array
     {
         return [
             ['email', 'filter', 'filter' => 'trim'],
@@ -68,7 +69,7 @@ class SignUpFormEmail extends Model
     /**
      * @return UserInterface
      */
-    public function getUser()
+    public function getUser() : UserInterface
     {
         return $this->_user;
     }
@@ -89,7 +90,7 @@ class SignUpFormEmail extends Model
      * @throws \yii\base\Exception
      * @throws \yii\web\ServerErrorHttpException
      */
-    public function signUp() : bool
+    public function signUp(): bool
     {
         $user = $this->getUser();
         $this->prepareUsernameAndPassword();

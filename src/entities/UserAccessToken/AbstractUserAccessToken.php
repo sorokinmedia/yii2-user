@@ -1,10 +1,13 @@
 <?php
+
 namespace sorokinmedia\user\entities\UserAccessToken;
 
 use sorokinmedia\ar_relations\RelationInterface;
+use sorokinmedia\helpers\DateHelper;
 use sorokinmedia\user\entities\User\AbstractUser;
 use sorokinmedia\user\handlers\UserAccessToken\UserAccessTokenHandler;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\db\Exception;
 
@@ -34,7 +37,7 @@ abstract class AbstractUserAccessToken extends ActiveRecord implements UserAcces
     /**
      * @return array
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             'timestamp' => [
@@ -44,9 +47,9 @@ abstract class AbstractUserAccessToken extends ActiveRecord implements UserAcces
     }
 
     /**
-     * @inheritdoc
+     * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['user_id', 'access_token', 'expired_at'], 'required'],
@@ -57,9 +60,9 @@ abstract class AbstractUserAccessToken extends ActiveRecord implements UserAcces
     }
 
     /**
-     * @inheritdoc
+     * @return array
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'user_id' => \Yii::t('app', 'Пользователь'),
@@ -72,9 +75,9 @@ abstract class AbstractUserAccessToken extends ActiveRecord implements UserAcces
     }
 
     /**
-     * @return mixed|\yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getUser()
+    public function getUser(): ActiveQuery
     {
         return $this->hasOne($this->__userClass, ['id' => 'user_id']);
     }
@@ -84,7 +87,7 @@ abstract class AbstractUserAccessToken extends ActiveRecord implements UserAcces
      * @param string $string
      * @return string
      */
-    public static function generateToken(string $string) : string
+    public static function generateToken(string $string): string
     {
         return md5($string . uniqid());
     }
@@ -93,12 +96,12 @@ abstract class AbstractUserAccessToken extends ActiveRecord implements UserAcces
      * @param bool $remember
      * @return int
      */
-    public static function generateExpired(bool $remember) : int
+    public static function generateExpired(bool $remember): int
     {
-        if ($remember === true){
-            return time() + (60 * 60 * 24 * 30); // 30 дней
+        if ($remember === true) {
+            return time() + DateHelper::TIME_DAY_THIRTY; // 30 дней
         }
-        return time() + (60 * 60 * 24); // 1 день
+        return time() + DateHelper::TIME_DAY_ONE; // 1 день
     }
 
     /**
@@ -107,9 +110,9 @@ abstract class AbstractUserAccessToken extends ActiveRecord implements UserAcces
      * @throws Exception
      * @throws \Throwable
      */
-    public function insertModel() : bool
+    public function insertModel(): bool
     {
-        if (!$this->insert()){
+        if (!$this->insert()) {
             throw new Exception(\Yii::t('app', 'Ошибка при добавлении модели в БД'));
         }
         return true;
@@ -120,11 +123,11 @@ abstract class AbstractUserAccessToken extends ActiveRecord implements UserAcces
      * @return bool
      * @throws Exception
      */
-    public function deactivate() : bool
+    public function deactivate(): bool
     {
         $this->is_active = 0;
         $this->expired_at = time();
-        if (!$this->save()){
+        if (!$this->save()) {
             throw new Exception(\Yii::t('app', 'Ошибка при деактивации токена'));
         }
         return true;
@@ -138,10 +141,10 @@ abstract class AbstractUserAccessToken extends ActiveRecord implements UserAcces
      * @throws Exception
      * @throws \Throwable
      */
-    public static function create(AbstractUser $user, bool $remember = false) : UserAccessTokenInterface
+    public static function create(AbstractUser $user, bool $remember = false): UserAccessTokenInterface
     {
         $token = self::find()->where(['user_id' => $user->id, 'is_active' => 1])->orderBy(['created_at' => SORT_DESC])->one();
-        if ($token instanceof UserAccessTokenInterface && $token->expired_at > time()){
+        if ($token instanceof UserAccessTokenInterface && $token->expired_at > time()) {
             return $token;
         }
         $user->deactivateTokens();

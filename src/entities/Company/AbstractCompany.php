@@ -1,14 +1,15 @@
 <?php
+
 namespace sorokinmedia\user\entities\Company;
 
 use sorokinmedia\user\entities\{
-    CompanyUser\AbstractCompanyUser,User\AbstractUser, User\UserInterface
+    CompanyUser\AbstractCompanyUser, User\AbstractUser, User\UserInterface
 };
 use sorokinmedia\user\forms\CompanyUserForm;
 use sorokinmedia\user\handlers\CompanyUser\CompanyUserHandler;
 use sorokinmedia\ar_relations\RelationInterface;
 use yii\db\{
-    ActiveQuery,ActiveRecord,Exception
+    ActiveQuery, ActiveRecord, Exception
 };
 
 /**
@@ -26,17 +27,17 @@ use yii\db\{
 abstract class AbstractCompany extends ActiveRecord implements CompanyInterface, RelationInterface
 {
     /**
-     * {@inheritdoc}
+     * @return string
      */
-    public static function tableName()
+    public static function tableName() : string
     {
         return 'company';
     }
 
     /**
-     * {@inheritdoc}
+     * @return array
      */
-    public function rules()
+    public function rules() : array
     {
         return [
             [['owner_id'], 'required'],
@@ -48,9 +49,9 @@ abstract class AbstractCompany extends ActiveRecord implements CompanyInterface,
     }
 
     /**
-     * {@inheritdoc}
+     * @return array
      */
-    public function attributeLabels()
+    public function attributeLabels() : array
     {
         return [
             'id' => \Yii::t('app', 'ID'),
@@ -63,15 +64,15 @@ abstract class AbstractCompany extends ActiveRecord implements CompanyInterface,
     /**
      * @return ActiveQuery
      */
-    public function getOwner() : ActiveQuery
+    public function getOwner(): ActiveQuery
     {
         return $this->hasOne($this->__userClass, ['id' => 'owner_id']);
     }
 
     /**
-     * @return array
+     * @return ActiveQuery
      */
-    public function getUsers() : array
+    public function getUsers(): ActiveQuery
     {
         return $this->hasMany($this->__companyUserClass, ['company_id' => 'id']);
     }
@@ -79,7 +80,7 @@ abstract class AbstractCompany extends ActiveRecord implements CompanyInterface,
     /**
      * @return array
      */
-    public function getUserIdsArray() : array
+    public function getUserIdsArray(): array
     {
         return $this->__companyUserClass::find()
             ->select(['user_id'])
@@ -95,17 +96,17 @@ abstract class AbstractCompany extends ActiveRecord implements CompanyInterface,
      * @throws Exception
      * @throws \Throwable
      */
-    public static function create(UserInterface $owner, string $role) : CompanyInterface
+    public static function create(UserInterface $owner, string $role): CompanyInterface
     {
         /** @var AbstractUser $owner */
         $company = static::find()->where(['owner_id' => $owner->id])->one();
-        if ($company instanceof AbstractCompany){
+        if ($company instanceof AbstractCompany) {
             return $company;
         }
         $company = new static([
             'owner_id' => $owner->id,
         ]);
-        if (!$company->insert()){
+        if (!$company->insert()) {
             throw new Exception(\Yii::t('app', 'Ошибка при добавлении компании'));
         }
         $company->refresh();
@@ -115,7 +116,7 @@ abstract class AbstractCompany extends ActiveRecord implements CompanyInterface,
             'role' => $role,
         ]);
         $company_user = new $company->__companyUserClass([], $form);
-        if (!(new CompanyUserHandler($company_user))->create()){
+        if (!(new CompanyUserHandler($company_user))->create()) {
             throw new Exception(\Yii::t('app', 'Ошибка при добавлении сотрудника в компанию'));
         }
         return $company;

@@ -1,4 +1,5 @@
 <?php
+
 namespace sorokinmedia\user\forms;
 
 use sorokinmedia\user\entities\SmsCode\AbstractSmsCode;
@@ -29,9 +30,9 @@ class SmsCodeForm extends Model
     public $is_deleted;
 
     /**
-     * @inheritdoc
+     * @return array
      */
-    public function rules()
+    public function rules() : array
     {
         return [
             [['user_id', 'type_id', 'is_used', 'code'], 'integer'],
@@ -42,9 +43,9 @@ class SmsCodeForm extends Model
     }
 
     /**
-     * @inheritdoc
+     * @return array
      */
-    public function attributeLabels()
+    public function attributeLabels() : array
     {
         return [
             'user_id' => \Yii::t('app', 'Пользователь'),
@@ -65,7 +66,7 @@ class SmsCodeForm extends Model
      */
     public function __construct(array $config = [], AbstractSmsCode $smsCode = null)
     {
-        if (!is_null($smsCode)){
+        if ($smsCode !== null) {
             $this->user_id = $smsCode->user_id;
             $this->phone = $smsCode->phone;
             $this->code = $smsCode->code;

@@ -1,4 +1,5 @@
 <?php
+
 namespace sorokinmedia\user\forms;
 
 use sorokinmedia\user\entities\UserMeta\json\UserMetaFullName;
@@ -25,7 +26,7 @@ class UserMetaFullNameForm extends Model
      */
     public function __construct(array $config = [], UserMetaFullName $userMetaFullName = null)
     {
-        if (!is_null($userMetaFullName)){
+        if ($userMetaFullName !== null) {
             $this->surname = $userMetaFullName->surname;
             $this->name = $userMetaFullName->name;
             $this->patronymic = $userMetaFullName->patronymic;
@@ -34,9 +35,9 @@ class UserMetaFullNameForm extends Model
     }
 
     /**
-     * @inheritdoc
+     * @return array
      */
-    public function rules()
+    public function rules() : array
     {
         return [
             [['surname', 'name'], 'required'],
@@ -45,9 +46,9 @@ class UserMetaFullNameForm extends Model
     }
 
     /**
-     * @inheritdoc
+     * @return array
      */
-    public function attributeLabels()
+    public function attributeLabels() : array
     {
         return [
             'surname' => \Yii::t('app', 'Фамилия'),

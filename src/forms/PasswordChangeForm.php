@@ -1,4 +1,5 @@
 <?php
+
 namespace sorokinmedia\user\forms;
 
 use sorokinmedia\user\entities\User\UserInterface;
@@ -21,9 +22,9 @@ class PasswordChangeForm extends Model
     private $_user;
 
     /**
-     * @inheritdoc
+     * @return array
      */
-    public function rules()
+    public function rules() : array
     {
         return [
             [['password', 'password_repeat'], 'required'],
@@ -36,7 +37,7 @@ class PasswordChangeForm extends Model
     /**
      * @return array
      */
-    public function attributeLabels()
+    public function attributeLabels() : array
     {
         return [
             'password' => \Yii::t('app', 'Пароль'),
@@ -58,7 +59,7 @@ class PasswordChangeForm extends Model
     /**
      * @return UserInterface
      */
-    public function getUser()
+    public function getUser() : UserInterface
     {
         return $this->_user;
     }
@@ -66,23 +67,22 @@ class PasswordChangeForm extends Model
     /**
      * @return bool
      */
-    public function checkRepeat() : bool
+    public function checkRepeat(): bool
     {
         if ($this->password === $this->password_repeat) {
             return true;
         }
-        $this->addError('password_repeat', \Yii::t('app','Пароли не совпадают'));
+        $this->addError('password_repeat', \Yii::t('app', 'Пароли не совпадают'));
         return false;
     }
 
     /**
      * @return bool
-     * @throws \yii\base\Exception
      */
-    public function changePassword() : bool
+    public function changePassword(): bool
     {
         $user = $this->getUser();
-        if (!$this->checkRepeat()){
+        if (!$this->checkRepeat()) {
             return false;
         }
         return $user->saveNewPassword($this->password);

@@ -23,9 +23,9 @@ class PasswordResetForm extends Model
     private $_user;
 
     /**
-     * @inheritdoc
+     * @return array
      */
-    public function rules()
+    public function rules() : array
     {
         return [
             [['password', 'password_repeat', 'token'], 'required'],
@@ -37,7 +37,7 @@ class PasswordResetForm extends Model
     /**
      * @return array
      */
-    public function attributeLabels()
+    public function attributeLabels() : array
     {
         return [
             'password' => \Yii::t('app', 'Пароль'),
@@ -47,9 +47,8 @@ class PasswordResetForm extends Model
 
     /**
      * PasswordResetForm constructor.
-     * @param UserInterface $user
-     * @param string $token
      * @param array $config
+     * @param UserInterface $user
      */
     public function __construct(array $config = [], UserInterface $user)
     {
@@ -66,7 +65,7 @@ class PasswordResetForm extends Model
     /**
      * @return UserInterface
      */
-    public function getUser()
+    public function getUser() : UserInterface
     {
         return $this->_user;
     }

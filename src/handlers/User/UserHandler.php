@@ -1,8 +1,10 @@
 <?php
+
 namespace sorokinmedia\user\handlers\User;
 
-use sorokinmedia\user\forms\SignupForm;
-use sorokinmedia\user\forms\SignUpFormEmail;
+use sorokinmedia\user\forms\{
+    SignupForm, SignUpFormEmail
+};
 use sorokinmedia\user\handlers\User\interfaces\{AddRole,
     Block,
     Create,
@@ -40,7 +42,7 @@ class UserHandler implements Create, CreateFromEmail, VerifyAccount, Block, Unbl
      * @throws \yii\db\Exception
      * @throws \yii\web\ServerErrorHttpException
      */
-    public function create(SignupForm $signup_form) : bool
+    public function create(SignupForm $signup_form): bool
     {
         return (new actions\Create($this->user, $signup_form))->execute();
     }
@@ -52,7 +54,7 @@ class UserHandler implements Create, CreateFromEmail, VerifyAccount, Block, Unbl
      * @throws \yii\db\Exception
      * @throws \yii\web\ServerErrorHttpException
      */
-    public function createFromEmail(SignUpFormEmail $sign_up_form_email) : bool
+    public function createFromEmail(SignUpFormEmail $sign_up_form_email): bool
     {
         return (new actions\CreateFromEmail($this->user, null, $sign_up_form_email))->execute();
     }
@@ -61,7 +63,7 @@ class UserHandler implements Create, CreateFromEmail, VerifyAccount, Block, Unbl
      * верификация аккаунта
      * @return bool
      */
-    public function verifyAccount() : bool
+    public function verifyAccount(): bool
     {
         return (new actions\VerifyAccount($this->user))->execute();
     }
@@ -70,7 +72,7 @@ class UserHandler implements Create, CreateFromEmail, VerifyAccount, Block, Unbl
      * блокировка пользователя
      * @return bool
      */
-    public function block() : bool
+    public function block(): bool
     {
         return (new actions\Block($this->user))->execute();
     }
@@ -79,7 +81,7 @@ class UserHandler implements Create, CreateFromEmail, VerifyAccount, Block, Unbl
      * разблокировка пользователя
      * @return bool
      */
-    public function unblock() : bool
+    public function unblock(): bool
     {
         return (new actions\Unblock($this->user))->execute();
     }
@@ -89,7 +91,7 @@ class UserHandler implements Create, CreateFromEmail, VerifyAccount, Block, Unbl
      * @param Role $role
      * @return bool
      */
-    public function addRole(Role $role) : bool
+    public function addRole(Role $role): bool
     {
         return (new actions\AddRole($this->user, $role))->execute();
     }
@@ -99,7 +101,7 @@ class UserHandler implements Create, CreateFromEmail, VerifyAccount, Block, Unbl
      * @param Role $role
      * @return bool
      */
-    public function revokeRole(Role $role) : bool
+    public function revokeRole(Role $role): bool
     {
         return (new actions\RevokeRole($this->user, $role))->execute();
     }

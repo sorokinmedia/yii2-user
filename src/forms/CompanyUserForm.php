@@ -1,4 +1,5 @@
 <?php
+
 namespace sorokinmedia\user\forms;
 
 use sorokinmedia\user\entities\CompanyUser\AbstractCompanyUser;
@@ -19,9 +20,9 @@ class CompanyUserForm extends Model
     public $role;
 
     /**
-     * {@inheritdoc}
+     * @return array
      */
-    public function rules()
+    public function rules() : array
     {
         return [
             [['company_id', 'user_id', 'role'], 'required'],
@@ -31,9 +32,9 @@ class CompanyUserForm extends Model
     }
 
     /**
-     * {@inheritdoc}
+     * @return array
      */
-    public function attributeLabels()
+    public function attributeLabels() : array
     {
         return [
             'company_id' => \Yii::t('app', 'Компания'),
@@ -49,7 +50,7 @@ class CompanyUserForm extends Model
      */
     public function __construct(array $config = [], AbstractCompanyUser $companyUser = null)
     {
-        if (!is_null($companyUser)){
+        if ($companyUser !== null) {
             $this->company_id = $companyUser->company_id;
             $this->user_id = $companyUser->user_id;
             $this->role = $companyUser->role;

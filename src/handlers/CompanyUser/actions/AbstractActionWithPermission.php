@@ -4,7 +4,6 @@ namespace sorokinmedia\user\handlers\CompanyUser\actions;
 use sorokinmedia\user\entities\CompanyUser\{
     AbstractCompanyUserPermission,AbstractCompanyUser
 };
-use sorokinmedia\user\handlers\CompanyUser\interfaces\ActionExecutable;
 
 /**
  * Class AbstractActionWithPermission
@@ -13,7 +12,7 @@ use sorokinmedia\user\handlers\CompanyUser\interfaces\ActionExecutable;
  * @property AbstractCompanyUser $company_user
  * @property AbstractCompanyUserPermission $permission
  */
-abstract class AbstractActionWithPermission extends AbstractAction implements ActionExecutable
+abstract class AbstractActionWithPermission extends AbstractAction
 {
     protected $permission;
 

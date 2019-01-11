@@ -1,8 +1,6 @@
 <?php
 namespace sorokinmedia\user\entities\CompanyUser;
 
-use sorokinmedia\user\forms\CompanyUserForm;
-
 /**
  * Interface CompanyUserInterface
  * @package sorokinmedia\user\entities\CompanyUser

@@ -1,8 +1,9 @@
 <?php
+
 namespace sorokinmedia\user\entities\CompanyUser;
 
 use sorokinmedia\user\entities\{
-    Company\AbstractCompany,User\AbstractUser
+    Company\AbstractCompany, User\AbstractUser
 };
 use sorokinmedia\user\forms\CompanyUserForm;
 use sorokinmedia\ar_relations\RelationInterface;
@@ -28,17 +29,17 @@ abstract class AbstractCompanyUser extends ActiveRecord implements CompanyUserIn
     public $form;
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
-    public static function tableName()
+    public static function tableName() : string
     {
         return 'company_user';
     }
 
     /**
-     * {@inheritdoc}
+     * @return array
      */
-    public function rules()
+    public function rules() : array
     {
         return [
             [['company_id', 'user_id', 'role'], 'required'],
@@ -50,9 +51,9 @@ abstract class AbstractCompanyUser extends ActiveRecord implements CompanyUserIn
     }
 
     /**
-     * {@inheritdoc}
+     * @return array
      */
-    public function attributeLabels()
+    public function attributeLabels() : array
     {
         return [
             'company_id' => \Yii::t('app', 'Компания'),
@@ -65,7 +66,7 @@ abstract class AbstractCompanyUser extends ActiveRecord implements CompanyUserIn
     /**
      * @return ActiveQuery
      */
-    public function getUser() : ActiveQuery
+    public function getUser(): ActiveQuery
     {
         return $this->hasOne($this->__userClass, ['id' => 'user_id']);
     }
@@ -73,7 +74,7 @@ abstract class AbstractCompanyUser extends ActiveRecord implements CompanyUserIn
     /**
      * @return ActiveQuery
      */
-    public function getCompany() : ActiveQuery
+    public function getCompany(): ActiveQuery
     {
         return $this->hasOne($this->__companyClass, ['id' => 'company_id']);
     }
@@ -117,10 +118,10 @@ abstract class AbstractCompanyUser extends ActiveRecord implements CompanyUserIn
      * @throws Exception
      * @throws \Throwable
      */
-    public function insertModel() : bool
+    public function insertModel(): bool
     {
         $this->getFromForm();
-        if (!$this->insert()){
+        if (!$this->insert()) {
             throw new Exception(\Yii::t('app', 'Ошибка при добавлении в БД'));
         }
         return true;
@@ -131,10 +132,10 @@ abstract class AbstractCompanyUser extends ActiveRecord implements CompanyUserIn
      * @return bool
      * @throws Exception
      */
-    public function updateModel() : bool
+    public function updateModel(): bool
     {
         $this->getFromForm();
-        if (!$this->save()){
+        if (!$this->save()) {
             throw new Exception(\Yii::t('app', 'Ошибка при обновлении в БД'));
         }
         return true;
@@ -147,10 +148,10 @@ abstract class AbstractCompanyUser extends ActiveRecord implements CompanyUserIn
      * @throws \Throwable
      * @throws \yii\db\StaleObjectException
      */
-    public function deleteModel() : bool
+    public function deleteModel(): bool
     {
-        if (!$this->delete()){
-            throw new Exception(\Yii::t('app','Ошибка при удалении из БД'));
+        if (!$this->delete()) {
+            throw new Exception(\Yii::t('app', 'Ошибка при удалении из БД'));
         }
         return true;
     }
@@ -161,9 +162,9 @@ abstract class AbstractCompanyUser extends ActiveRecord implements CompanyUserIn
      * @return bool
      * @throws Exception
      */
-    public function addPermission(AbstractCompanyUserPermission $permission) : bool
+    public function addPermission(AbstractCompanyUserPermission $permission): bool
     {
-        if (!empty($this->permissions)){
+        if (!empty($this->permissions)) {
             $this->permissions = array_merge($this->permissions, [$permission]);
         } else {
             $this->permissions = [$permission];
@@ -177,9 +178,9 @@ abstract class AbstractCompanyUser extends ActiveRecord implements CompanyUserIn
      * @return bool
      * @throws Exception
      */
-    public function removePermission(AbstractCompanyUserPermission $permission) : bool
+    public function removePermission(AbstractCompanyUserPermission $permission): bool
     {
-        if (empty($this->permissions)){
+        if (empty($this->permissions)) {
             return true;
         }
         $permissions = $this->permissions;

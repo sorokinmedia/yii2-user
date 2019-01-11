@@ -2,7 +2,6 @@
 
 namespace sorokinmedia\user\handlers\UserInvite\actions;
 
-
 use common\components\invite\entities\UserInvite\UserInvite;
 use sorokinmedia\user\entities\UserInvite\AbstractUserInvite;
 use sorokinmedia\user\forms\InviteForm;

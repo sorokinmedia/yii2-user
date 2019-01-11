@@ -1,8 +1,10 @@
 <?php
+
 namespace sorokinmedia\user\forms;
 
-use sorokinmedia\user\entities\User\AbstractUser;
-use sorokinmedia\user\entities\User\UserInterface;
+use sorokinmedia\user\entities\{
+    User\AbstractUser,User\UserInterface
+};
 use yii\base\Model;
 
 /**
@@ -22,7 +24,7 @@ class PasswordResetRequestForm extends Model
     /**
      * @return array
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'email' => \Yii::t('app', 'E-mail'),
@@ -33,7 +35,7 @@ class PasswordResetRequestForm extends Model
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             ['email', 'filter', 'filter' => 'trim'],
@@ -55,7 +57,7 @@ class PasswordResetRequestForm extends Model
     /**
      * @return UserInterface
      */
-    public function getUser()
+    public function getUser(): UserInterface
     {
         return $this->_user;
     }
@@ -73,11 +75,11 @@ class PasswordResetRequestForm extends Model
      * @return bool
      * @throws \yii\base\Exception
      */
-    public function sendEmail() : bool
+    public function sendEmail(): bool
     {
         /** @var AbstractUser $user */
         $user = $this->getUser();
-        if (is_null($user)) {
+        if ($user === null) {
             return false;
         }
         if (!$user->isPasswordResetTokenValid($this->password_reset_token_expire, $user->email_confirm_token)) {

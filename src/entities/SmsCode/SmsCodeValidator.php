@@ -1,9 +1,11 @@
 <?php
+
 namespace sorokinmedia\user\entities\SmsCode;
 
 use sorokinmedia\user\entities\User\AbstractUser;
-use yii\base\Exception;
-use yii\base\Model;
+use yii\base\{
+    Exception, Model
+};
 
 /**
  * Class SmsRequestValidator
@@ -22,7 +24,7 @@ class SmsCodeValidator extends Model
     /**
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['user', 'ip'], 'required'],
@@ -37,7 +39,7 @@ class SmsCodeValidator extends Model
     public function validateIpSmsCode()
     {
         $codeRequestsCountIp = AbstractSmsCode::getRequestedTodayByIp($this->ip, $this->type_id); // число запросов смс за сегодня
-        if($codeRequestsCountIp >= AbstractSmsCode::MAX_PER_IP) {
+        if ($codeRequestsCountIp >= AbstractSmsCode::MAX_PER_IP) {
             throw $e = new \yii\base\Exception(\Yii::t('app', 'Превышено число попыток с вашего IP адреса. Попробуйте завтра или обратитесь к администратору ресурса'));
         }
     }
@@ -49,7 +51,7 @@ class SmsCodeValidator extends Model
     public function validatePhoneSmsCode()
     {
         $codeRequestsCountPhone = AbstractSmsCode::getRequestedTodayByUser($this->user, $this->type_id); // число запросов смс за сегодня
-        if($codeRequestsCountPhone >= AbstractSmsCode::MAX_PER_DAY) {
+        if ($codeRequestsCountPhone >= AbstractSmsCode::MAX_PER_DAY) {
             throw $e = new \yii\base\Exception(\Yii::t('app', 'Превышено число попыток. Попробуйте завтра или обратитесь к администратору ресурса'));
         }
     }

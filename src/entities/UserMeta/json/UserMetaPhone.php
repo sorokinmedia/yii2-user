@@ -26,7 +26,7 @@ class UserMetaPhone extends Model
     public function __construct(array $config = [], UserMetaPhoneForm $form = null)
     {
         parent::__construct($config);
-        if (!is_null($form)){
+        if ($form !== null){
             $this->country = $form->country;
             $this->number = $form->number;
             $this->is_verified = $form->is_verified;
@@ -34,9 +34,9 @@ class UserMetaPhone extends Model
     }
 
     /**
-     * @inheritdoc
+     * @return array
      */
-    public function rules()
+    public function rules() : array
     {
         return [
             [['country', 'number'], 'required'],
@@ -48,9 +48,9 @@ class UserMetaPhone extends Model
     }
 
     /**
-     * @inheritdoc
+     * @return array
      */
-    public function attributeLabels()
+    public function attributeLabels() : array
     {
         return [
             'country' => \Yii::t('app', 'Код страны'),

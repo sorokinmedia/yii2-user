@@ -9,7 +9,6 @@ class VerifyPhone extends AbstractAction
 {
     /**
      * @return bool
-     * @throws \yii\db\Exception
      */
     public function execute() : bool
     {

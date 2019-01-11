@@ -1,4 +1,5 @@
 <?php
+
 namespace sorokinmedia\user\entities\UserMeta;
 
 use sorokinmedia\ar_relations\RelationInterface;
@@ -9,6 +10,7 @@ use sorokinmedia\user\entities\{User\AbstractUser,
     UserMeta\json\UserMetaPhone};
 use sorokinmedia\user\forms\UserMetaForm;
 use sorokinmedia\user\handlers\UserMeta\UserMetaHandler;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\db\Exception;
 
@@ -35,17 +37,17 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
     public $form;
 
     /**
-     * @inheritdoc
+     * @return string
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return 'user_meta';
     }
 
     /**
-     * @inheritdoc
+     * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['user_id'], 'required'],
@@ -62,9 +64,9 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
     }
 
     /**
-     * @inheritdoc
+     * @return array
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'user_id' => \Yii::t('app', 'Пользователь'),
@@ -81,9 +83,9 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getUser()
+    public function getUser(): ActiveQuery
     {
         return $this->hasOne($this->__userClass, ['id' => 'user_id']);
     }
@@ -95,7 +97,7 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
      */
     public function __construct(array $config = [], UserMetaForm $userMetaForm = null)
     {
-        if (!is_null($userMetaForm)){
+        if ($userMetaForm !== null) {
             $this->form = $userMetaForm;
         }
         parent::__construct($config);
@@ -106,9 +108,9 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
      */
     public function getFromForm()
     {
-        if (!is_null($this->form)){
+        if ($this->form !== null) {
             $this->notification_email = $this->form->notification_email;
-            if ($this->form->full_name !== ''){
+            if ($this->form->full_name !== '') {
                 $this->full_name = $this->form->full_name;
             }
             $this->display_name = $this->form->display_name;
@@ -127,11 +129,11 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
      * @throws \Exception
      * @throws \Throwable
      */
-    public static function create(UserInterface $user) : UserMetaInterface
+    public static function create(UserInterface $user): UserMetaInterface
     {
         /** @var AbstractUser $user */
         $user_meta = static::findOne(['user_id' => $user->id]);
-        if ($user_meta instanceof UserMetaInterface){
+        if ($user_meta instanceof UserMetaInterface) {
             return $user_meta;
         }
         $user_meta = new static([
@@ -149,9 +151,9 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
      * @throws Exception
      * @throws \Throwable
      */
-    public function insertModel() : bool
+    public function insertModel(): bool
     {
-        if (!$this->insert()){
+        if (!$this->insert()) {
             throw new Exception(\Yii::t('app', 'Ошибка при добавлении меты'));
         }
         return true;
@@ -161,10 +163,10 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
      * @return bool
      * @throws Exception
      */
-    public function updateModel() : bool
+    public function updateModel(): bool
     {
         $this->getFromForm();
-        if (!$this->save()){
+        if (!$this->save()) {
             throw new Exception(\Yii::t('app', 'Ошибка при обновлении модели в БД'));
         }
         return true;
@@ -176,11 +178,11 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
      * @throws Exception
      * @return bool
      */
-    public function setTelegram(int $chat_id) : bool
+    public function setTelegram(int $chat_id): bool
     {
         $this->notification_telegram = $chat_id;
-        if (!$this->save()){
-            throw new Exception(\Yii::t('app','Ошибка при добавлении ID телеграм чата пользователю: setTelegramId'));
+        if (!$this->save()) {
+            throw new Exception(\Yii::t('app', 'Ошибка при добавлении ID телеграм чата пользователю: setTelegramId'));
         }
         return true;
     }
@@ -193,7 +195,7 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
     public static function checkTelegram(int $chat_id)
     {
         $user_meta = static::findOne(['notification_telegram' => $chat_id]);
-        if ($user_meta){
+        if ($user_meta) {
             return $user_meta->notification_telegram;
         }
         return null;
@@ -204,11 +206,11 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
      * @return bool
      * @throws Exception
      */
-    public function resetTelegram() : bool
+    public function resetTelegram(): bool
     {
         $this->notification_telegram = null;
-        if (!$this->save()){
-            throw new Exception(\Yii::t('app','Ошибка при сбросе ID телеграм'));
+        if (!$this->save()) {
+            throw new Exception(\Yii::t('app', 'Ошибка при сбросе ID телеграм'));
         }
         return true;
     }
@@ -219,7 +221,7 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
      * @return bool
      * @throws Exception
      */
-    public function setPhone(UserMetaPhone $userMetaPhone) : bool
+    public function setPhone(UserMetaPhone $userMetaPhone): bool
     {
         $this->notification_phone = $userMetaPhone;
         return $this->updateModel();
@@ -243,10 +245,10 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
      * @return bool
      * @throws Exception
      */
-    public function setFullName(UserMetaFullName $userMetaFullName) : bool
+    public function setFullName(UserMetaFullName $userMetaFullName): bool
     {
         $this->full_name = $userMetaFullName;
-        if (!$this->save()){
+        if (!$this->save()) {
             throw new Exception(\Yii::t('app', 'Ошибка при сохранении полного имени'));
         }
         return true;
@@ -257,10 +259,10 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
      * дает варианты для выбора отображаемого имени
      * @return array
      */
-    public function getDisplayNameVariants() : array
+    public function getDisplayNameVariants(): array
     {
         $array[] = $this->user->username;
-        if ($this->full_name !== null){
+        if ($this->full_name !== null) {
             $full_name = new UserMetaFullName($this->full_name);
             $array[] = $full_name->surname . ' ' . $full_name->name;
             $array[] = $full_name->name;
@@ -272,11 +274,11 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
      * дает варианты для выбора отображаемого имени, ассоциативный массив
      * @return array
      */
-    public function getDisplayNameVariantsArray() : array
+    public function getDisplayNameVariantsArray(): array
     {
         $array = $this->getDisplayNameVariants();
         $assoc_array = [];
-        foreach ($array as $value){
+        foreach ($array as $value) {
             $assoc_array[$value] = $value;
         }
         return $assoc_array;

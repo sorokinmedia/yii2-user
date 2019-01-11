@@ -63,7 +63,6 @@ class UserMetaHandler implements Create, Update, SetPhone, VerifyPhone, SetFullN
     /**
      * верификация телефона
      * @return bool
-     * @throws \yii\db\Exception
      */
     public function verifyPhone() : bool
     {

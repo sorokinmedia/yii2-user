@@ -1,13 +1,15 @@
 <?php
+
 namespace sorokinmedia\user\entities\SmsCode;
 
 use sorokinmedia\ar_relations\RelationInterface;
 use sorokinmedia\helpers\DateHelper;
 use sorokinmedia\user\entities\{
-    User\AbstractUser,UserMeta\json\UserMetaPhone
+    User\AbstractUser, UserMeta\json\UserMetaPhone
 };
 use sorokinmedia\user\forms\SmsCodeForm;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\db\Exception;
 
@@ -37,9 +39,9 @@ abstract class AbstractSmsCode extends ActiveRecord implements RelationInterface
     public $form;
 
     /**
-     * @inheritdoc
+     * @return string
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return 'sms_code';
     }
@@ -47,7 +49,7 @@ abstract class AbstractSmsCode extends ActiveRecord implements RelationInterface
     /**
      * @return array
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             [
@@ -59,9 +61,9 @@ abstract class AbstractSmsCode extends ActiveRecord implements RelationInterface
     }
 
     /**
-     * @inheritdoc
+     * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['user_id', 'type_id', 'is_used', 'code'], 'integer'],
@@ -74,9 +76,9 @@ abstract class AbstractSmsCode extends ActiveRecord implements RelationInterface
     }
 
     /**
-     * @inheritdoc
+     * @return array
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => \Yii::t('app', 'ID'),
@@ -99,7 +101,7 @@ abstract class AbstractSmsCode extends ActiveRecord implements RelationInterface
      */
     public function __construct(array $config = [], SmsCodeForm $form = null)
     {
-        if (!is_null($form)){
+        if ($form !== null) {
             $this->form = $form;
         }
         parent::__construct($config);
@@ -110,7 +112,7 @@ abstract class AbstractSmsCode extends ActiveRecord implements RelationInterface
      */
     public function getFromForm()
     {
-        if (!is_null($this->form)){
+        if ($this->form !== null) {
             $this->user_id = $this->form->user_id;
             $this->phone = $this->form->phone;
             $this->code = $this->form->code;
@@ -128,10 +130,10 @@ abstract class AbstractSmsCode extends ActiveRecord implements RelationInterface
      * @throws Exception
      * @throws \Throwable
      */
-    public function insertModel() : bool
+    public function insertModel(): bool
     {
         $this->getFromForm();
-        if (!$this->insert()){
+        if (!$this->insert()) {
             throw new Exception(\Yii::t('app', $this->getMessage()));
         }
         return true;
@@ -142,10 +144,10 @@ abstract class AbstractSmsCode extends ActiveRecord implements RelationInterface
      * @return bool
      * @throws Exception
      */
-    public function updateModel() : bool
+    public function updateModel(): bool
     {
         $this->getFromForm();
-        if (!$this->save()){
+        if (!$this->save()) {
             throw new Exception(\Yii::t('app', 'Ошибка при обновлении в БД'));
         }
         return true;
@@ -176,15 +178,15 @@ abstract class AbstractSmsCode extends ActiveRecord implements RelationInterface
     /**
      * @return string
      */
-    public function getType() : string
+    public function getType(): string
     {
         return static::getTypes($this->type_id);
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getUser()
+    public function getUser(): ActiveQuery
     {
         return $this->hasOne($this->__userClass, ['id' => 'user_id']);
     }
@@ -194,19 +196,19 @@ abstract class AbstractSmsCode extends ActiveRecord implements RelationInterface
      * генерирует 4х значный код из цифр
      * @return int
      */
-    abstract public function generateCode() : int;
+    abstract public function generateCode(): int;
 
     /**
      * требует реализации в наслудуемом классе
      * сформировать сообщение исходя их типа кода
      * @return string
      */
-    abstract public function getMessage() : string;
+    abstract public function getMessage(): string;
 
     /**
      * отправка смс с кодом
      */
-    abstract public function sendCode() : bool;
+    abstract public function sendCode(): bool;
 
     /**
      * получает последний код заданного типа для пользователя
@@ -276,7 +278,7 @@ abstract class AbstractSmsCode extends ActiveRecord implements RelationInterface
      * @param AbstractUser $user
      * @return array|\yii\db\ActiveRecord[]
      */
-    public static function getRequestedTodayForUser(AbstractUser $user)
+    public static function getRequestedTodayForUser(AbstractUser $user): array
     {
         $query = self::find()
             ->where([
@@ -316,7 +318,7 @@ abstract class AbstractSmsCode extends ActiveRecord implements RelationInterface
      */
     public function checkUse(bool $is_validated = false): bool
     {
-        $this->is_used = $this->is_used + 1;
+        ++$this->is_used;
         $this->is_validated = $is_validated;
         if (!$this->save()) {
             throw new Exception(\Yii::t('app', 'Ошибка при сохранении статуса кода'));
@@ -329,11 +331,11 @@ abstract class AbstractSmsCode extends ActiveRecord implements RelationInterface
      * @param UserMetaPhone $userMetaPhone
      * @return string
      */
-    public static function phoneFormatter(UserMetaPhone $userMetaPhone) : string
+    public static function phoneFormatter(UserMetaPhone $userMetaPhone): string
     {
         $phone = $userMetaPhone->country . $userMetaPhone->number;
-        if (strlen($phone) == 11) {
-            return "+" . substr($phone, 0, 1) . "(" . substr($phone, 1, 3) . ")" . substr($phone, 4, 3) . "-" . substr($phone, 7, 2) . "-" . substr($phone, 9);
+        if (strlen($phone) === 11) {
+            return '+' . substr($phone, 0, 1) . '(' . substr($phone, 1, 3) . ')' . substr($phone, 4, 3) . '-' . substr($phone, 7, 2) . '-' . substr($phone, 9);
         }
         return $phone;
     }

@@ -2,34 +2,41 @@
 
 namespace sorokinmedia\user\forms;
 
-use sorokinmedia\user\entities\Company\AbstractCompany;
-use sorokinmedia\user\entities\CompanyUser\AbstractCompanyUser;
-use sorokinmedia\user\entities\User\AbstractUser;
-use sorokinmedia\user\entities\UserInvite\AbstractUserInvite;
+use sorokinmedia\user\entities\{
+    Company\AbstractCompany,CompanyUser\AbstractCompanyUser,User\AbstractUser,UserInvite\AbstractUserInvite
+};
 use sorokinmedia\user\handlers\UserInvite\UserInviteHandler;
 use yii\base\Model;
 use yii\db\Expression;
 use yii\rbac\Role;
 
+/**
+ * Class InviteForm
+ * @package sorokinmedia\user\forms
+ *
+ * @property AbstractCompany $company
+ * @property AbstractUser $initiator
+ * @property AbstractUser $user
+ * @property string $email
+ * @property Role $role
+ * @property array $meta
+ * @property UserInviteHandler $inviteHandler
+ */
 class InviteForm extends Model
 {
-    /** @var AbstractCompany */
     public $company;
-    /** @var AbstractUser */
     public $initiator;
-    /** @var AbstractUser */
     public $user;
-    /** @var string */
     public $email;
-    /** @var Role */
     public $role;
-
-    /** @var array */
     public $meta;
-
-    /** @var UserInviteHandler */
     public $inviteHandler;
 
+    /**
+     * InviteForm constructor.
+     * @param UserInviteHandler $handler
+     * @param array $config
+     */
     public function __construct(UserInviteHandler $handler, array $config = [])
     {
         $this->inviteHandler = $handler;
@@ -40,7 +47,7 @@ class InviteForm extends Model
     /**
      * @return array
      */
-    public function rules()
+    public function rules() : array
     {
         return [
             [['email', 'role', 'company', 'initiator'], 'required'],
@@ -54,6 +61,9 @@ class InviteForm extends Model
         ];
     }
 
+    /**
+     * @param $attribute
+     */
     public function checkAtLeast($attribute): void
     {
         if (!$this->user && !$this->email) {
@@ -61,6 +71,9 @@ class InviteForm extends Model
         }
     }
 
+    /**
+     * @param $attribute
+     */
     public function checkExistingInvite($attribute)
     {
         $query = AbstractUserInvite::find()->where([
@@ -81,6 +94,9 @@ class InviteForm extends Model
         }
     }
 
+    /**
+     * @param $attribute
+     */
     public function checkExistingLink($attribute)
     {
         if ($this->user){
@@ -109,5 +125,4 @@ class InviteForm extends Model
 
         return $this->inviteHandler->inviteNewUser($this);
     }
-
 }

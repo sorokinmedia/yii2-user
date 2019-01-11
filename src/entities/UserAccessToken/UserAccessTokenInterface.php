@@ -2,6 +2,7 @@
 namespace sorokinmedia\user\entities\UserAccessToken;
 
 use sorokinmedia\user\entities\User\AbstractUser;
+use yii\db\ActiveQuery;
 
 /**
  * Interface UserAccessTokenInterface
@@ -11,9 +12,9 @@ interface UserAccessTokenInterface
 {
     /**
      * получает пользователя по токену
-     * @return mixed
+     * @return ActiveQuery
      */
-    public function getUser();
+    public function getUser(): ActiveQuery;
 
     /**
      * генерирует токен

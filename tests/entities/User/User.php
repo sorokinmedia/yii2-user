@@ -72,4 +72,9 @@ class User extends AbstractUser
     {
         return true;
     }
+
+    public function processInvites()
+    {
+        
+    }
 }

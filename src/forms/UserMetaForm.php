@@ -28,9 +28,9 @@ class UserMetaForm extends Model
     public $custom_fields;
 
     /**
-     * @inheritdoc
+     * @return array
      */
-    public function rules()
+    public function rules() : array
     {
         return [
             [['tz', 'location', 'about'], 'string'],
@@ -44,9 +44,9 @@ class UserMetaForm extends Model
     }
 
     /**
-     * @inheritdoc
+     * @return array
      */
-    public function attributeLabels()
+    public function attributeLabels() : array
     {
         return [
             'notification_email' => \Yii::t('app', 'E-mail для уведомлений'),
@@ -66,7 +66,7 @@ class UserMetaForm extends Model
      */
     public function __construct(array $config = [], UserMetaInterface $userMeta = null)
     {
-        if (!is_null($userMeta)){
+        if ($userMeta !== null){
             /** @var AbstractUserMeta $userMeta */
             $this->notification_email = $userMeta->notification_email;
             $this->full_name = $userMeta->full_name;
