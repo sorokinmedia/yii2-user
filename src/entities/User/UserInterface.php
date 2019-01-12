@@ -1,8 +1,9 @@
 <?php
 namespace sorokinmedia\user\entities\User;
 
-use sorokinmedia\user\forms\SignupForm;
-use sorokinmedia\user\forms\SignUpFormEmail;
+use sorokinmedia\user\forms\{
+    SignupForm,SignUpFormEmail
+};
 use yii\rbac\Role;
 
 /**
