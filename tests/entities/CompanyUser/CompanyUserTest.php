@@ -52,20 +52,6 @@ class CompanyUserTest extends TestCase
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      */
-    public function testStaticCreate()
-    {
-        $this->initDb();
-        $form = new CompanyUserForm();
-        $company_user = CompanyUser::create($form);
-        $this->assertInstanceOf(CompanyUser::class, $company_user);
-        $this->assertInstanceOf(CompanyUserForm::class, $company_user->form);
-    }
-
-    /**
-     * @group company-user
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
-     */
     public function testGetFromForm()
     {
         $this->initDb();
@@ -74,7 +60,8 @@ class CompanyUserTest extends TestCase
             'company_id' => 2,
             'role' => User::ROLE_WORKER
         ]);
-        $company_user = CompanyUser::create($form);
+        $company_user = new CompanyUser();
+        $company_user->form = $form;
         $this->assertInstanceOf(CompanyUser::class, $company_user);
         $this->assertInstanceOf(CompanyUserForm::class, $company_user->form);
         $company_user->getFromForm();
@@ -99,7 +86,8 @@ class CompanyUserTest extends TestCase
             'company_id' => 1,
             'role' => User::ROLE_WORKER
         ]);
-        $company_user = CompanyUser::create($form);
+        $company_user = new CompanyUser();
+        $company_user->form = $form;
         $this->assertTrue($company_user->insertModel());
         $company_user->refresh();
         $this->assertInstanceOf(CompanyUser::class, $company_user);

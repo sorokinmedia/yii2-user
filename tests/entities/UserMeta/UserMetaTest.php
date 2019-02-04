@@ -194,11 +194,11 @@ class UserMetaTest extends TestCase
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      */
-    public function testGetTelegram()
+    public function testCheckTelegram()
     {
         $this->initDb();
         /** @var UserMeta $user_meta */
-        $user_meta_telegram = UserMeta::getTelegram(12345678);
+        $user_meta_telegram = UserMeta::checkTelegram(12345678);
         $this->assertEquals(12345678, $user_meta_telegram);
     }
 
