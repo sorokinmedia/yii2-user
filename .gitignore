@@ -1,5 +1,4 @@
 # Created by .ignore support plugin (hsz.mobi)
-vendor
+vendor/
 composer.lock
-.idea
-tests/runtime/
+.idea/
