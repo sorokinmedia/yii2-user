@@ -563,7 +563,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
         if (\Yii::$app->getRequest()->getCookies()->getValue('auth_token')) {
             \Yii::$app->getResponse()->getCookies()->remove('auth_token');
         }
-        setcookie('auth_token', $token, DateHelper::TIME_DAY_THIRTY, '/', $cookie_url, false, false);
+        setcookie('auth_token', $token, time() + DateHelper::TIME_DAY_THIRTY, '/', $cookie_url, false, false);
         return true;
     }
 
