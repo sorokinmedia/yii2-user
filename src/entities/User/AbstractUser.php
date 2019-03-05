@@ -652,7 +652,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
             $this->afterSignUp($form->role);
             $this->sendEmailConfirmation();
             $this->processInvites();
-            $this->processAffiliate();
+            $this->processAffiliate($form->affiliate_id);
             $transaction->commit();
         } catch (\Exception $e) {
             $transaction->rollBack();

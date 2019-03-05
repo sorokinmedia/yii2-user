@@ -17,6 +17,7 @@ use yii\db\Exception;
  * @property string $email
  * @property string $password
  * @property string $role
+ * @property int $affiliate_id
  * @property UserInterface $_user
  */
 class SignupForm extends Model
@@ -25,6 +26,7 @@ class SignupForm extends Model
     public $email;
     public $password;
     public $role;
+    public $affiliate_id;
 
     private $_user;
 
@@ -59,6 +61,8 @@ class SignupForm extends Model
 
             ['password', 'required'],
             ['password', 'string', 'min' => 6],
+
+            ['affiliate_id', 'integer']
         ];
     }
 
