@@ -870,6 +870,16 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     }
 
     /**
+     * todo: @ivan убери это из обязательного
+     * заглушка
+     * @return bool
+     */
+    public function processInvites()
+    {
+        return true;
+    }
+
+    /**
      * работа с аффилиатами при регистрации
      * @param int $affiliate_id
      * @return bool
