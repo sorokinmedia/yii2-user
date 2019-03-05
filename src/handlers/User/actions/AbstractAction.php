@@ -1,9 +1,7 @@
 <?php
 namespace sorokinmedia\user\handlers\User\actions;
 
-use sorokinmedia\user\forms\{
-    SignupForm,SignUpFormEmail
-};
+use sorokinmedia\user\forms\{SignupForm, SignUpFormConsole, SignUpFormEmail};
 use sorokinmedia\user\handlers\User\interfaces\ActionExecutable;
 use sorokinmedia\user\entities\User\UserInterface;
 
@@ -12,7 +10,7 @@ use sorokinmedia\user\entities\User\UserInterface;
  * @package sorokinmedia\user\handlers\User\actions
  *
  * @property UserInterface $user
- * @property SignupForm|SignUpFormEmail $signup_form
+ * @property SignupForm|SignUpFormEmail|SignUpFormConsole $signup_form
  */
 abstract class AbstractAction implements ActionExecutable
 {
@@ -22,17 +20,25 @@ abstract class AbstractAction implements ActionExecutable
     /**
      * AbstractAction constructor.
      * @param UserInterface $user
-     * @param SignupForm|null $signup_form
-     * @param SignUpFormEmail|null $signup_form_email
+     * @param SignupForm|null $sign_up_form
+     * @param SignUpFormEmail|null $sign_up_form_email
+     * @param SignUpFormConsole|null $sign_up_form_console
      */
-    public function __construct(UserInterface $user, SignupForm $signup_form = null, SignUpFormEmail $signup_form_email = null)
+    public function __construct(
+        UserInterface $user,
+        SignupForm $sign_up_form = null,
+        SignUpFormEmail $sign_up_form_email = null,
+        SignUpFormConsole $sign_up_form_console = null)
     {
         $this->user = $user;
-        if ($signup_form !== null){
-            $this->signup_form = $signup_form;
+        if ($sign_up_form !== null){
+            $this->signup_form = $sign_up_form;
         }
-        if ($signup_form_email !== null){
-            $this->signup_form = $signup_form_email;
+        if ($sign_up_form_email !== null){
+            $this->signup_form = $sign_up_form_email;
+        }
+        if ($sign_up_form_console !== null){
+            $this->signup_form = $sign_up_form_console;
         }
         return $this;
     }

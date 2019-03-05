@@ -6,9 +6,7 @@ use sorokinmedia\ar_relations\RelationInterface;
 use sorokinmedia\helpers\DateHelper;
 use sorokinmedia\user\entities\UserAccessToken\{AbstractUserAccessToken, UserAccessTokenInterface};
 use sorokinmedia\user\entities\UserMeta\json\UserMetaPhone;
-use sorokinmedia\user\forms\{
-    SignUpFormEmail, SignupForm
-};
+use sorokinmedia\user\forms\{SignUpFormConsole, SignUpFormEmail, SignupForm};
 use sorokinmedia\user\handlers\{
     UserAccessToken\UserAccessTokenHandler, UserInvite\interfaces\ProcessInvitesInterface
 };
@@ -697,6 +695,38 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     }
 
     /**
+     * регистрация пользователя по email. логином будет email с замененнными символами @ и . на _
+     * пароль будет сгенерирован и выслан на email
+     * @param SignUpFormConsole $form
+     * @return bool
+     * @throws Exception
+     * @throws ServerErrorHttpException
+     */
+    public function signUpConsole(SignUpFormConsole $form): bool
+    {
+        $transaction = \Yii::$app->db->beginTransaction();
+        try {
+            $this->username = $form->username;
+            $this->email = $form->email;
+            $this->setPassword($form->password);
+            $this->status_id = $form->status_id;
+            $this->generateAuthKey();
+            if ($this->status_id === self::STATUS_WAIT_EMAIL){
+                $this->generateEmailConfirmToken();
+            }
+            if (!$this->save()) {
+                throw new \Exception('Ошибка при регистрации #1');
+            }
+            $transaction->commit();
+            $this->afterSignUpConsole($form->role);
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            throw new ServerErrorHttpException($e->getMessage());
+        }
+        return true;
+    }
+
+    /**
      * метод, вызываемой после создания сущности пользователя. требует реализации в дочернем классе.
      * сюда вписывать доп действия - назначение роли, создание связанных сущностей, отсылку писем, уведомлений и прочее
      * @param string $role
@@ -711,6 +741,18 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * @return mixed
      */
     abstract public function afterSignUpEmail(string $role = null);
+
+    /**
+     * метод, вызываемый после создания сущности пользователя консольным способом (регистрации по апи и т.д.)
+     * сюда вписывать доп действия - назначение роли, создание связанных сущностей, отсылку писем, уведомлений и прочее
+     * используется заглушка, чтобы не делать абстракт. если метод нужен - нужно переопределить на проекте
+     * @param string|null $role
+     * @return mixed
+     */
+    public function afterSignUpConsole(string $role = null)
+    {
+        return true;
+    }
 
     /**
      * отправка письма с подтверждением e-mail

@@ -2,12 +2,11 @@
 
 namespace sorokinmedia\user\handlers\User;
 
-use sorokinmedia\user\forms\{
-    SignupForm, SignUpFormEmail
-};
+use sorokinmedia\user\forms\{SignupForm, SignUpFormConsole, SignUpFormEmail};
 use sorokinmedia\user\handlers\User\interfaces\{AddRole,
     Block,
     Create,
+    CreateFromConsole,
     CreateFromEmail,
     RevokeRole,
     Unblock,
@@ -21,7 +20,7 @@ use yii\rbac\Role;
  *
  * @property UserInterface $user
  */
-class UserHandler implements Create, CreateFromEmail, VerifyAccount, Block, Unblock, AddRole, RevokeRole
+class UserHandler implements Create, CreateFromEmail, CreateFromConsole, VerifyAccount, Block, Unblock, AddRole, RevokeRole
 {
     public $user;
 
@@ -57,6 +56,18 @@ class UserHandler implements Create, CreateFromEmail, VerifyAccount, Block, Unbl
     public function createFromEmail(SignUpFormEmail $sign_up_form_email): bool
     {
         return (new actions\CreateFromEmail($this->user, null, $sign_up_form_email))->execute();
+    }
+
+    /**
+     * регистрация пользователя через форму консольной регистрации
+     * @param SignUpFormConsole $sign_up_form_console
+     * @return bool
+     * @throws \yii\db\Exception
+     * @throws \yii\web\ServerErrorHttpException
+     */
+    public function createFromConsole(SignUpFormConsole $sign_up_form_console): bool
+    {
+        return (new actions\CreateFromConsole($this->user, null, null, $sign_up_form_console))->execute();
     }
 
     /**
