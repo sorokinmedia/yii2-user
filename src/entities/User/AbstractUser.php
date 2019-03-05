@@ -38,7 +38,7 @@ use yii\rbac\Role;
  * @property string $status
  * @property string $displayName
  */
-abstract class AbstractUser extends ActiveRecord implements IdentityInterface, UserInterface, RelationInterface, ProcessInvitesInterface
+abstract class AbstractUser extends ActiveRecord implements IdentityInterface, UserInterface, RelationInterface, ProcessInvitesInterface, ProcessAffiliateInterface
 {
     const STATUS_BLOCKED = 0;
     const STATUS_ACTIVE = 1;
@@ -652,6 +652,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
             $this->afterSignUp($form->role);
             $this->sendEmailConfirmation();
             $this->processInvites();
+            $this->processAffiliate();
             $transaction->commit();
         } catch (\Exception $e) {
             $transaction->rollBack();
@@ -819,5 +820,15 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
             return $this->userMeta->notification_email;
         }
         return $this->email;
+    }
+
+    /**
+     * работа с аффилиатами при регистрации
+     * @param int $affiliate_id
+     * @return bool
+     */
+    public function processAffiliate(int $affiliate_id): bool
+    {
+        return true;
     }
 }
