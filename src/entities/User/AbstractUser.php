@@ -718,7 +718,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
                 throw new \Exception('Ошибка при регистрации #1');
             }
             $transaction->commit();
-            $this->afterSignUpConsole($form->role);
+            $this->afterSignUpConsole($form->role, $form->custom_data);
         } catch (\Exception $e) {
             $transaction->rollBack();
             throw new ServerErrorHttpException($e->getMessage());
@@ -747,9 +747,10 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * сюда вписывать доп действия - назначение роли, создание связанных сущностей, отсылку писем, уведомлений и прочее
      * используется заглушка, чтобы не делать абстракт. если метод нужен - нужно переопределить на проекте
      * @param string|null $role
+     * @param array $custom_data
      * @return mixed
      */
-    public function afterSignUpConsole(string $role = null)
+    public function afterSignUpConsole(string $role = null, array $custom_data = [])
     {
         return true;
     }

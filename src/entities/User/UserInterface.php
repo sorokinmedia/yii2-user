@@ -341,9 +341,10 @@ interface UserInterface
      * метод, вызываемый после создания сущности пользователя консольным способом (регистрации по апи и т.д.)
      * сюда вписывать доп действия - назначение роли, создание связанных сущностей, отсылку писем, уведомлений и прочее
      * @param string|null $role
+     * @param array $custom_data
      * @return mixed
      */
-    public function afterSignUpConsole(string $role = null);
+    public function afterSignUpConsole(string $role = null, array $custom_data = []);
 
     /******************************************************************************************************************
      * СПИСКИ ПОЛЬЗОВАТЕЛЕЙ

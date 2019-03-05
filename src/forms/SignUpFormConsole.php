@@ -18,6 +18,7 @@ use yii\db\Exception;
  * @property string $password
  * @property string $role
  * @property int $status_id
+ * @property array $custom_data
  * @property UserInterface $_user
  */
 class SignUpFormConsole extends Model
@@ -27,6 +28,7 @@ class SignUpFormConsole extends Model
     public $password;
     public $role;
     public $status_id = AbstractUser::STATUS_ACTIVE;
+    public $custom_data = [];
 
     private $_user;
 
