@@ -17,6 +17,7 @@ use yii\db\Exception;
  * @property string $email
  * @property string $password
  * @property string $role
+ * @property int $status_id
  * @property UserInterface $_user
  */
 class SignUpFormEmail extends Model
@@ -25,6 +26,7 @@ class SignUpFormEmail extends Model
     public $email;
     public $password;
     public $role;
+    public $status_id = AbstractUser::STATUS_WAIT_EMAIL;
 
     private $_user;
 
@@ -58,12 +60,16 @@ class SignUpFormEmail extends Model
      * @param array $config
      * @param UserInterface $user
      * @param string $role
+     * @param int $status_id
      */
-    public function __construct(array $config = [], UserInterface $user, string $role)
+    public function __construct(array $config = [], UserInterface $user, string $role, int $status_id = null)
     {
         parent::__construct($config);
         $this->_user = $user;
         $this->role = $role;
+        if ($status_id !== null){
+            $this->status_id = $status_id;
+        }
     }
 
     /**

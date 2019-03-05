@@ -678,9 +678,11 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
             $this->username = $form->username;
             $this->email = $form->email;
             $this->setPassword($form->password);
-            $this->status_id = self::STATUS_WAIT_EMAIL;
+            $this->status_id = $form->status_id;
             $this->generateAuthKey();
-            $this->generateEmailConfirmToken();
+            if ($this->status_id === self::STATUS_WAIT_EMAIL){
+                $this->generateEmailConfirmToken();
+            }
             if (!$this->save()) {
                 throw new \Exception('Ошибка при регистрации #1');
             }
