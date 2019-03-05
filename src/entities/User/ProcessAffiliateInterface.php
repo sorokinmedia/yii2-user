@@ -9,8 +9,8 @@ interface ProcessAffiliateInterface
 {
     /**
      * работа с аффилиатами при регистрации
-     * @param int $affiliate_id
+     * @param int|null $affiliate_id
      * @return bool
      */
-    public function processAffiliate(int $affiliate_id): bool;
+    public function processAffiliate(int $affiliate_id = null): bool;
 }

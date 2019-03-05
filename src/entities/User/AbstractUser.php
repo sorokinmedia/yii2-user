@@ -652,7 +652,9 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
             $this->afterSignUp($form->role);
             $this->sendEmailConfirmation();
             $this->processInvites();
-            $this->processAffiliate($form->affiliate_id);
+            if ($form->affiliate_id !== null){
+                $this->processAffiliate($form->affiliate_id);
+            }
             $transaction->commit();
         } catch (\Exception $e) {
             $transaction->rollBack();
@@ -827,7 +829,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * @param int $affiliate_id
      * @return bool
      */
-    public function processAffiliate(int $affiliate_id): bool
+    public function processAffiliate(int $affiliate_id = null): bool
     {
         return true;
     }
