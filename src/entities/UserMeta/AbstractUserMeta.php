@@ -264,8 +264,12 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
         $array[] = $this->user->username;
         if ($this->full_name !== null) {
             $full_name = new UserMetaFullName($this->full_name);
-            $array[] = $full_name->surname . ' ' . $full_name->name;
-            $array[] = $full_name->name;
+            if ($full_name->surname !== '' && $full_name->name !== ''){
+                $array[] = $full_name->surname . ' ' . $full_name->name;
+            }
+            if ($full_name->name !== '' && $full_name->name !== null){
+                $array[] = $full_name->name;
+            }
         }
         return $array;
     }
