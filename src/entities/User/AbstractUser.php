@@ -175,6 +175,15 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     }
 
     /**
+     * действия, которые необходимо сделать после блокировки
+     * @return bool
+     */
+    public function afterBlockUser(): bool
+    {
+        return true;
+    }
+
+    /**
      * разблокировка юзера
      * @return bool
      * @throws \Exception
@@ -185,6 +194,15 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
         if (!$this->save()) {
             throw new Exception(\Yii::t('app', 'Ошибка при разблокировке пользователя'));
         }
+        return true;
+    }
+
+    /**
+     * действия, которые необходимо сделать после разблокировки
+     * @return bool
+     */
+    public function afterUnblockUser(): bool
+    {
         return true;
     }
 

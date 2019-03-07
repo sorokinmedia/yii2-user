@@ -13,6 +13,8 @@ class Unblock extends AbstractAction
     public function execute() : bool
     {
         $this->user->unblockUser();
+        $this->user->refresh();
+        $this->user->afterUnblockUser();
         return true;
     }
 }

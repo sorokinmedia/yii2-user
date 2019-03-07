@@ -47,10 +47,22 @@ interface UserInterface
     public function blockUser() : bool;
 
     /**
+     * действия, которые необходимо сделать после блокировки
+     * @return bool
+     */
+    public function afterBlockUser(): bool;
+
+    /**
      * разблокировка юзера
      * @return bool
      */
     public function unblockUser() : bool;
+
+    /**
+     * действия, которые необходимо сделать после разблокировки
+     * @return bool
+     */
+    public function afterUnblockUser(): bool;
 
     /**
      * верифицировать аккаунт - пройдены все проверки

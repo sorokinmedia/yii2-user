@@ -13,6 +13,8 @@ class Block extends AbstractAction
     public function execute() : bool
     {
         $this->user->blockUser();
+        $this->user->refresh();
+        $this->user->afterBlockUser();
         return true;
     }
 }
