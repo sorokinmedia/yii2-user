@@ -41,8 +41,8 @@ class UserMetaPhoneForm extends Model
     {
         return [
             [['country', 'number'], 'required'],
-            [['country'], 'in', 'range' => [7]],
-            [['number'], 'match', 'pattern' => '/^\d{10}$/'],
+            [['country'], 'in', 'range' => array_keys(UserMetaPhone::getCodes())],
+            [['number'], 'match', 'pattern' => '/^(\d{9}|\d{10})$/'],
             [['is_verified'], 'boolean', 'trueValue' => true, 'falseValue' => false, 'strict' => true],
             [['is_verified'], 'default', 'value' => false]
         ];

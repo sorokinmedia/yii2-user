@@ -39,8 +39,8 @@ class UserMetaPhoneFormTest extends TestCase
     public function testValidateFalse()
     {
         $form = new UserMetaPhoneForm([
-            'country' => 8,
-            'number' => 12398129381239123,
+            'country' => 9,
+            'number' => 12345678901,
             'is_verified' => 12
         ]);
         $this->assertFalse($form->validate());

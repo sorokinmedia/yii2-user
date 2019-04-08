@@ -36,12 +36,24 @@ class UserMetaPhone extends Model
     /**
      * @return array
      */
+    public static function getCodes(): array
+    {
+        return [
+            7 => \Yii::t('app', '+7'), // Россия Казахстан
+            375 => \Yii::t('app', '+375'), // Украина
+            380 => \Yii::t('app', '+380'), // Беларусь
+        ];
+    }
+
+    /**
+     * @return array
+     */
     public function rules() : array
     {
         return [
             [['country', 'number'], 'required'],
-            [['country'], 'in', 'range' => [7]],
-            [['number'], 'match', 'pattern' => '/^\d{10}$/'],
+            [['country'], 'in', 'range' => array_keys(self::getCodes())],
+            [['number'], 'match', 'pattern' => '/^(\d{9}|\d{10})$/'], // 9 или 10 цифр (9 - Украина, Беларусь, 10 - РФ, Казахстан)
             [['is_verified'], 'boolean'],
             [['is_verified'], 'default', 'value' => false]
         ];
