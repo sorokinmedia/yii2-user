@@ -555,7 +555,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     {
         /** @var AbstractUserAccessToken $token */
         $token = $this->__userAccessTokenClass::create($this, true);
-        if ($token instanceof $this->__userAccessTokenClass && $token->is_active == true) {
+        if ($token instanceof $this->__userAccessTokenClass && $token->is_active === 1) {
             // записываем токен в куки
             if (\Yii::$app->getRequest()->getCookies()->getValue('auth_token')) {
                 \Yii::$app->getResponse()->getCookies()->remove('auth_token');

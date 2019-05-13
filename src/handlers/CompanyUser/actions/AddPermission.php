@@ -14,6 +14,7 @@ class AddPermission extends AbstractActionWithPermission
     public function execute() : bool
     {
         $this->company_user->addPermission($this->permission);
+        $this->company_user->afterAddPermission($this->permission);
         return true;
     }
 }

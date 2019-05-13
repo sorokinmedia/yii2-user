@@ -173,6 +173,17 @@ abstract class AbstractCompanyUser extends ActiveRecord implements CompanyUserIn
     }
 
     /**
+     * вызывается после добавления пермишена
+     * можно переопределить на проекте
+     * @param AbstractCompanyUserPermission $permission
+     * @return bool
+     */
+    public function afterAddPermission(AbstractCompanyUserPermission $permission): bool
+    {
+        return true;
+    }
+
+    /**
      * удаление дополнительного разрешения
      * @param AbstractCompanyUserPermission $permission
      * @return bool
