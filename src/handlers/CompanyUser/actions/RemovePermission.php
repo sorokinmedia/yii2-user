@@ -14,6 +14,7 @@ class RemovePermission extends AbstractActionWithPermission
     public function execute() : bool
     {
         $this->company_user->removePermission($this->permission);
+        $this->company_user->afterRemovePermission($this->permission);
         return true;
     }
 }

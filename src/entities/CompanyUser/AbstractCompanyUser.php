@@ -201,4 +201,15 @@ abstract class AbstractCompanyUser extends ActiveRecord implements CompanyUserIn
         $this->permissions = $permissions;
         return $this->updateModel();
     }
+
+    /**
+     * вызывается после удаления пермишена
+     * можно переодпределить на проекте
+     * @param AbstractCompanyUserPermission $permission
+     * @return bool
+     */
+    public function afterRemovePermission(AbstractCompanyUserPermission $permission): bool
+    {
+        return true;
+    }
 }
