@@ -815,7 +815,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      */
     public function getDisplayName(): string
     {
-        return $this->userMeta->display_name;
+        return $this->userMeta->display_name ?? $this->username;
     }
 
     /**
