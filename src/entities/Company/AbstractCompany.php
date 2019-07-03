@@ -2,15 +2,13 @@
 
 namespace sorokinmedia\user\entities\Company;
 
-use sorokinmedia\user\entities\{
-    CompanyUser\AbstractCompanyUser, User\AbstractUser, User\UserInterface
-};
+use sorokinmedia\ar_relations\RelationInterface;
+use sorokinmedia\user\entities\{CompanyUser\AbstractCompanyUser, User\AbstractUser, User\UserInterface};
 use sorokinmedia\user\forms\CompanyUserForm;
 use sorokinmedia\user\handlers\CompanyUser\CompanyUserHandler;
-use sorokinmedia\ar_relations\RelationInterface;
-use yii\db\{
-    ActiveQuery, ActiveRecord, Exception
-};
+use Throwable;
+use Yii;
+use yii\db\{ActiveQuery, ActiveRecord, Exception, StaleObjectException};
 
 /**
  * This is the model class for table "company".
@@ -29,20 +27,54 @@ abstract class AbstractCompany extends ActiveRecord implements CompanyInterface,
     /**
      * @return string
      */
-    public static function tableName() : string
+    public static function tableName(): string
     {
         return 'company';
     }
 
     /**
+     * статический конструктор
+     * @param UserInterface $owner
+     * @param string $role
+     * @return CompanyInterface
+     * @throws Exception
+     * @throws Throwable
+     */
+    public static function create(UserInterface $owner, string $role): CompanyInterface
+    {
+        /** @var AbstractUser $owner */
+        $company = static::find()->where(['owner_id' => $owner->id])->one();
+        if ($company instanceof AbstractCompany) {
+            return $company;
+        }
+        $company = new static([
+            'owner_id' => $owner->id,
+        ]);
+        if (!$company->insert()) {
+            throw new Exception(Yii::t('app', 'Ошибка при добавлении компании'));
+        }
+        $company->refresh();
+        $form = new CompanyUserForm([
+            'company_id' => $company->id,
+            'user_id' => $company->owner_id,
+            'role' => $role,
+        ]);
+        $company_user = new $company->__companyUserClass([], $form);
+        if (!(new CompanyUserHandler($company_user))->create()) {
+            throw new Exception(Yii::t('app', 'Ошибка при добавлении сотрудника в компанию'));
+        }
+        return $company;
+    }
+
+    /**
      * @return array
      */
-    public function rules() : array
+    public function rules(): array
     {
         return [
             [['owner_id'], 'required'],
             [['owner_id'], 'exist', 'targetClass' => AbstractUser::class, 'targetAttribute' => ['owner_id' => 'id']],
-            [['name'], 'default', 'value' => \Yii::t('app', 'Моя компания')],
+            [['name'], 'default', 'value' => Yii::t('app', 'Моя компания')],
             [['name'], 'string', 'max' => 500],
             [['description'], 'string']
         ];
@@ -51,13 +83,13 @@ abstract class AbstractCompany extends ActiveRecord implements CompanyInterface,
     /**
      * @return array
      */
-    public function attributeLabels() : array
+    public function attributeLabels(): array
     {
         return [
-            'id' => \Yii::t('app', 'ID'),
-            'owner_id' => \Yii::t('app', 'Владелец'),
-            'name' => \Yii::t('app', 'Название'),
-            'description' => \Yii::t('app', 'Описание'),
+            'id' => Yii::t('app', 'ID'),
+            'owner_id' => Yii::t('app', 'Владелец'),
+            'name' => Yii::t('app', 'Название'),
+            'description' => Yii::t('app', 'Описание'),
         ];
     }
 
@@ -89,36 +121,19 @@ abstract class AbstractCompany extends ActiveRecord implements CompanyInterface,
     }
 
     /**
-     * статический конструктор
-     * @param UserInterface $owner
-     * @param string $role
-     * @return CompanyInterface
+     * @return bool
      * @throws Exception
-     * @throws \Throwable
+     * @throws Throwable
+     * @throws StaleObjectException
      */
-    public static function create(UserInterface $owner, string $role): CompanyInterface
+    public function deleteModel(): bool
     {
-        /** @var AbstractUser $owner */
-        $company = static::find()->where(['owner_id' => $owner->id])->one();
-        if ($company instanceof AbstractCompany) {
-            return $company;
+        foreach ($this->users as $companyUser) {
+            if ($companyUser instanceof AbstractCompanyUser) {
+                (new CompanyUserHandler($companyUser))->delete();
+            }
         }
-        $company = new static([
-            'owner_id' => $owner->id,
-        ]);
-        if (!$company->insert()) {
-            throw new Exception(\Yii::t('app', 'Ошибка при добавлении компании'));
-        }
-        $company->refresh();
-        $form = new CompanyUserForm([
-            'company_id' => $company->id,
-            'user_id' => $company->owner_id,
-            'role' => $role,
-        ]);
-        $company_user = new $company->__companyUserClass([], $form);
-        if (!(new CompanyUserHandler($company_user))->create()) {
-            throw new Exception(\Yii::t('app', 'Ошибка при добавлении сотрудника в компанию'));
-        }
-        return $company;
+        $this->delete();
+        return true;
     }
 }

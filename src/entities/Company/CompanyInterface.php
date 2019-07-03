@@ -36,4 +36,10 @@ interface CompanyInterface
      * @return CompanyInterface
      */
     public static function create(UserInterface $owner, string $role) : CompanyInterface;
+
+    /**
+     * удаление основной модели и связанных CompanyUserInterface
+     * @return bool
+     */
+    public function deleteModel(): bool;
 }
