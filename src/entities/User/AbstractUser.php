@@ -79,7 +79,6 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
 
             ['status_id', 'integer'],
             ['status_id', 'default', 'value' => AbstractUser::STATUS_ACTIVE],
-            ['status_id', 'in', 'range' => array_keys(AbstractUser::getStatusesArray())],
 
             ['newPassword', 'string', 'min' => 6],
             ['newPasswordRepeat', 'compare', 'compareAttribute' => 'newPassword'],
