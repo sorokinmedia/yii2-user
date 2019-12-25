@@ -64,6 +64,8 @@ class UserTest extends TestCase
             User::STATUS_BLOCKED => \Yii::t('app', 'Заблокирован'),
             User::STATUS_ACTIVE => \Yii::t('app','Активен'),
             User::STATUS_WAIT_EMAIL => \Yii::t('app','Ожидает подтверждения e-mail'),
+            User::STATUS_MODERATION => \Yii::t('app','На модерации'),
+            User::STATUS_LANDING => \Yii::t('app','С лендинга'),
         ], User::getStatusesArray());
     }
 

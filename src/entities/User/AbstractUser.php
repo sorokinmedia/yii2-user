@@ -41,6 +41,8 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     const STATUS_BLOCKED = 0;
     const STATUS_ACTIVE = 1;
     const STATUS_WAIT_EMAIL = 2;
+    const STATUS_MODERATION = 3;
+    const STATUS_LANDING = 4;
 
     public $newPassword;
     public $newPasswordRepeat;
@@ -79,6 +81,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
 
             ['status_id', 'integer'],
             ['status_id', 'default', 'value' => AbstractUser::STATUS_ACTIVE],
+            ['status_id', 'in', 'range' => array_keys(AbstractUser::getStatusesArray())],
 
             ['newPassword', 'string', 'min' => 6],
             ['newPasswordRepeat', 'compare', 'compareAttribute' => 'newPassword'],
@@ -130,6 +133,8 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
             self::STATUS_BLOCKED => \Yii::t('app', 'Заблокирован'),
             self::STATUS_ACTIVE => \Yii::t('app', 'Активен'),
             self::STATUS_WAIT_EMAIL => \Yii::t('app', 'Ожидает подтверждения e-mail'),
+            self::STATUS_MODERATION => \Yii::t('app', 'На модерации'),
+            self::STATUS_LANDING => \Yii::t('app', 'С лендинга'),
         ];
     }
 
