@@ -13,6 +13,7 @@ use sorokinmedia\user\handlers\UserMeta\UserMetaHandler;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\db\Exception;
+use Yii;
 
 /**
  * Class AbstractUserMeta
@@ -69,16 +70,16 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
     public function attributeLabels(): array
     {
         return [
-            'user_id' => \Yii::t('app', 'Пользователь'),
-            'notification_email' => \Yii::t('app', 'E-mail для уведомлений'),
-            'notification_phone' => \Yii::t('app', 'Телефон для уведомлений'),
-            'notification_telegram' => \Yii::t('app', 'Telegram для уведомлений'),
-            'full_name' => \Yii::t('app', 'Полное имя'),
-            'display_name' => \Yii::t('app', 'Отображаемое имя'),
-            'tz' => \Yii::t('app', 'Часовой пояс'),
-            'location' => \Yii::t('app', 'Страна/Город'),
-            'about' => \Yii::t('app', 'О себе'),
-            'custom_fields' => \Yii::t('app', 'Дополнительные данные'),
+            'user_id' => Yii::t('app', 'Пользователь'),
+            'notification_email' => Yii::t('app', 'E-mail для уведомлений'),
+            'notification_phone' => Yii::t('app', 'Телефон для уведомлений'),
+            'notification_telegram' => Yii::t('app', 'Telegram для уведомлений'),
+            'full_name' => Yii::t('app', 'Полное имя'),
+            'display_name' => Yii::t('app', 'Отображаемое имя'),
+            'tz' => Yii::t('app', 'Часовой пояс'),
+            'location' => Yii::t('app', 'Страна/Город'),
+            'about' => Yii::t('app', 'О себе'),
+            'custom_fields' => Yii::t('app', 'Дополнительные данные'),
         ];
     }
 
@@ -106,7 +107,7 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
     /**
      * трансфер данных из формы в модель
      */
-    public function getFromForm()
+    public function getFromForm(): void
     {
         if ($this->form !== null) {
             $this->notification_email = $this->form->notification_email;
@@ -154,7 +155,7 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
     public function insertModel(): bool
     {
         if (!$this->insert()) {
-            throw new Exception(\Yii::t('app', 'Ошибка при добавлении меты'));
+            throw new Exception(Yii::t('app', 'Ошибка при добавлении меты'));
         }
         return true;
     }
@@ -167,7 +168,7 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
     {
         $this->getFromForm();
         if (!$this->save()) {
-            throw new Exception(\Yii::t('app', 'Ошибка при обновлении модели в БД'));
+            throw new Exception(Yii::t('app', 'Ошибка при обновлении модели в БД'));
         }
         return true;
     }
@@ -182,7 +183,7 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
     {
         $this->notification_telegram = $chat_id;
         if (!$this->save()) {
-            throw new Exception(\Yii::t('app', 'Ошибка при добавлении ID телеграм чата пользователю: setTelegramId'));
+            throw new Exception(Yii::t('app', 'Ошибка при добавлении ID телеграм чата пользователю: setTelegramId'));
         }
         return true;
     }
@@ -192,7 +193,7 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
      * @param integer $chat_id
      * @return null|int
      */
-    public static function checkTelegram(int $chat_id)
+    public static function checkTelegram(int $chat_id): ?int
     {
         $user_meta = static::findOne(['notification_telegram' => $chat_id]);
         if ($user_meta) {
@@ -210,7 +211,7 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
     {
         $this->notification_telegram = null;
         if (!$this->save()) {
-            throw new Exception(\Yii::t('app', 'Ошибка при сбросе ID телеграм'));
+            throw new Exception(Yii::t('app', 'Ошибка при сбросе ID телеграм'));
         }
         return true;
     }
@@ -249,7 +250,7 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
     {
         $this->full_name = $userMetaFullName;
         if (!$this->save()) {
-            throw new Exception(\Yii::t('app', 'Ошибка при сохранении полного имени'));
+            throw new Exception(Yii::t('app', 'Ошибка при сохранении полного имени'));
         }
         return true;
     }

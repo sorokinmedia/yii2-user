@@ -2,22 +2,19 @@
 
 namespace sorokinmedia\user\entities\User;
 
+use RuntimeException;
 use sorokinmedia\ar_relations\RelationInterface;
 use sorokinmedia\helpers\DateHelper;
 use sorokinmedia\user\entities\UserAccessToken\{AbstractUserAccessToken, UserAccessTokenInterface};
 use sorokinmedia\user\entities\UserMeta\json\UserMetaPhone;
-use sorokinmedia\user\forms\{SignUpFormConsole, SignUpFormEmail, SignupForm};
-use sorokinmedia\user\handlers\{
-    UserAccessToken\UserAccessTokenHandler, UserInvite\interfaces\ProcessInvitesInterface
-};
+use sorokinmedia\user\forms\{SignupForm, SignUpFormConsole, SignUpFormEmail};
+use Throwable;
+use sorokinmedia\user\handlers\{UserAccessToken\UserAccessTokenHandler, UserInvite\interfaces\ProcessInvitesInterface};
+use Yii;
 use yii\behaviors\TimestampBehavior;
-use yii\db\{
-    ActiveRecord, Exception
-};
-use yii\web\{
-    IdentityInterface, ServerErrorHttpException
-};
+use yii\db\{ActiveQuery, ActiveRecord, Exception};
 use yii\rbac\Role;
+use yii\web\{IdentityInterface, ServerErrorHttpException};
 
 /**
  * Модель пользователя для работы с таблицей 'user'
@@ -38,11 +35,11 @@ use yii\rbac\Role;
  */
 abstract class AbstractUser extends ActiveRecord implements IdentityInterface, UserInterface, RelationInterface, ProcessInvitesInterface, ProcessAffiliateInterface
 {
-    const STATUS_BLOCKED = 0;
-    const STATUS_ACTIVE = 1;
-    const STATUS_WAIT_EMAIL = 2;
-    const STATUS_MODERATION = 3;
-    const STATUS_LANDING = 4;
+    public const STATUS_BLOCKED = 0;
+    public const STATUS_ACTIVE = 1;
+    public const STATUS_WAIT_EMAIL = 2;
+    public const STATUS_MODERATION = 3;
+    public const STATUS_LANDING = 4;
 
     public $newPassword;
     public $newPasswordRepeat;
@@ -56,195 +53,15 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     }
 
     /**
-     * @return int
-     */
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return array
-     */
-    public function rules()
-    {
-        return [
-            ['username', 'required'],
-            ['username', 'match', 'pattern' => '#^[\w_-]+$#i'],
-            ['username', 'unique', 'on' => 'create', 'targetClass' => AbstractUser::class, 'message' => \Yii::t('app', 'Такое имя пользователя уже занято')],
-            ['username', 'string', 'min' => 2, 'max' => 255],
-
-            ['email', 'required'],
-            ['email', 'email'],
-            ['email', 'unique', 'on' => 'create', 'targetClass' => AbstractUser::class, 'message' => \Yii::t('app', 'Такой e-mail уже зарегистрирован')],
-            ['email', 'string', 'max' => 255],
-
-            ['status_id', 'integer'],
-            ['status_id', 'default', 'value' => AbstractUser::STATUS_ACTIVE],
-            ['status_id', 'in', 'range' => array_keys(AbstractUser::getStatusesArray())],
-
-            ['newPassword', 'string', 'min' => 6],
-            ['newPasswordRepeat', 'compare', 'compareAttribute' => 'newPassword'],
-            [['last_entering_date'], 'integer'],
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    public function attributeLabels(): array
-    {
-        return [
-            'id' => \Yii::t('app', 'ID'),
-            'created_at' => \Yii::t('app', 'Дата регистрации'),
-            'username' => \Yii::t('app', 'Никнейм'),
-            'auth_key' => \Yii::t('app', 'API ключ'),
-            'email_confirm_token' => \Yii::t('app', 'Токен подтверждения e-mail'),
-            'password_hash' => \Yii::t('app', 'Password hash'),
-            'password_reset_token' => \Yii::t('app', 'Токен сброса пароля'),
-            'email' => \Yii::t('app', 'Email'),
-            'status_id' => \Yii::t('app', 'Статус'),
-            'last_entering_date' => \Yii::t('app', 'Последний вход'),
-        ];
-    }
-
-    /**
-     * обработка created_at/updated_at дат
-     * @return array
-     */
-    public function behaviors(): array
-    {
-        return [
-            [
-                'class' => TimestampBehavior::class,
-                'createdAtAttribute' => 'created_at',
-                'updatedAtAttribute' => false,
-            ],
-        ];
-    }
-
-    /**
-     * вернет массив статусов
-     * @return array
-     */
-    public static function getStatusesArray(): array
-    {
-        return [
-            self::STATUS_BLOCKED => \Yii::t('app', 'Заблокирован'),
-            self::STATUS_ACTIVE => \Yii::t('app', 'Активен'),
-            self::STATUS_WAIT_EMAIL => \Yii::t('app', 'Ожидает подтверждения e-mail'),
-            self::STATUS_MODERATION => \Yii::t('app', 'На модерации'),
-            self::STATUS_LANDING => \Yii::t('app', 'С лендинга'),
-        ];
-    }
-
-    /**
-     * вернет текст статуса
-     * @return string
-     */
-    public function getStatus(): string
-    {
-        return (static::getStatusesArray())[$this->status_id];
-    }
-
-    /**
-     * смена статуса на активный
-     */
-    public function activate()
-    {
-        $this->status_id = self::STATUS_ACTIVE;
-    }
-
-    /**
-     * смена статуса на заблокированный
-     */
-    public function deactivate()
-    {
-        $this->status_id = self::STATUS_BLOCKED;
-    }
-
-    /**
-     * блокировака юзера
-     * @return bool
-     * @throws \Exception
-     */
-    public function blockUser(): bool
-    {
-        $this->deactivate();
-        if (!$this->save()) {
-            print_r($this->getErrors());
-            throw new Exception(\Yii::t('app', 'Ошибка при блокировании пользователя'));
-        }
-        return true;
-    }
-
-    /**
-     * действия, которые необходимо сделать после блокировки
-     * @return bool
-     */
-    public function afterBlockUser(): bool
-    {
-        return true;
-    }
-
-    /**
-     * разблокировка юзера
-     * @return bool
-     * @throws \Exception
-     */
-    public function unblockUser(): bool
-    {
-        $this->activate();
-        if (!$this->save()) {
-            throw new Exception(\Yii::t('app', 'Ошибка при разблокировке пользователя'));
-        }
-        return true;
-    }
-
-    /**
-     * действия, которые необходимо сделать после разблокировки
-     * @return bool
-     */
-    public function afterUnblockUser(): bool
-    {
-        return true;
-    }
-
-    /**
-     * активация аккаунта после всех верификаций
-     * @return bool
-     * @throws Exception
-     */
-    public function verifyAccount(): bool
-    {
-        $this->activate();
-        if (!$this->save()) {
-            throw new Exception(\Yii::t('app', 'Ошибка при активации аккаунат'));
-        }
-        return true;
-    }
-
-    /**
      * TODO: need test
      * получает объект роли по ее названию
      * @param string $role_name
      * @return null|Role
      */
-    public static function getRole(string $role_name)
+    public static function getRole(string $role_name): ?Role
     {
-        return \Yii::$app->authManager->getRole($role_name);
+        return Yii::$app->authManager->getRole($role_name);
     }
-
-    /**
-     * получить основную роль пользователя
-     * требует реализации в дочернем классе
-     * @return string
-     */
-    abstract public function getPrimaryRole(): string;
-
-    /**********************************
-     * реализация интерфейсных методов
-     *********************************/
 
     /**
      * Идентификация пользователя для авторизации в Yii
@@ -276,57 +93,15 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     }
 
     /**
-     * получение API ключа
-     * @return string
-     */
-    public function getAuthKey(): string
-    {
-        return $this->auth_key;
-    }
-
-    /**
-     * валидация API ключа
-     * @param string $authKey
-     * @return bool
-     */
-    public function validateAuthKey($authKey): bool
-    {
-        return $this->auth_key === $authKey;
-    }
-
-    /**********************************************************
-     * методы для работы с паролем, сбросом пароля, поиск юзера
-     *********************************************************/
-
-    /**
-     * генерация токена для сброса пароля
-     * @throws \yii\base\Exception
-     */
-    public function generatePasswordResetToken()
-    {
-        $this->password_reset_token = \Yii::$app->security->generateRandomString() . '_' . time();
-    }
-
-    /**
-     * @return bool
-     * @throws \yii\base\Exception
-     */
-    public function saveGeneratedPasswordResetToken(): bool
-    {
-        $this->generatePasswordResetToken();
-        return $this->save();
-    }
-
-    /**
      * поиск по токену сброса пароля
      * @param int $expired
      * @param string $token
      * @return AbstractUser
      */
-    public static function findByPasswordResetToken(int $expired, string $token = null)
+    public static function findByPasswordResetToken(int $expired, string $token = null): AbstractUser
     {
         if (!static::isPasswordResetTokenValid($expired, $token)) {
-            throw new \RuntimeException(\Yii::t('app', 'Недействительный токен. Запросите сброс пароля еще раз.'));
+            throw new RuntimeException(Yii::t('app', 'Недействительный токен. Запросите сброс пароля еще раз.'));
         }
         return static::findOne([
             'password_reset_token' => $token,
@@ -351,26 +126,11 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     }
 
     /**
-     * сбрасывает токен сброса пароля
-     */
-    public function removePasswordResetToken()
-    {
-        $this->password_reset_token = null;
-    }
-
-    /**
-     * отправка письма с ссылкой сброса пароля
-     * необходима реализация метода в дочернем классе
-     * @return bool
-     */
-    abstract public function sendPasswordResetMail(): bool;
-
-    /**
      * поиск пользователя по e-mail
      * @param string $email
      * @return UserInterface|null
      */
-    public static function findByEmail(string $email)
+    public static function findByEmail(string $email): ?UserInterface
     {
         return static::findOne(['email' => $email]);
     }
@@ -383,7 +143,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      */
     public static function findByRole(string $role): array
     {
-        return static::find()->where(['id' => \Yii::$app->authManager->getUserIdsByRole($role)])->all();
+        return static::find()->where(['id' => Yii::$app->authManager->getUserIdsByRole($role)])->all();
     }
 
     /**
@@ -391,117 +151,9 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * @param string $email_confirm_token
      * @return static|null
      */
-    public static function findByEmailConfirmToken(string $email_confirm_token)
+    public static function findByEmailConfirmToken(string $email_confirm_token): ?AbstractUser
     {
         return static::findOne(['email_confirm_token' => $email_confirm_token, 'status_id' => [self::STATUS_WAIT_EMAIL]]);
-    }
-
-    /**
-     * генерит токен для подтверждения мыла
-     * @throws \yii\base\Exception
-     */
-    public function generateEmailConfirmToken()
-    {
-        $this->email_confirm_token = \Yii::$app->security->generateRandomString();
-    }
-
-    /**
-     * обнуляет токен для подтверждения мыла
-     */
-    public function removeEmailConfirmToken()
-    {
-        $this->email_confirm_token = null;
-    }
-
-    /**
-     * действия при подтверждении e-mail
-     * @return bool
-     */
-    public function confirmEmailAction(): bool
-    {
-        $this->activate();
-        $this->removeEmailConfirmToken();
-        return $this->save();
-    }
-
-    /**
-     * Валидация пароля
-     * @param string $password
-     * @return bool
-     */
-    public function validatePassword(string $password): bool
-    {
-        return \Yii::$app->security->validatePassword($password, $this->password_hash);
-    }
-
-    /**
-     * Генерация и сохранение хэша пароля
-     * @param string $password
-     * @throws \yii\base\Exception
-     */
-    public function setPassword(string $password)
-    {
-        $this->password_hash = \Yii::$app->security->generatePasswordHash($password);
-    }
-
-    /**
-     * сохранение нового пароля
-     * @param bool $reset_token
-     * @param string $password
-     * @return bool
-     * @throws \yii\base\Exception
-     */
-    public function saveNewPassword(string $password, bool $reset_token = false): bool
-    {
-        $this->setPassword($password);
-        if ($reset_token === true) {
-            $this->removePasswordResetToken();
-        }
-        return $this->save();
-    }
-
-    /**
-     * Генерация и сохранение аутификационного ключа
-     * @throws \yii\base\Exception
-     */
-    public function generateAuthKey()
-    {
-        $this->auth_key = \Yii::$app->security->generateRandomString();
-    }
-
-    /******************************************************************************************************************
-     * РАБОТА С РОЛЯМИ
-     *****************************************************************************************************************/
-
-    /**
-     * TODO: need test
-     * Апгрейд пользователя до нужной роли
-     * @param Role $role
-     * @return bool
-     * @throws \Exception
-     */
-    public function upgradeToRole(Role $role): bool
-    {
-        $auth = \Yii::$app->getAuthManager();
-        if ($auth->assign($role, $this->id)) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * TODO: need test
-     * Даунгрейд пользователя до нужной роли
-     * @param Role $role
-     * @return bool
-     */
-    public function downgradeFromRole(Role $role): bool
-    {
-        $auth = \Yii::$app->getAuthManager();
-        if ($auth->revoke($role, $this->id)) {
-            return true;
-        }
-        return false;
     }
 
     /**
@@ -518,16 +170,367 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      */
     abstract public static function getRoleLink(string $role = null);
 
-    /********************************
-     * работа с токенами авторизации
-     *******************************/
+    /**
+     * список пользователей в виде id=>username
+     * @return array
+     */
+    public static function getUsersArray(): array
+    {
+        return static::find()->select(['username', 'id'])->where(['status_id' => self::STATUS_ACTIVE])->indexBy('id')->orderBy(['id' => SORT_ASC])->column();
+    }
 
     /**
-     * @return mixed|\yii\db\ActiveQuery
+     * список всех активных пользователей
+     * @return array|AbstractUser[]|ActiveRecord[]
      */
-    public function getTokens()
+    public static function getActiveUsers(): array
     {
-        return $this->hasOne($this->__userAccessTokenClass, ['user_id' => 'id']);
+        return static::find()->where(['status_id' => self::STATUS_ACTIVE])->all();
+    }
+
+    /**
+     * //todo: need test
+     * установка ID телеграма пользователю
+     * @param int $id
+     * @param string $auth_key
+     * @return null|AbstractUser
+     */
+    public static function setTelegramId(int $id, string $auth_key): ?AbstractUser
+    {
+        $user = static::findOne(['auth_key' => $auth_key]);
+        if ($user !== null) {
+            $user->userMeta->setTelegram($id);
+            $user->telegramOn();
+            $user->refresh();
+            return $user;
+        }
+        return null;
+    }
+
+    /**
+     * //todo:need test
+     * включение телеграма в уведомлениях
+     * @return bool
+     */
+    abstract public function telegramOn(): bool;
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**********************************
+     * реализация интерфейсных методов
+     *********************************/
+
+    /**
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            ['username', 'required'],
+            ['username', 'match', 'pattern' => '#^[\w_-]+$#i'],
+            ['username', 'unique', 'on' => 'create', 'targetClass' => AbstractUser::class, 'message' => Yii::t('app', 'Такое имя пользователя уже занято')],
+            ['username', 'string', 'min' => 2, 'max' => 255],
+
+            ['email', 'required'],
+            ['email', 'email'],
+            ['email', 'unique', 'on' => 'create', 'targetClass' => AbstractUser::class, 'message' => Yii::t('app', 'Такой e-mail уже зарегистрирован')],
+            ['email', 'string', 'max' => 255],
+
+            ['status_id', 'integer'],
+            ['status_id', 'default', 'value' => AbstractUser::STATUS_ACTIVE],
+            ['status_id', 'in', 'range' => array_keys(AbstractUser::getStatusesArray())],
+
+            ['newPassword', 'string', 'min' => 6],
+            ['newPasswordRepeat', 'compare', 'compareAttribute' => 'newPassword'],
+            [['last_entering_date'], 'integer'],
+        ];
+    }
+
+    /**
+     * вернет массив статусов
+     * @return array
+     */
+    public static function getStatusesArray(): array
+    {
+        return [
+            self::STATUS_BLOCKED => Yii::t('app', 'Заблокирован'),
+            self::STATUS_ACTIVE => Yii::t('app', 'Активен'),
+            self::STATUS_WAIT_EMAIL => Yii::t('app', 'Ожидает подтверждения e-mail'),
+            self::STATUS_MODERATION => Yii::t('app', 'На модерации'),
+            self::STATUS_LANDING => Yii::t('app', 'С лендинга'),
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function attributeLabels(): array
+    {
+        return [
+            'id' => Yii::t('app', 'ID'),
+            'created_at' => Yii::t('app', 'Дата регистрации'),
+            'username' => Yii::t('app', 'Никнейм'),
+            'auth_key' => Yii::t('app', 'API ключ'),
+            'email_confirm_token' => Yii::t('app', 'Токен подтверждения e-mail'),
+            'password_hash' => Yii::t('app', 'Password hash'),
+            'password_reset_token' => Yii::t('app', 'Токен сброса пароля'),
+            'email' => Yii::t('app', 'Email'),
+            'status_id' => Yii::t('app', 'Статус'),
+            'last_entering_date' => Yii::t('app', 'Последний вход'),
+        ];
+    }
+
+    /**
+     * обработка created_at/updated_at дат
+     * @return array
+     */
+    public function behaviors(): array
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => false,
+            ],
+        ];
+    }
+
+    /**
+     * вернет текст статуса
+     * @return string
+     */
+    public function getStatus(): string
+    {
+        return (static::getStatusesArray())[$this->status_id];
+    }
+
+    /**
+     * блокировака юзера
+     * @return bool
+     * @throws \Exception
+     */
+    public function blockUser(): bool
+    {
+        $this->deactivate();
+        if (!$this->save()) {
+            print_r($this->getErrors());
+            throw new Exception(Yii::t('app', 'Ошибка при блокировании пользователя'));
+        }
+        return true;
+    }
+
+    /**
+     * смена статуса на заблокированный
+     */
+    public function deactivate(): void
+    {
+        $this->status_id = self::STATUS_BLOCKED;
+    }
+
+    /**
+     * действия, которые необходимо сделать после блокировки
+     * @return bool
+     */
+    public function afterBlockUser(): bool
+    {
+        return true;
+    }
+
+    /**
+     * разблокировка юзера
+     * @return bool
+     * @throws \Exception
+     */
+    public function unblockUser(): bool
+    {
+        $this->activate();
+        if (!$this->save()) {
+            throw new Exception(Yii::t('app', 'Ошибка при разблокировке пользователя'));
+        }
+        return true;
+    }
+
+    /**
+     * смена статуса на активный
+     */
+    public function activate(): void
+    {
+        $this->status_id = self::STATUS_ACTIVE;
+    }
+
+    /**
+     * действия, которые необходимо сделать после разблокировки
+     * @return bool
+     */
+    public function afterUnblockUser(): bool
+    {
+        return true;
+    }
+
+    /**
+     * активация аккаунта после всех верификаций
+     * @return bool
+     * @throws Exception
+     */
+    public function verifyAccount(): bool
+    {
+        $this->activate();
+        if (!$this->save()) {
+            throw new Exception(Yii::t('app', 'Ошибка при активации аккаунат'));
+        }
+        return true;
+    }
+
+    /**
+     * получить основную роль пользователя
+     * требует реализации в дочернем классе
+     * @return string
+     */
+    abstract public function getPrimaryRole(): string;
+
+    /**
+     * получение API ключа
+     * @return string
+     */
+    public function getAuthKey(): string
+    {
+        return $this->auth_key;
+    }
+
+    /**
+     * валидация API ключа
+     * @param string $authKey
+     * @return bool
+     */
+    public function validateAuthKey($authKey): bool
+    {
+        return $this->auth_key === $authKey;
+    }
+
+    /**
+     * @return bool
+     * @throws Yii\base\Exception
+     */
+    public function saveGeneratedPasswordResetToken(): bool
+    {
+        $this->generatePasswordResetToken();
+        return $this->save();
+    }
+
+    /**
+     * генерация токена для сброса пароля
+     * @throws Yii\base\Exception
+     */
+    public function generatePasswordResetToken(): void
+    {
+        $this->password_reset_token = Yii::$app->security->generateRandomString() . '_' . time();
+    }
+
+    /**
+     * отправка письма с ссылкой сброса пароля
+     * необходима реализация метода в дочернем классе
+     * @return bool
+     */
+    abstract public function sendPasswordResetMail(): bool;
+
+    /**
+     * действия при подтверждении e-mail
+     * @return bool
+     */
+    public function confirmEmailAction(): bool
+    {
+        $this->activate();
+        $this->removeEmailConfirmToken();
+        return $this->save();
+    }
+
+    /**
+     * обнуляет токен для подтверждения мыла
+     */
+    public function removeEmailConfirmToken(): void
+    {
+        $this->email_confirm_token = null;
+    }
+
+    /**
+     * Валидация пароля
+     * @param string $password
+     * @return bool
+     */
+    public function validatePassword(string $password): bool
+    {
+        return Yii::$app->security->validatePassword($password, $this->password_hash);
+    }
+
+    /**
+     * сохранение нового пароля
+     * @param bool $reset_token
+     * @param string $password
+     * @return bool
+     * @throws Yii\base\Exception
+     */
+    public function saveNewPassword(string $password, bool $reset_token = false): bool
+    {
+        $this->setPassword($password);
+        if ($reset_token === true) {
+            $this->removePasswordResetToken();
+        }
+        return $this->save();
+    }
+
+    /**
+     * Генерация и сохранение хэша пароля
+     * @param string $password
+     * @throws Yii\base\Exception
+     */
+    public function setPassword(string $password): void
+    {
+        $this->password_hash = Yii::$app->security->generatePasswordHash($password);
+    }
+
+    /**
+     * сбрасывает токен сброса пароля
+     */
+    public function removePasswordResetToken(): void
+    {
+        $this->password_reset_token = null;
+    }
+
+    /**
+     * TODO: need test
+     * Апгрейд пользователя до нужной роли
+     * @param Role $role
+     * @return bool
+     * @throws \Exception
+     */
+    public function upgradeToRole(Role $role): bool
+    {
+        $auth = Yii::$app->getAuthManager();
+        if ($auth->assign($role, $this->id)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * TODO: need test
+     * Даунгрейд пользователя до нужной роли
+     * @param Role $role
+     * @return bool
+     */
+    public function downgradeFromRole(Role $role): bool
+    {
+        $auth = Yii::$app->getAuthManager();
+        if ($auth->revoke($role, $this->id)) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -548,11 +551,19 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     }
 
     /**
+     * @return ActiveQuery
+     */
+    public function getTokens(): ActiveQuery
+    {
+        return $this->hasOne($this->__userAccessTokenClass, ['user_id' => 'id']);
+    }
+
+    /**
      * TODO: need test
      * Проставляем токены и куки после логина
      * @param string $cookie_url
      * @return bool
-     * @throws \Throwable
+     * @throws Throwable
      * @deprecated spa
      */
     public function afterLogin(string $cookie_url): bool
@@ -561,8 +572,8 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
         $token = $this->__userAccessTokenClass::create($this, true);
         if ($token instanceof $this->__userAccessTokenClass && $token->is_active === 1) {
             // записываем токен в куки
-            if (\Yii::$app->getRequest()->getCookies()->getValue('auth_token')) {
-                \Yii::$app->getResponse()->getCookies()->remove('auth_token');
+            if (Yii::$app->getRequest()->getCookies()->getValue('auth_token')) {
+                Yii::$app->getResponse()->getCookies()->remove('auth_token');
             }
             setcookie('auth_token', $token->access_token, time() + DateHelper::TIME_DAY_THIRTY, '/', $cookie_url, false, false);
             return true;
@@ -580,8 +591,8 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      */
     public function addCheckToken(string $token, string $cookie_url): bool
     {
-        if (\Yii::$app->getRequest()->getCookies()->getValue('auth_token')) {
-            \Yii::$app->getResponse()->getCookies()->remove('auth_token');
+        if (Yii::$app->getRequest()->getCookies()->getValue('auth_token')) {
+            Yii::$app->getResponse()->getCookies()->remove('auth_token');
         }
         setcookie('auth_token', $token, time() + DateHelper::TIME_DAY_THIRTY, '/', $cookie_url, false, false);
         return true;
@@ -594,8 +605,8 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      */
     public function getToken(): string
     {
-        if (\Yii::$app->session->get('auth_token')) { // берем из куки
-            $token = $this->__userAccessTokenClass::findOne(['access_token' => \Yii::$app->session->get('auth_token')]);
+        if (Yii::$app->session->get('auth_token')) { // берем из куки
+            $token = $this->__userAccessTokenClass::findOne(['access_token' => Yii::$app->session->get('auth_token')]);
             return $token->access_token;
         }
         return '';
@@ -604,7 +615,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     /**
      * Получить последний токен при заходе под другим юзером
      * @return mixed|string
-     * @throws \yii\db\Exception
+     * @throws Yii\db\Exception
      */
     public function getCheckToken(): string
     {
@@ -617,16 +628,16 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * Удаляем токены и куки после логаута
      * @return bool
      * @throws \Exception
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function afterLogout(): bool
     {
-        $token = \Yii::$app->getRequest()->getCookies()->getValue('auth_token');
+        $token = Yii::$app->getRequest()->getCookies()->getValue('auth_token');
         $websiteToken = $this->__userAccessTokenClass::findOne(['user_id' => $this->id, 'access_token' => $token]);
         if ($websiteToken instanceof $this->__userAccessTokenClass) {
             $websiteToken->deactivate();
         }
-        \Yii::$app->getResponse()->getCookies()->remove('auth_token');
+        Yii::$app->getResponse()->getCookies()->remove('auth_token');
         return true;
     }
 
@@ -640,25 +651,20 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     {
         $this->last_entering_date = time();
         if (!$this->save()) {
-            throw new Exception(\Yii::t('app', 'Ошибка обновления даты входа'));
+            throw new Exception(Yii::t('app', 'Ошибка обновления даты входа'));
         }
         return true;
     }
-
-    /******************************************************************************************************************
-     * РЕГИСТРАЦИЯ
-     *****************************************************************************************************************/
 
     /**
      * регистрация пользователя
      * @param SignupForm $form
      * @return bool
-     * @throws Exception
      * @throws ServerErrorHttpException
      */
     public function signUp(SignupForm $form): bool
     {
-        $transaction = \Yii::$app->db->beginTransaction();
+        $transaction = Yii::$app->db->beginTransaction();
         try {
             $this->username = $form->username;
             $this->email = $form->email;
@@ -667,12 +673,12 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
             $this->generateAuthKey();
             $this->generateEmailConfirmToken();
             if (!$this->save()) {
-                throw new \Exception('Ошибка при регистрации #1');
+                throw new RuntimeException('Ошибка при регистрации #1');
             }
             $this->afterSignUp($form->role);
             $this->sendEmailConfirmation();
             $this->processInvites();
-            if ($form->affiliate_id !== null){
+            if ($form->affiliate_id !== null) {
                 $this->processAffiliate($form->affiliate_id);
             }
             $transaction->commit();
@@ -684,27 +690,78 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     }
 
     /**
+     * Генерация и сохранение аутификационного ключа
+     * @throws Yii\base\Exception
+     */
+    public function generateAuthKey(): void
+    {
+        $this->auth_key = Yii::$app->security->generateRandomString();
+    }
+
+    /**
+     * генерит токен для подтверждения мыла
+     * @throws Yii\base\Exception
+     */
+    public function generateEmailConfirmToken(): void
+    {
+        $this->email_confirm_token = Yii::$app->security->generateRandomString();
+    }
+
+    /**
+     * метод, вызываемой после создания сущности пользователя. требует реализации в дочернем классе.
+     * сюда вписывать доп действия - назначение роли, создание связанных сущностей, отсылку писем, уведомлений и прочее
+     * @param string $role
+     * @return mixed
+     */
+    abstract public function afterSignUp(string $role = null);
+
+    /**
+     * отправка письма с подтверждением e-mail
+     * @return bool
+     */
+    abstract public function sendEmailConfirmation(): bool;
+
+    /**
+     * todo: @ivan убери это из обязательного
+     * заглушка
+     * @return bool
+     */
+    public function processInvites(): bool
+    {
+        return true;
+    }
+
+    /**
+     * работа с аффилиатами при регистрации
+     * @param int $affiliate_id
+     * @return bool
+     */
+    public function processAffiliate(int $affiliate_id = null): bool
+    {
+        return true;
+    }
+
+    /**
      * регистрация пользователя по email. логином будет email с замененнными символами @ и . на _
      * пароль будет сгенерирован и выслан на email
      * @param SignUpFormEmail $form
      * @return bool
-     * @throws Exception
      * @throws ServerErrorHttpException
      */
     public function signUpEmail(SignUpFormEmail $form): bool
     {
-        $transaction = \Yii::$app->db->beginTransaction();
+        $transaction = Yii::$app->db->beginTransaction();
         try {
             $this->username = $form->username;
             $this->email = $form->email;
             $this->setPassword($form->password);
             $this->status_id = $form->status_id;
             $this->generateAuthKey();
-            if ($this->status_id === self::STATUS_WAIT_EMAIL){
+            if ($this->status_id === self::STATUS_WAIT_EMAIL) {
                 $this->generateEmailConfirmToken();
             }
             if (!$this->save()) {
-                throw new \Exception('Ошибка при регистрации #1');
+                throw new RuntimeException('Ошибка при регистрации #1');
             }
             $transaction->commit();
             $this->afterSignUpEmail($form->role);
@@ -717,27 +774,41 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     }
 
     /**
+     * метод, вызываемой после создания сущности пользователя по email. требует реализации в дочернем классе.
+     * сюда вписывать доп действия - назначение роли, создание связанных сущностей, отсылку писем, уведомлений и прочее
+     * @param string $role
+     * @return mixed
+     */
+    abstract public function afterSignUpEmail(string $role = null);
+
+    /**
+     * отправка письма с подтверждением e-mail и сгенерированным паролем
+     * @param string $password
+     * @return bool
+     */
+    abstract public function sendEmailConfirmationWithPassword(string $password): bool;
+
+    /**
      * регистрация пользователя по email. логином будет email с замененнными символами @ и . на _
      * пароль будет сгенерирован и выслан на email
      * @param SignUpFormConsole $form
      * @return bool
-     * @throws Exception
      * @throws ServerErrorHttpException
      */
     public function signUpConsole(SignUpFormConsole $form): bool
     {
-        $transaction = \Yii::$app->db->beginTransaction();
+        $transaction = Yii::$app->db->beginTransaction();
         try {
             $this->username = $form->username;
             $this->email = $form->email;
             $this->setPassword($form->password);
             $this->status_id = $form->status_id;
             $this->generateAuthKey();
-            if ($this->status_id === self::STATUS_WAIT_EMAIL){
+            if ($this->status_id === self::STATUS_WAIT_EMAIL) {
                 $this->generateEmailConfirmToken();
             }
             if (!$this->save()) {
-                throw new \Exception('Ошибка при регистрации #1');
+                throw new RuntimeException('Ошибка при регистрации #1');
             }
             $transaction->commit();
             $this->afterSignUpConsole($form->role, $form->custom_data);
@@ -747,22 +818,6 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
         }
         return true;
     }
-
-    /**
-     * метод, вызываемой после создания сущности пользователя. требует реализации в дочернем классе.
-     * сюда вписывать доп действия - назначение роли, создание связанных сущностей, отсылку писем, уведомлений и прочее
-     * @param string $role
-     * @return mixed
-     */
-    abstract public function afterSignUp(string $role = null);
-
-    /**
-     * метод, вызываемой после создания сущности пользователя по email. требует реализации в дочернем классе.
-     * сюда вписывать доп действия - назначение роли, создание связанных сущностей, отсылку писем, уведомлений и прочее
-     * @param string $role
-     * @return mixed
-     */
-    abstract public function afterSignUpEmail(string $role = null);
 
     /**
      * метод, вызываемый после создания сущности пользователя консольным способом (регистрации по апи и т.д.)
@@ -775,41 +830,6 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     public function afterSignUpConsole(string $role = null, array $custom_data = [])
     {
         return true;
-    }
-
-    /**
-     * отправка письма с подтверждением e-mail
-     * @return bool
-     */
-    abstract public function sendEmailConfirmation(): bool;
-
-    /**
-     * отправка письма с подтверждением e-mail и сгенерированным паролем
-     * @param string $password
-     * @return bool
-     */
-    abstract public function sendEmailConfirmationWithPassword(string $password): bool;
-
-    /******************************************************************************************************************
-     * СПИСКИ ПОЛЬЗОВАТЕЛЕЙ
-     *****************************************************************************************************************/
-
-    /**
-     * список пользователей в виде id=>username
-     * @return array
-     */
-    public static function getUsersArray(): array
-    {
-        return static::find()->select(['username', 'id'])->where(['status_id' => self::STATUS_ACTIVE])->indexBy('id')->orderBy(['id' => SORT_ASC])->column();
-    }
-
-    /**
-     * список всех активных пользователей
-     * @return array|mixed|AbstractUser[]|ActiveRecord[]
-     */
-    public static function getActiveUsers()
-    {
-        return static::find()->where(['status_id' => self::STATUS_ACTIVE])->all();
     }
 
     /**
@@ -827,35 +847,10 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * получение ID телеграма пользователя
      * @return int|null
      */
-    public function getTelegramId()
+    public function getTelegramId(): ?int
     {
         return $this->userMeta->notification_telegram;
     }
-
-    /**
-     * //todo: need test
-     * установка ID телеграма пользователю
-     * @param int $id
-     * @param string $auth_key
-     * @return null|AbstractUser
-     */
-    public static function setTelegramId(int $id, string $auth_key)
-    {
-        $user = static::findOne(['auth_key' => $auth_key]);
-        if ($user !== null) {
-            $user->userMeta->setTelegram($id);
-            $user->telegramOn();
-            return $user;
-        }
-        return null;
-    }
-
-    /**
-     * //todo:need test
-     * включение телеграма в уведомлениях
-     * @return bool
-     */
-    abstract public function telegramOn(): bool;
 
     /**
      * //todo: need test
@@ -889,25 +884,5 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
             return $this->userMeta->notification_email;
         }
         return $this->email;
-    }
-
-    /**
-     * todo: @ivan убери это из обязательного
-     * заглушка
-     * @return bool
-     */
-    public function processInvites()
-    {
-        return true;
-    }
-
-    /**
-     * работа с аффилиатами при регистрации
-     * @param int $affiliate_id
-     * @return bool
-     */
-    public function processAffiliate(int $affiliate_id = null): bool
-    {
-        return true;
     }
 }

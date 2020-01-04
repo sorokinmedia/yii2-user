@@ -1,4 +1,5 @@
 <?php
+
 namespace sorokinmedia\user\entities\User;
 
 /**

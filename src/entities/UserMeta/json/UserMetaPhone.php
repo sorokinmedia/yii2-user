@@ -1,7 +1,9 @@
 <?php
+
 namespace sorokinmedia\user\entities\UserMeta\json;
 
 use sorokinmedia\user\forms\UserMetaPhoneForm;
+use Yii;
 use yii\base\Model;
 
 /**
@@ -26,7 +28,7 @@ class UserMetaPhone extends Model
     public function __construct(array $config = [], UserMetaPhoneForm $form = null)
     {
         parent::__construct($config);
-        if ($form !== null){
+        if ($form !== null) {
             $this->country = $form->country;
             $this->number = $form->number;
             $this->is_verified = $form->is_verified;
@@ -36,19 +38,7 @@ class UserMetaPhone extends Model
     /**
      * @return array
      */
-    public static function getCodes(): array
-    {
-        return [
-            7 => \Yii::t('app', '+7'), // Россия Казахстан
-            375 => \Yii::t('app', '+375'), // Украина
-            380 => \Yii::t('app', '+380'), // Беларусь
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    public function rules() : array
+    public function rules(): array
     {
         return [
             [['country', 'number'], 'required'],
@@ -62,19 +52,31 @@ class UserMetaPhone extends Model
     /**
      * @return array
      */
-    public function attributeLabels() : array
+    public static function getCodes(): array
     {
         return [
-            'country' => \Yii::t('app', 'Код страны'),
-            'number' => \Yii::t('app', 'Номер телефона'),
-            'is_verified' => \Yii::t('app', 'Подтвержден'),
+            7 => Yii::t('app', '+7'), // Россия Казахстан
+            375 => Yii::t('app', '+375'), // Украина
+            380 => Yii::t('app', '+380'), // Беларусь
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function attributeLabels(): array
+    {
+        return [
+            'country' => Yii::t('app', 'Код страны'),
+            'number' => Yii::t('app', 'Номер телефона'),
+            'is_verified' => Yii::t('app', 'Подтвержден'),
         ];
     }
 
     /**
      * верификация телефона
      */
-    public function verifyPhone()
+    public function verifyPhone(): void
     {
         $this->is_verified = true;
     }

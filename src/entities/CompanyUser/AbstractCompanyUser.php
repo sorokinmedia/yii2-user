@@ -2,12 +2,12 @@
 
 namespace sorokinmedia\user\entities\CompanyUser;
 
-use sorokinmedia\user\entities\{
-    Company\AbstractCompany, User\AbstractUser
-};
-use sorokinmedia\user\forms\CompanyUserForm;
 use sorokinmedia\ar_relations\RelationInterface;
-use yii\db\{ActiveQuery, ActiveRecord, Exception};
+use sorokinmedia\user\entities\{Company\AbstractCompany, User\AbstractUser};
+use sorokinmedia\user\forms\CompanyUserForm;
+use yii\db\{ActiveQuery, ActiveRecord, Exception, StaleObjectException};
+use Throwable;
+use Yii;
 use yii\rbac\Role;
 
 /**
@@ -29,9 +29,22 @@ abstract class AbstractCompanyUser extends ActiveRecord implements CompanyUserIn
     public $form;
 
     /**
+     * CompanyUser constructor.
+     * @param array $config
+     * @param CompanyUserForm|null $form
+     */
+    public function __construct(array $config = [], CompanyUserForm $form = null)
+    {
+        if ($form !== null) {
+            $this->form = $form;
+        }
+        parent::__construct($config);
+    }
+
+    /**
      * @return string
      */
-    public static function tableName() : string
+    public static function tableName(): string
     {
         return 'company_user';
     }
@@ -39,7 +52,7 @@ abstract class AbstractCompanyUser extends ActiveRecord implements CompanyUserIn
     /**
      * @return array
      */
-    public function rules() : array
+    public function rules(): array
     {
         return [
             [['company_id', 'user_id', 'role'], 'required'],
@@ -53,13 +66,13 @@ abstract class AbstractCompanyUser extends ActiveRecord implements CompanyUserIn
     /**
      * @return array
      */
-    public function attributeLabels() : array
+    public function attributeLabels(): array
     {
         return [
-            'company_id' => \Yii::t('app', 'Компания'),
-            'user_id' => \Yii::t('app', 'Пользователь'),
-            'role' => \Yii::t('app', 'Роль'),
-            'permissions' => \Yii::t('app', 'Разрешения'),
+            'company_id' => Yii::t('app', 'Компания'),
+            'user_id' => Yii::t('app', 'Пользователь'),
+            'role' => Yii::t('app', 'Роль'),
+            'permissions' => Yii::t('app', 'Разрешения'),
         ];
     }
 
@@ -80,30 +93,32 @@ abstract class AbstractCompanyUser extends ActiveRecord implements CompanyUserIn
     }
 
     /**
-     * @return null|\yii\rbac\Role
+     * @return null|Role
      */
-    public function getRoleObject()
+    public function getRoleObject(): ?Role
     {
-        return \Yii::$app->authManager->getRole($this->role);
+        return Yii::$app->authManager->getRole($this->role);
     }
 
     /**
-     * CompanyUser constructor.
-     * @param array $config
-     * @param CompanyUserForm|null $form
+     * добавление модели в БД
+     * @return bool
+     * @throws Exception
+     * @throws Throwable
      */
-    public function __construct(array $config = [], CompanyUserForm $form = null)
+    public function insertModel(): bool
     {
-        if ($form !== null) {
-            $this->form = $form;
+        $this->getFromForm();
+        if (!$this->insert()) {
+            throw new Exception(Yii::t('app', 'Ошибка при добавлении в БД'));
         }
-        parent::__construct($config);
+        return true;
     }
 
     /**
      * трансфер данных из формы в модель
      */
-    public function getFromForm()
+    public function getFromForm(): void
     {
         if ($this->form !== null) {
             $this->company_id = $this->form->company_id;
@@ -113,45 +128,16 @@ abstract class AbstractCompanyUser extends ActiveRecord implements CompanyUserIn
     }
 
     /**
-     * добавление модели в БД
-     * @return bool
-     * @throws Exception
-     * @throws \Throwable
-     */
-    public function insertModel(): bool
-    {
-        $this->getFromForm();
-        if (!$this->insert()) {
-            throw new Exception(\Yii::t('app', 'Ошибка при добавлении в БД'));
-        }
-        return true;
-    }
-
-    /**
-     * обновление модели в бд
-     * @return bool
-     * @throws Exception
-     */
-    public function updateModel(): bool
-    {
-        $this->getFromForm();
-        if (!$this->save()) {
-            throw new Exception(\Yii::t('app', 'Ошибка при обновлении в БД'));
-        }
-        return true;
-    }
-
-    /**
      * удаление из БД
      * @return bool
      * @throws Exception
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
+     * @throws Throwable
+     * @throws StaleObjectException
      */
     public function deleteModel(): bool
     {
         if (!$this->delete()) {
-            throw new Exception(\Yii::t('app', 'Ошибка при удалении из БД'));
+            throw new Exception(Yii::t('app', 'Ошибка при удалении из БД'));
         }
         return true;
     }
@@ -170,6 +156,20 @@ abstract class AbstractCompanyUser extends ActiveRecord implements CompanyUserIn
             $this->permissions = [$permission];
         }
         return $this->updateModel();
+    }
+
+    /**
+     * обновление модели в бд
+     * @return bool
+     * @throws Exception
+     */
+    public function updateModel(): bool
+    {
+        $this->getFromForm();
+        if (!$this->save()) {
+            throw new Exception(Yii::t('app', 'Ошибка при обновлении в БД'));
+        }
+        return true;
     }
 
     /**

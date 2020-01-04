@@ -44,7 +44,7 @@ abstract class AbstractCompany extends ActiveRecord implements CompanyInterface,
     {
         /** @var AbstractUser $owner */
         $company = static::find()->where(['owner_id' => $owner->id])->one();
-        if ($company instanceof AbstractCompany) {
+        if ($company instanceof self) {
             return $company;
         }
         $company = new static([

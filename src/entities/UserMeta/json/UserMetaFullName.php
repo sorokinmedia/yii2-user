@@ -1,6 +1,8 @@
 <?php
+
 namespace sorokinmedia\user\entities\UserMeta\json;
 
+use Yii;
 use yii\base\Model;
 
 /**
@@ -29,7 +31,7 @@ class UserMetaFullName extends Model
     /**
      * @return array
      */
-    public function rules() : array
+    public function rules(): array
     {
         return [
             [['surname', 'name', 'patronymic'], 'string'],
@@ -39,12 +41,12 @@ class UserMetaFullName extends Model
     /**
      * @return array
      */
-    public function attributeLabels() : array
+    public function attributeLabels(): array
     {
         return [
-            'surname' => \Yii::t('app', 'Фамилия'),
-            'name' => \Yii::t('app', 'Имя'),
-            'patronymic' => \Yii::t('app', 'Отчество'),
+            'surname' => Yii::t('app', 'Фамилия'),
+            'name' => Yii::t('app', 'Имя'),
+            'patronymic' => Yii::t('app', 'Отчество'),
         ];
     }
 }

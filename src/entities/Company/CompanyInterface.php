@@ -2,6 +2,7 @@
 namespace sorokinmedia\user\entities\Company;
 
 use sorokinmedia\user\entities\User\UserInterface;
+use yii\db\ActiveQuery;
 
 /**
  * Interface CompanyInterface
@@ -15,13 +16,13 @@ interface CompanyInterface
      * владелец компании
      * @return mixed
      */
-    public function getOwner();
+    public function getOwner(): ActiveQuery;
 
     /**
      * список пользователей, входящих в компанию
      * @return mixed
      */
-    public function getUsers();
+    public function getUsers(): ActiveQuery;
 
     /**
      * получить список ID сотрудников компании

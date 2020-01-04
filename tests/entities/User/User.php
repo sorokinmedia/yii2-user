@@ -73,8 +73,8 @@ class User extends AbstractUser
         return true;
     }
 
-    public function processInvites()
+    public function processInvites(): bool
     {
-        
+        return true;
     }
 }
