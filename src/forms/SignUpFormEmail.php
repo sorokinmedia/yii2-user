@@ -2,12 +2,12 @@
 
 namespace sorokinmedia\user\forms;
 
-use sorokinmedia\user\entities\User\{
-    AbstractUser, UserInterface
-};
+use sorokinmedia\user\entities\User\{AbstractUser, UserInterface};
 use sorokinmedia\user\handlers\User\UserHandler;
+use Yii;
 use yii\base\Model;
 use yii\db\Exception;
+use yii\web\ServerErrorHttpException;
 
 /**
  * Class SignUpFormEmail
@@ -31,31 +31,6 @@ class SignUpFormEmail extends Model
     private $_user;
 
     /**
-     * @return array
-     */
-    public function attributeLabels() : array
-    {
-        return [
-            'username' => \Yii::t('app', 'Имя пользователя'),
-            'email' => \Yii::t('app', 'E-mail'),
-            'password' => \Yii::t('app', 'Пароль'),
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    public function rules() : array
-    {
-        return [
-            ['email', 'filter', 'filter' => 'trim'],
-            ['email', 'required'],
-            ['email', 'email'],
-            ['email', 'unique', 'targetClass' => AbstractUser::class, 'message' => \Yii::t('app', 'Этот E-mail уже зарегистрирован в системе. Попробуйте использовать другой или восстановить пароль, указав текущий.')],
-        ];
-    }
-
-    /**
      * SignUpFormEmail constructor.
      * @param array $config
      * @param UserInterface $user
@@ -67,34 +42,41 @@ class SignUpFormEmail extends Model
         parent::__construct($config);
         $this->_user = $user;
         $this->role = $role;
-        if ($status_id !== null){
+        if ($status_id !== null) {
             $this->status_id = $status_id;
         }
     }
 
     /**
-     * @return UserInterface
+     * @return array
      */
-    public function getUser() : UserInterface
+    public function attributeLabels(): array
     {
-        return $this->_user;
+        return [
+            'username' => Yii::t('app', 'Имя пользователя'),
+            'email' => Yii::t('app', 'E-mail'),
+            'password' => Yii::t('app', 'Пароль'),
+        ];
     }
 
     /**
-     * подготовка данных
-     * @throws \yii\base\Exception
+     * @return array
      */
-    public function prepareUsernameAndPassword()
+    public function rules(): array
     {
-        $this->username = str_replace(['@', '.'], '_', $this->email);
-        $this->password = \Yii::$app->security->generateRandomString(6);
+        return [
+            ['email', 'filter', 'filter' => 'trim'],
+            ['email', 'required'],
+            ['email', 'email'],
+            ['email', 'unique', 'targetClass' => AbstractUser::class, 'message' => Yii::t('app', 'Этот E-mail уже зарегистрирован в системе. Попробуйте использовать другой или восстановить пароль, указав текущий.')],
+        ];
     }
 
     /**
      * @return bool
      * @throws Exception
      * @throws \yii\base\Exception
-     * @throws \yii\web\ServerErrorHttpException
+     * @throws ServerErrorHttpException
      */
     public function signUp(): bool
     {
@@ -105,5 +87,23 @@ class SignUpFormEmail extends Model
             return true;
         }
         return false;
+    }
+
+    /**
+     * @return UserInterface
+     */
+    public function getUser(): UserInterface
+    {
+        return $this->_user;
+    }
+
+    /**
+     * подготовка данных
+     * @throws \yii\base\Exception
+     */
+    public function prepareUsernameAndPassword(): void
+    {
+        $this->username = str_replace(['@', '.'], '_', $this->email);
+        $this->password = Yii::$app->security->generateRandomString(6);
     }
 }

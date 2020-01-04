@@ -2,11 +2,15 @@
 
 namespace sorokinmedia\user\forms;
 
-use sorokinmedia\user\entities\{
-    Company\AbstractCompany,CompanyUser\AbstractCompanyUser,User\AbstractUser,UserInvite\AbstractUserInvite
+use sorokinmedia\user\entities\{Company\AbstractCompany,
+    CompanyUser\AbstractCompanyUser,
+    User\AbstractUser,
+    UserInvite\AbstractUserInvite
 };
 use sorokinmedia\user\handlers\UserInvite\UserInviteHandler;
+use Yii;
 use yii\base\Model;
+use yii\db\Exception;
 use yii\db\Expression;
 use yii\rbac\Role;
 
@@ -47,7 +51,7 @@ class InviteForm extends Model
     /**
      * @return array
      */
-    public function rules() : array
+    public function rules(): array
     {
         return [
             [['email', 'role', 'company', 'initiator'], 'required'],
@@ -67,7 +71,7 @@ class InviteForm extends Model
     public function checkAtLeast($attribute): void
     {
         if (!$this->user && !$this->email) {
-            $this->addError($attribute, \Yii::t('app', 'Пользователь или email должны быть заполнены'));
+            $this->addError($attribute, Yii::t('app', 'Пользователь или email должны быть заполнены'));
         }
     }
 
@@ -85,12 +89,12 @@ class InviteForm extends Model
 
         if ($this->user) {
             $query->andWhere(['or', ['user_email' => $this->email], ['user_id' => $this->user->id]]);
-        }else{
+        } else {
             $query->andWhere(['user_email' => $this->email]);
         }
 
         if ($query->exists()) {
-            $this->addError($attribute, \Yii::t('app', 'Пришглашение этому пользователю уже отправлено'));
+            $this->addError($attribute, Yii::t('app', 'Пришглашение этому пользователю уже отправлено'));
         }
     }
 
@@ -99,7 +103,7 @@ class InviteForm extends Model
      */
     public function checkExistingLink($attribute)
     {
-        if ($this->user){
+        if ($this->user) {
             $query = AbstractCompanyUser::find()->where([
                 'company_id' => $this->company->id,
                 'user_id' => $this->user->id,
@@ -107,7 +111,7 @@ class InviteForm extends Model
             ]);
 
             if (empty($this->meta) && $query->exists()) {
-                $this->addError($attribute, \Yii::t('app', 'Пользователю уже выданы права'));
+                $this->addError($attribute, Yii::t('app', 'Пользователю уже выданы права'));
             }
         }
     }
@@ -115,7 +119,7 @@ class InviteForm extends Model
     /**
      * @return bool
      * @throws \yii\base\Exception
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
     public function invite(): bool
     {

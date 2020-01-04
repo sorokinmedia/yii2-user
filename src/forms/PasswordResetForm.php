@@ -1,7 +1,9 @@
 <?php
+
 namespace sorokinmedia\user\forms;
 
 use sorokinmedia\user\entities\User\UserInterface;
+use Yii;
 use yii\base\InvalidArgumentException;
 use yii\base\Model;
 
@@ -23,9 +25,26 @@ class PasswordResetForm extends Model
     private $_user;
 
     /**
+     * PasswordResetForm constructor.
+     * @param array $config
+     * @param UserInterface $user
+     */
+    public function __construct(array $config = [], UserInterface $user)
+    {
+        parent::__construct($config);
+        if (empty($this->token) || !is_string($this->token)) {
+            throw new InvalidArgumentException(Yii::t('app', 'Токен не может быть пустым'));
+        }
+        $this->_user = $user;
+        if (!$this->_user) {
+            throw new InvalidArgumentException(Yii::t('app', 'Неверный токен. Запросите сброс пароля еще раз'));
+        }
+    }
+
+    /**
      * @return array
      */
-    public function rules() : array
+    public function rules(): array
     {
         return [
             [['password', 'password_repeat', 'token'], 'required'],
@@ -37,35 +56,31 @@ class PasswordResetForm extends Model
     /**
      * @return array
      */
-    public function attributeLabels() : array
+    public function attributeLabels(): array
     {
         return [
-            'password' => \Yii::t('app', 'Пароль'),
-            'password_repeat' => \Yii::t('app', 'Повторите пароль'),
+            'password' => Yii::t('app', 'Пароль'),
+            'password_repeat' => Yii::t('app', 'Повторите пароль'),
         ];
     }
 
     /**
-     * PasswordResetForm constructor.
-     * @param array $config
-     * @param UserInterface $user
+     * @return bool
      */
-    public function __construct(array $config = [], UserInterface $user)
+    public function resetPassword(): bool
     {
-        parent::__construct($config);
-        if (empty($this->token) || !is_string($this->token)) {
-            throw new InvalidArgumentException(\Yii::t('app', 'Токен не может быть пустым'));
+        $user = $this->getUser();
+        if (!$this->checkRepeat()) {
+            return false;
         }
-        $this->_user = $user;
-        if (!$this->_user) {
-            throw new InvalidArgumentException(\Yii::t('app','Неверный токен. Запросите сброс пароля еще раз'));
-        }
+        $user->removePasswordResetToken();
+        return $user->saveNewPassword($this->password, true);
     }
 
     /**
      * @return UserInterface
      */
-    public function getUser() : UserInterface
+    public function getUser(): UserInterface
     {
         return $this->_user;
     }
@@ -73,25 +88,12 @@ class PasswordResetForm extends Model
     /**
      * @return bool
      */
-    public function checkRepeat() : bool
+    public function checkRepeat(): bool
     {
         if ($this->password === $this->password_repeat) {
             return true;
         }
-        $this->addError('password_repeat', \Yii::t('app','Пароли не совпадают'));
+        $this->addError('password_repeat', Yii::t('app', 'Пароли не совпадают'));
         return false;
-    }
-
-    /**
-     * @return bool
-     */
-    public function resetPassword() : bool
-    {
-        $user = $this->getUser();
-        if (!$this->checkRepeat()){
-            return false;
-        }
-        $user->removePasswordResetToken();
-        return $user->saveNewPassword($this->password, true);
     }
 }

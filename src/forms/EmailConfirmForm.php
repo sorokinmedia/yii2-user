@@ -3,9 +3,8 @@
 namespace sorokinmedia\user\forms;
 
 use sorokinmedia\user\entities\User\UserInterface;
-use yii\base\{
-    InvalidArgumentException,Model
-};
+use yii\base\{InvalidArgumentException, Model};
+use Yii;
 
 /**
  * Class EmailConfirmForm
@@ -28,11 +27,11 @@ class EmailConfirmForm extends Model
     {
         parent::__construct($config);
         if (empty($this->token) || !is_string($this->token)) {
-            throw new InvalidArgumentException(\Yii::t('app', 'Отсутствует код подтверждения.'));
+            throw new InvalidArgumentException(Yii::t('app', 'Отсутствует код подтверждения.'));
         }
         $this->_user = $user;
         if (!$this->_user) {
-            throw new InvalidArgumentException(\Yii::t('app', 'Неверный токен.'));
+            throw new InvalidArgumentException(Yii::t('app', 'Неверный токен.'));
         }
     }
 

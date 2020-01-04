@@ -2,9 +2,9 @@
 
 namespace sorokinmedia\user\forms;
 
-use sorokinmedia\user\entities\{
-    User\AbstractUser,User\UserInterface
-};
+use sorokinmedia\user\entities\{User\AbstractUser, User\UserInterface};
+use Yii;
+use yii\base\Exception;
 use yii\base\Model;
 
 /**
@@ -22,13 +22,22 @@ class PasswordResetRequestForm extends Model
     private $_user;
 
     /**
+     * PasswordResetRequestForm constructor.
+     * @param array $config
+     */
+    public function __construct(array $config = [])
+    {
+        parent::__construct($config);
+    }
+
+    /**
      * @return array
      */
     public function attributeLabels(): array
     {
         return [
-            'email' => \Yii::t('app', 'E-mail'),
-            'password_reset_token_expire' => \Yii::t('app', 'Срок истечения токена'),
+            'email' => Yii::t('app', 'E-mail'),
+            'password_reset_token_expire' => Yii::t('app', 'Срок истечения токена'),
         ];
     }
 
@@ -46,12 +55,20 @@ class PasswordResetRequestForm extends Model
     }
 
     /**
-     * PasswordResetRequestForm constructor.
-     * @param array $config
+     * @return bool
+     * @throws Exception
      */
-    public function __construct(array $config = [])
+    public function sendEmail(): bool
     {
-        parent::__construct($config);
+        /** @var AbstractUser $user */
+        $user = $this->getUser();
+        if ($user === null) {
+            return false;
+        }
+        if (!AbstractUser::isPasswordResetTokenValid($this->password_reset_token_expire, $user->email_confirm_token)) {
+            $user->saveGeneratedPasswordResetToken();
+        }
+        return $user->sendPasswordResetMail();
     }
 
     /**
@@ -66,25 +83,8 @@ class PasswordResetRequestForm extends Model
      * сеттер для $_user
      * @param UserInterface $user
      */
-    public function setUser(UserInterface $user)
+    public function setUser(UserInterface $user): void
     {
         $this->_user = $user;
-    }
-
-    /**
-     * @return bool
-     * @throws \yii\base\Exception
-     */
-    public function sendEmail(): bool
-    {
-        /** @var AbstractUser $user */
-        $user = $this->getUser();
-        if ($user === null) {
-            return false;
-        }
-        if (!AbstractUser::isPasswordResetTokenValid($this->password_reset_token_expire, $user->email_confirm_token)) {
-            $user->saveGeneratedPasswordResetToken();
-        }
-        return $user->sendPasswordResetMail();
     }
 }

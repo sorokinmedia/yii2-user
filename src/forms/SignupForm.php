@@ -2,12 +2,12 @@
 
 namespace sorokinmedia\user\forms;
 
-use sorokinmedia\user\entities\User\{
-    AbstractUser, UserInterface
-};
+use sorokinmedia\user\entities\User\{AbstractUser, UserInterface};
 use sorokinmedia\user\handlers\User\UserHandler;
+use Yii;
 use yii\base\Model;
 use yii\db\Exception;
+use yii\web\ServerErrorHttpException;
 
 /**
  * Class SignupForm
@@ -31,42 +31,6 @@ class SignupForm extends Model
     private $_user;
 
     /**
-     * @return array
-     */
-    public function attributeLabels() : array
-    {
-        return [
-            'username' => \Yii::t('app', 'Имя пользователя'),
-            'email' => \Yii::t('app', 'E-mail'),
-            'password' => \Yii::t('app', 'Пароль'),
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    public function rules() : array
-    {
-        return [
-            ['username', 'filter', 'filter' => 'trim'],
-            ['username', 'required'],
-            ['username', 'match', 'pattern' => '#^[\w_-]+$#i'],
-            ['username', 'unique', 'targetClass' => AbstractUser::class, 'message' => \Yii::t('app', 'Этот логин уже занят. Попробуйте использовать другой.')],
-            ['username', 'string', 'min' => 2, 'max' => 255],
-
-            ['email', 'filter', 'filter' => 'trim'],
-            ['email', 'required'],
-            ['email', 'email'],
-            ['email', 'unique', 'targetClass' => AbstractUser::class, 'message' => \Yii::t('app', 'Этот E-mail уже зарегистрирован в системе. Попробуйте использовать другой или восстановить пароль, указав текущий.')],
-
-            ['password', 'required'],
-            ['password', 'string', 'min' => 6],
-
-            ['affiliate_id', 'integer']
-        ];
-    }
-
-    /**
      * SignupForm constructor.
      * @param array $config
      * @param UserInterface $user
@@ -82,17 +46,45 @@ class SignupForm extends Model
     }
 
     /**
-     * @return UserInterface
+     * @return array
      */
-    public function getUser() : UserInterface
+    public function attributeLabels(): array
     {
-        return $this->_user;
+        return [
+            'username' => Yii::t('app', 'Имя пользователя'),
+            'email' => Yii::t('app', 'E-mail'),
+            'password' => Yii::t('app', 'Пароль'),
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function rules(): array
+    {
+        return [
+            ['username', 'filter', 'filter' => 'trim'],
+            ['username', 'required'],
+            ['username', 'match', 'pattern' => '#^[\w_-]+$#i'],
+            ['username', 'unique', 'targetClass' => AbstractUser::class, 'message' => Yii::t('app', 'Этот логин уже занят. Попробуйте использовать другой.')],
+            ['username', 'string', 'min' => 2, 'max' => 255],
+
+            ['email', 'filter', 'filter' => 'trim'],
+            ['email', 'required'],
+            ['email', 'email'],
+            ['email', 'unique', 'targetClass' => AbstractUser::class, 'message' => Yii::t('app', 'Этот E-mail уже зарегистрирован в системе. Попробуйте использовать другой или восстановить пароль, указав текущий.')],
+
+            ['password', 'required'],
+            ['password', 'string', 'min' => 6],
+
+            ['affiliate_id', 'integer']
+        ];
     }
 
     /**
      * @return bool
      * @throws Exception
-     * @throws \yii\web\ServerErrorHttpException
+     * @throws ServerErrorHttpException
      */
     public function signUp(): bool
     {
@@ -102,5 +94,13 @@ class SignupForm extends Model
             return true;
         }
         return false;
+    }
+
+    /**
+     * @return UserInterface
+     */
+    public function getUser(): UserInterface
+    {
+        return $this->_user;
     }
 }

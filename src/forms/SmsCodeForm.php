@@ -3,6 +3,7 @@
 namespace sorokinmedia\user\forms;
 
 use sorokinmedia\user\entities\SmsCode\AbstractSmsCode;
+use Yii;
 use yii\base\Model;
 
 /**
@@ -30,36 +31,6 @@ class SmsCodeForm extends Model
     public $is_deleted;
 
     /**
-     * @return array
-     */
-    public function rules() : array
-    {
-        return [
-            [['user_id', 'type_id', 'is_used', 'code'], 'integer'],
-            [['ip'], 'ip'],
-            [['phone'], 'string', 'max' => 12],
-            [['is_validated', 'is_deleted'], 'boolean'],
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    public function attributeLabels() : array
-    {
-        return [
-            'user_id' => \Yii::t('app', 'Пользователь'),
-            'phone' => \Yii::t('app', 'Номер телефона'),
-            'code' => \Yii::t('app', 'Код'),
-            'type_id' => \Yii::t('app', 'Тип'),
-            'ip' => \Yii::t('app', 'IP'),
-            'is_used' => \Yii::t('app', 'Кол-во использований'),
-            'is_validated' => \Yii::t('app', 'Проверен'),
-            'is_deleted' => \Yii::t('app', 'Удален'),
-        ];
-    }
-
-    /**
      * SmsCodeForm constructor.
      * @param array $config
      * @param AbstractSmsCode|null $smsCode
@@ -77,5 +48,35 @@ class SmsCodeForm extends Model
             $this->is_deleted = $smsCode->is_deleted;
         }
         parent::__construct($config);
+    }
+
+    /**
+     * @return array
+     */
+    public function rules(): array
+    {
+        return [
+            [['user_id', 'type_id', 'is_used', 'code'], 'integer'],
+            [['ip'], 'ip'],
+            [['phone'], 'string', 'max' => 12],
+            [['is_validated', 'is_deleted'], 'boolean'],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function attributeLabels(): array
+    {
+        return [
+            'user_id' => Yii::t('app', 'Пользователь'),
+            'phone' => Yii::t('app', 'Номер телефона'),
+            'code' => Yii::t('app', 'Код'),
+            'type_id' => Yii::t('app', 'Тип'),
+            'ip' => Yii::t('app', 'IP'),
+            'is_used' => Yii::t('app', 'Кол-во использований'),
+            'is_validated' => Yii::t('app', 'Проверен'),
+            'is_deleted' => Yii::t('app', 'Удален'),
+        ];
     }
 }

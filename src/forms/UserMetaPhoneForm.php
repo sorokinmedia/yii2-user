@@ -3,6 +3,7 @@
 namespace sorokinmedia\user\forms;
 
 use sorokinmedia\user\entities\UserMeta\json\UserMetaPhone;
+use Yii;
 use yii\base\Model;
 
 /**
@@ -37,7 +38,7 @@ class UserMetaPhoneForm extends Model
     /**
      * @return array
      */
-    public function rules() : array
+    public function rules(): array
     {
         return [
             [['country', 'number'], 'required'],
@@ -51,12 +52,12 @@ class UserMetaPhoneForm extends Model
     /**
      * @return array
      */
-    public function attributeLabels() : array
+    public function attributeLabels(): array
     {
         return [
-            'country' => \Yii::t('app', 'Код страны'),
-            'number' => \Yii::t('app', 'Номер телефона'),
-            'is_verified' => \Yii::t('app', 'Подтвержден'),
+            'country' => Yii::t('app', 'Код страны'),
+            'number' => Yii::t('app', 'Номер телефона'),
+            'is_verified' => Yii::t('app', 'Подтвержден'),
         ];
     }
 }

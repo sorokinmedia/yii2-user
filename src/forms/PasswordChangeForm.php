@@ -3,6 +3,7 @@
 namespace sorokinmedia\user\forms;
 
 use sorokinmedia\user\entities\User\UserInterface;
+use Yii;
 use yii\base\Model;
 
 /**
@@ -22,30 +23,6 @@ class PasswordChangeForm extends Model
     private $_user;
 
     /**
-     * @return array
-     */
-    public function rules() : array
-    {
-        return [
-            [['password', 'password_repeat'], 'required'],
-            [['password'], 'string', 'min' => 6],
-            [['password_repeat'], 'string'],
-            [['password_repeat'], 'compare', 'compareAttribute' => 'password', 'message' => \Yii::t('app', 'Пароли не совпадают')]
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    public function attributeLabels() : array
-    {
-        return [
-            'password' => \Yii::t('app', 'Пароль'),
-            'password_repeat' => \Yii::t('app', 'Повторите пароль'),
-        ];
-    }
-
-    /**
      * PasswordChangeForm constructor.
      * @param array $config
      * @param UserInterface $user
@@ -57,23 +34,27 @@ class PasswordChangeForm extends Model
     }
 
     /**
-     * @return UserInterface
+     * @return array
      */
-    public function getUser() : UserInterface
+    public function rules(): array
     {
-        return $this->_user;
+        return [
+            [['password', 'password_repeat'], 'required'],
+            [['password'], 'string', 'min' => 6],
+            [['password_repeat'], 'string'],
+            [['password_repeat'], 'compare', 'compareAttribute' => 'password', 'message' => Yii::t('app', 'Пароли не совпадают')]
+        ];
     }
 
     /**
-     * @return bool
+     * @return array
      */
-    public function checkRepeat(): bool
+    public function attributeLabels(): array
     {
-        if ($this->password === $this->password_repeat) {
-            return true;
-        }
-        $this->addError('password_repeat', \Yii::t('app', 'Пароли не совпадают'));
-        return false;
+        return [
+            'password' => Yii::t('app', 'Пароль'),
+            'password_repeat' => Yii::t('app', 'Повторите пароль'),
+        ];
     }
 
     /**
@@ -86,5 +67,25 @@ class PasswordChangeForm extends Model
             return false;
         }
         return $user->saveNewPassword($this->password);
+    }
+
+    /**
+     * @return UserInterface
+     */
+    public function getUser(): UserInterface
+    {
+        return $this->_user;
+    }
+
+    /**
+     * @return bool
+     */
+    public function checkRepeat(): bool
+    {
+        if ($this->password === $this->password_repeat) {
+            return true;
+        }
+        $this->addError('password_repeat', Yii::t('app', 'Пароли не совпадают'));
+        return false;
     }
 }

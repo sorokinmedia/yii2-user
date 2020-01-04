@@ -3,6 +3,7 @@
 namespace sorokinmedia\user\forms;
 
 use sorokinmedia\user\entities\CompanyUser\AbstractCompanyUser;
+use Yii;
 use yii\base\Model;
 
 /**
@@ -20,30 +21,6 @@ class CompanyUserForm extends Model
     public $role;
 
     /**
-     * @return array
-     */
-    public function rules() : array
-    {
-        return [
-            [['company_id', 'user_id', 'role'], 'required'],
-            [['company_id', 'user_id'], 'integer'],
-            [['role'], 'string', 'max' => 255],
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    public function attributeLabels() : array
-    {
-        return [
-            'company_id' => \Yii::t('app', 'Компания'),
-            'user_id' => \Yii::t('app', 'Пользователь'),
-            'role' => \Yii::t('app', 'Роль'),
-        ];
-    }
-
-    /**
      * CompanyUserForm constructor.
      * @param array $config
      * @param AbstractCompanyUser|null $companyUser
@@ -56,5 +33,29 @@ class CompanyUserForm extends Model
             $this->role = $companyUser->role;
         }
         parent::__construct($config);
+    }
+
+    /**
+     * @return array
+     */
+    public function rules(): array
+    {
+        return [
+            [['company_id', 'user_id', 'role'], 'required'],
+            [['company_id', 'user_id'], 'integer'],
+            [['role'], 'string', 'max' => 255],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function attributeLabels(): array
+    {
+        return [
+            'company_id' => Yii::t('app', 'Компания'),
+            'user_id' => Yii::t('app', 'Пользователь'),
+            'role' => Yii::t('app', 'Роль'),
+        ];
     }
 }

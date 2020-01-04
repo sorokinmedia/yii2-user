@@ -1,8 +1,10 @@
 <?php
+
 namespace sorokinmedia\user\forms;
 
 use sorokinmedia\user\entities\UserMeta\AbstractUserMeta;
 use sorokinmedia\user\entities\UserMeta\UserMetaInterface;
+use Yii;
 use yii\base\Model;
 
 /**
@@ -28,9 +30,29 @@ class UserMetaForm extends Model
     public $custom_fields;
 
     /**
+     * UserMetaForm constructor.
+     * @param array $config
+     * @param UserMetaInterface|null $userMeta
+     */
+    public function __construct(array $config = [], UserMetaInterface $userMeta = null)
+    {
+        if ($userMeta !== null) {
+            /** @var AbstractUserMeta $userMeta */
+            $this->notification_email = $userMeta->notification_email;
+            $this->full_name = $userMeta->full_name;
+            $this->display_name = $userMeta->display_name;
+            $this->tz = $userMeta->tz;
+            $this->location = $userMeta->location;
+            $this->about = $userMeta->about;
+            $this->custom_fields = $userMeta->custom_fields;
+        }
+        parent::__construct($config);
+    }
+
+    /**
      * @return array
      */
-    public function rules() : array
+    public function rules(): array
     {
         return [
             [['tz', 'location', 'about'], 'string'],
@@ -46,36 +68,16 @@ class UserMetaForm extends Model
     /**
      * @return array
      */
-    public function attributeLabels() : array
+    public function attributeLabels(): array
     {
         return [
-            'notification_email' => \Yii::t('app', 'E-mail для уведомлений'),
-            'full_name' => \Yii::t('app', 'Полное имя'),
-            'display_name' => \Yii::t('app', 'Отображаемое имя'),
-            'tz' => \Yii::t('app', 'Часовой пояс'),
-            'location' => \Yii::t('app', 'Страна/Город'),
-            'about' => \Yii::t('app', 'О себе'),
-            'custom_fields' => \Yii::t('app', 'Дополнительные данные'),
+            'notification_email' => Yii::t('app', 'E-mail для уведомлений'),
+            'full_name' => Yii::t('app', 'Полное имя'),
+            'display_name' => Yii::t('app', 'Отображаемое имя'),
+            'tz' => Yii::t('app', 'Часовой пояс'),
+            'location' => Yii::t('app', 'Страна/Город'),
+            'about' => Yii::t('app', 'О себе'),
+            'custom_fields' => Yii::t('app', 'Дополнительные данные'),
         ];
-    }
-
-    /**
-     * UserMetaForm constructor.
-     * @param array $config
-     * @param UserMetaInterface|null $userMeta
-     */
-    public function __construct(array $config = [], UserMetaInterface $userMeta = null)
-    {
-        if ($userMeta !== null){
-            /** @var AbstractUserMeta $userMeta */
-            $this->notification_email = $userMeta->notification_email;
-            $this->full_name = $userMeta->full_name;
-            $this->display_name = $userMeta->display_name;
-            $this->tz = $userMeta->tz;
-            $this->location = $userMeta->location;
-            $this->about = $userMeta->about;
-            $this->custom_fields = $userMeta->custom_fields;
-        }
-        parent::__construct($config);
     }
 }

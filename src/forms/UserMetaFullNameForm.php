@@ -3,6 +3,7 @@
 namespace sorokinmedia\user\forms;
 
 use sorokinmedia\user\entities\UserMeta\json\UserMetaFullName;
+use Yii;
 use yii\base\Model;
 
 /**
@@ -37,7 +38,7 @@ class UserMetaFullNameForm extends Model
     /**
      * @return array
      */
-    public function rules() : array
+    public function rules(): array
     {
         return [
             [['surname', 'name'], 'required'],
@@ -48,12 +49,12 @@ class UserMetaFullNameForm extends Model
     /**
      * @return array
      */
-    public function attributeLabels() : array
+    public function attributeLabels(): array
     {
         return [
-            'surname' => \Yii::t('app', 'Фамилия'),
-            'name' => \Yii::t('app', 'Имя'),
-            'patronymic' => \Yii::t('app', 'Отчетсво'),
+            'surname' => Yii::t('app', 'Фамилия'),
+            'name' => Yii::t('app', 'Имя'),
+            'patronymic' => Yii::t('app', 'Отчетсво'),
         ];
     }
 }
