@@ -9,6 +9,12 @@
 
 `composer update`
 
+## Dependencies to install
+
+- yii2-helpers https://github.com/sorokinmedia/yii2-helpers
+
+- yii2-ar-relations https://github.com/sorokinmedia/yii2-ar-relations
+
 ## Run tests
 
 `sudo vendor/bin/phpunit`
