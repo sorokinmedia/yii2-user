@@ -1,10 +1,14 @@
 <?php
+
 namespace sorokinmedia\user\tests\handlers\SmsCode\actions;
 
 use sorokinmedia\user\forms\SmsCodeForm;
 use sorokinmedia\user\handlers\SmsCode\SmsCodeHandler;
 use sorokinmedia\user\tests\entities\SmsCode\SmsCode;
 use sorokinmedia\user\tests\TestCase;
+use Throwable;
+use yii\base\InvalidConfigException;
+use yii\db\Exception;
 
 /**
  * Class CreateSmsCodeTest
@@ -14,11 +18,11 @@ class CreateSmsCodeTest extends TestCase
 {
     /**
      * @group sms-code-handler
-     * @throws \Throwable
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws Throwable
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testHandler()
+    public function testHandler(): void
     {
         $this->initDb();
         $code = new SmsCode();

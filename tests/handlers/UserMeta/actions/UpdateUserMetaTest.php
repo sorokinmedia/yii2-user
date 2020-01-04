@@ -1,10 +1,14 @@
 <?php
+
 namespace sorokinmedia\user\tests\handlers\UserMeta\actions;
 
 use sorokinmedia\user\forms\UserMetaForm;
 use sorokinmedia\user\handlers\UserMeta\UserMetaHandler;
 use sorokinmedia\user\tests\entities\UserMeta\UserMeta;
 use sorokinmedia\user\tests\TestCase;
+use Throwable;
+use yii\base\InvalidConfigException;
+use yii\db\Exception;
 
 /**
  * Class UpdateUserMetaTest
@@ -16,11 +20,11 @@ class UpdateUserMetaTest extends TestCase
 {
     /**
      * @group user-meta-handler
-     * @throws \Throwable
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws Throwable
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testAction()
+    public function testAction(): void
     {
         $this->initDb();
         $user_meta = UserMeta::findOne(1);

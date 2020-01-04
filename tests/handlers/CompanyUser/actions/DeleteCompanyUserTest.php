@@ -1,9 +1,13 @@
 <?php
+
 namespace sorokinmedia\user\tests\handlers\CompanyUser\actions;
 
 use sorokinmedia\user\handlers\CompanyUser\CompanyUserHandler;
 use sorokinmedia\user\tests\entities\CompanyUser\CompanyUser;
 use sorokinmedia\user\tests\TestCase;
+use Throwable;
+use yii\base\InvalidConfigException;
+use yii\db\Exception;
 
 /**
  * Class DeleteCompanyUserTest
@@ -13,11 +17,11 @@ class DeleteCompanyUserTest extends TestCase
 {
     /**
      * @group company-user-handler
-     * @throws \Throwable
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws Throwable
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testHandler()
+    public function testHandler(): void
     {
         $this->initDb();
         $this->initDbAdditional();

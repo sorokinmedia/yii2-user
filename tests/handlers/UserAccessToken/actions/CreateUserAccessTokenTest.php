@@ -1,9 +1,13 @@
 <?php
+
 namespace sorokinmedia\user\tests\handlers\UserAccessToken\actions;
 
 use sorokinmedia\user\handlers\UserAccessToken\UserAccessTokenHandler;
 use sorokinmedia\user\tests\entities\UserAccessToken\UserAccessToken;
 use sorokinmedia\user\tests\TestCase;
+use Throwable;
+use yii\base\InvalidConfigException;
+use yii\db\Exception;
 
 /**
  * Class CreateUserAccessTokenTest
@@ -15,11 +19,11 @@ class CreateUserAccessTokenTest extends TestCase
 {
     /**
      * @group user-access-token-handler
-     * @throws \Throwable
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws Throwable
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testCreate()
+    public function testCreate(): void
     {
         $this->initDb();
         $token = new UserAccessToken([

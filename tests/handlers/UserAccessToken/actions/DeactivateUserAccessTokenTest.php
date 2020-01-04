@@ -1,9 +1,13 @@
 <?php
+
 namespace sorokinmedia\user\tests\handlers\UserAccessToken\actions;
 
 use sorokinmedia\user\handlers\UserAccessToken\UserAccessTokenHandler;
 use sorokinmedia\user\tests\entities\UserAccessToken\UserAccessToken;
 use sorokinmedia\user\tests\TestCase;
+use Throwable;
+use yii\base\InvalidConfigException;
+use yii\db\Exception;
 
 /**
  * Class DeactivateUserAccessTokenTest
@@ -15,11 +19,11 @@ class DeactivateUserAccessTokenTest extends TestCase
 {
     /**
      * @group user-access-token-handler
-     * @throws \Throwable
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws Throwable
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testDeactivate()
+    public function testDeactivate(): void
     {
         $this->initDb();
         $token = UserAccessToken::findOne(['user_id' => 1, 'is_active' => 1]);
