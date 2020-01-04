@@ -2,6 +2,7 @@
 
 namespace sorokinmedia\user\handlers\User;
 
+use sorokinmedia\user\entities\User\UserInterface;
 use sorokinmedia\user\forms\{SignupForm, SignUpFormConsole, SignUpFormEmail};
 use sorokinmedia\user\handlers\User\interfaces\{AddRole,
     Block,
@@ -10,9 +11,10 @@ use sorokinmedia\user\handlers\User\interfaces\{AddRole,
     CreateFromEmail,
     RevokeRole,
     Unblock,
-    VerifyAccount};
-use sorokinmedia\user\entities\User\UserInterface;
+    VerifyAccount
+};
 use yii\rbac\Role;
+use yii\web\ServerErrorHttpException;
 
 /**
  * Class UserHandler
@@ -38,8 +40,7 @@ class UserHandler implements Create, CreateFromEmail, CreateFromConsole, VerifyA
      * регистрация пользователя через форму
      * @param SignupForm $signup_form
      * @return bool
-     * @throws \yii\db\Exception
-     * @throws \yii\web\ServerErrorHttpException
+     * @throws ServerErrorHttpException
      */
     public function create(SignupForm $signup_form): bool
     {
@@ -50,8 +51,7 @@ class UserHandler implements Create, CreateFromEmail, CreateFromConsole, VerifyA
      * регистрация пользователя через форму с email
      * @param SignUpFormEmail $sign_up_form_email
      * @return bool
-     * @throws \yii\db\Exception
-     * @throws \yii\web\ServerErrorHttpException
+     * @throws ServerErrorHttpException
      */
     public function createFromEmail(SignUpFormEmail $sign_up_form_email): bool
     {
@@ -62,8 +62,7 @@ class UserHandler implements Create, CreateFromEmail, CreateFromConsole, VerifyA
      * регистрация пользователя через форму консольной регистрации
      * @param SignUpFormConsole $sign_up_form_console
      * @return bool
-     * @throws \yii\db\Exception
-     * @throws \yii\web\ServerErrorHttpException
+     * @throws ServerErrorHttpException
      */
     public function createFromConsole(SignUpFormConsole $sign_up_form_console): bool
     {

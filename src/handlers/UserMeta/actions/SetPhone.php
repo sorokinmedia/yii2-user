@@ -1,8 +1,11 @@
 <?php
+
 namespace sorokinmedia\user\handlers\UserMeta\actions;
 
 use sorokinmedia\user\entities\UserMeta\json\UserMetaPhone;
 use sorokinmedia\user\entities\UserMeta\UserMetaInterface;
+use Throwable;
+use yii\db\Exception;
 
 /**
  * Class SetPhone
@@ -27,10 +30,10 @@ class SetPhone extends AbstractAction
 
     /**
      * @return bool
-     * @throws \Throwable
-     * @throws \yii\db\Exception
+     * @throws Throwable
+     * @throws Exception
      */
-    public function execute() : bool
+    public function execute(): bool
     {
         $this->user_meta->setPhone($this->user_meta_phone);
         return true;

@@ -1,4 +1,5 @@
 <?php
+
 namespace sorokinmedia\user\handlers\UserMeta\interfaces;
 
 use sorokinmedia\user\entities\UserMeta\json\UserMetaFullName;
@@ -13,5 +14,5 @@ interface SetFullName
      * @param UserMetaFullName $userMetaFullName
      * @return bool
      */
-    public function setFullName(UserMetaFullName $userMetaFullName) : bool;
+    public function setFullName(UserMetaFullName $userMetaFullName): bool;
 }

@@ -1,8 +1,9 @@
 <?php
+
 namespace sorokinmedia\user\handlers\CompanyUser\actions;
 
-use sorokinmedia\user\handlers\CompanyUser\interfaces\ActionExecutable;
 use sorokinmedia\user\entities\CompanyUser\AbstractCompanyUser;
+use sorokinmedia\user\handlers\CompanyUser\interfaces\ActionExecutable;
 
 /**
  * Class AbstractAction

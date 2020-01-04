@@ -1,10 +1,12 @@
 <?php
+
 namespace sorokinmedia\user\handlers\CompanyUser;
 
-use sorokinmedia\user\entities\CompanyUser\{
-    AbstractCompanyUserPermission,AbstractCompanyUser
-};
+use sorokinmedia\user\entities\CompanyUser\{AbstractCompanyUser, AbstractCompanyUserPermission};
 use sorokinmedia\user\handlers\CompanyUser\interfaces\{AddPermission, Create, Delete, RemovePermission, Update};
+use Throwable;
+use yii\db\Exception;
+use yii\db\StaleObjectException;
 
 /**
  * Class CompanyUserHandler
@@ -28,29 +30,29 @@ class CompanyUserHandler implements Create, Update, Delete, AddPermission, Remov
 
     /**
      * @return bool
-     * @throws \Throwable
+     * @throws Throwable
      */
-    public function create() : bool
+    public function create(): bool
     {
         return (new actions\Create($this->company_user))->execute();
     }
 
     /**
      * @return bool
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
-    public function update() : bool
+    public function update(): bool
     {
         return (new actions\Update($this->company_user))->execute();
     }
 
     /**
      * @return bool
-     * @throws \Throwable
-     * @throws \yii\db\Exception
-     * @throws \yii\db\StaleObjectException
+     * @throws Throwable
+     * @throws Exception
+     * @throws StaleObjectException
      */
-    public function delete() : bool
+    public function delete(): bool
     {
         return (new actions\Delete($this->company_user))->execute();
     }
@@ -58,9 +60,9 @@ class CompanyUserHandler implements Create, Update, Delete, AddPermission, Remov
     /**
      * @param AbstractCompanyUserPermission $permission
      * @return bool
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
-    public function addPermission(AbstractCompanyUserPermission $permission) : bool
+    public function addPermission(AbstractCompanyUserPermission $permission): bool
     {
         return (new actions\AddPermission($this->company_user, $permission))->execute();
     }
@@ -68,9 +70,9 @@ class CompanyUserHandler implements Create, Update, Delete, AddPermission, Remov
     /**
      * @param AbstractCompanyUserPermission $permission
      * @return bool
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
-    public function removePermission(AbstractCompanyUserPermission $permission) : bool
+    public function removePermission(AbstractCompanyUserPermission $permission): bool
     {
         return (new actions\RemovePermission($this->company_user, $permission))->execute();
     }

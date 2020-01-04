@@ -1,8 +1,9 @@
 <?php
+
 namespace sorokinmedia\user\handlers\UserMeta\actions;
 
-use sorokinmedia\user\handlers\UserMeta\interfaces\ActionExecutable;
 use sorokinmedia\user\entities\UserMeta\UserMetaInterface;
+use sorokinmedia\user\handlers\UserMeta\interfaces\ActionExecutable;
 
 /**
  * Class AbstractAction

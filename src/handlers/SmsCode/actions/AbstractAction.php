@@ -1,8 +1,9 @@
 <?php
+
 namespace sorokinmedia\user\handlers\SmsCode\actions;
 
-use sorokinmedia\user\handlers\SmsCode\interfaces\ActionExecutable;
 use sorokinmedia\user\entities\SmsCode\SmsCodeInterface;
+use sorokinmedia\user\handlers\SmsCode\interfaces\ActionExecutable;
 
 /**
  * Class AbstractAction

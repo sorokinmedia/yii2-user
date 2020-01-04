@@ -1,4 +1,5 @@
 <?php
+
 namespace sorokinmedia\user\handlers\UserAccessToken\interfaces;
 
 /**
@@ -10,5 +11,5 @@ interface ActionExecutable
     /**
      * @return mixed
      */
-    public function execute() : bool;
+    public function execute(): bool;
 }

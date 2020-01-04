@@ -1,7 +1,10 @@
 <?php
+
 namespace sorokinmedia\user\handlers\UserAccessToken\actions;
 
 use sorokinmedia\user\entities\UserAccessToken\AbstractUserAccessToken;
+use Throwable;
+use yii\db\Exception;
 
 /**
  * Class Create
@@ -13,10 +16,10 @@ class Create extends AbstractAction
 {
     /**
      * @return bool
-     * @throws \Throwable
-     * @throws \yii\db\Exception
+     * @throws Throwable
+     * @throws Exception
      */
-    public function execute() : bool
+    public function execute(): bool
     {
         $this->token->insertModel();
         return true;

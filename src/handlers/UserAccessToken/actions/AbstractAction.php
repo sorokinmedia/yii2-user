@@ -1,8 +1,9 @@
 <?php
+
 namespace sorokinmedia\user\handlers\UserAccessToken\actions;
 
-use sorokinmedia\user\handlers\UserAccessToken\interfaces\ActionExecutable;
 use sorokinmedia\user\entities\UserAccessToken\UserAccessTokenInterface;
+use sorokinmedia\user\handlers\UserAccessToken\interfaces\ActionExecutable;
 
 /**
  * Class AbstractAction

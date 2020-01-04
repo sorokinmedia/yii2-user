@@ -1,7 +1,9 @@
 <?php
+
 namespace sorokinmedia\user\handlers\User\actions;
 
 use sorokinmedia\user\entities\User\AbstractUser;
+use yii\web\ServerErrorHttpException;
 
 /**
  * Class CreateFromConsole
@@ -13,10 +15,9 @@ class CreateFromConsole extends AbstractAction
 {
     /**
      * @return bool
-     * @throws \yii\db\Exception
-     * @throws \yii\web\ServerErrorHttpException
+     * @throws ServerErrorHttpException
      */
-    public function execute() : bool
+    public function execute(): bool
     {
         $this->user->signUpConsole($this->signup_form);
         return true;

@@ -1,4 +1,5 @@
 <?php
+
 namespace sorokinmedia\user\handlers\SmsCode\interfaces;
 
 /**
@@ -10,5 +11,5 @@ interface Delete
     /**
      * @return bool
      */
-    public function delete() : bool;
+    public function delete(): bool;
 }

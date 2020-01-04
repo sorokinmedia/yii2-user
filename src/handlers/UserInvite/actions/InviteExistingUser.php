@@ -5,6 +5,7 @@ namespace sorokinmedia\user\handlers\UserInvite\actions;
 use common\components\invite\entities\UserInvite\UserInvite;
 use sorokinmedia\user\entities\UserInvite\AbstractUserInvite;
 use sorokinmedia\user\forms\InviteForm;
+use Yii;
 use yii\db\Exception;
 
 /**
@@ -46,11 +47,11 @@ class InviteExistingUser extends AbstractAction
         ]);
 
         if (!$this->invite->save()) {
-            throw new Exception(\Yii::t('app', 'Изменения не сохранены'));
+            throw new Exception(Yii::t('app', 'Изменения не сохранены'));
         }
 
         if (!$this->invite->sendNotificationsToNewUser()) {
-            throw new \yii\base\Exception(\Yii::t('app', 'Уведомления не отправлены'));
+            throw new \yii\base\Exception(Yii::t('app', 'Уведомления не отправлены'));
         }
 
         return true;

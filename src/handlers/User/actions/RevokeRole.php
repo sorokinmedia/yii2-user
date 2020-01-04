@@ -1,4 +1,5 @@
 <?php
+
 namespace sorokinmedia\user\handlers\User\actions;
 
 use sorokinmedia\user\entities\User\UserInterface;
@@ -28,7 +29,7 @@ class RevokeRole extends AbstractAction
     /**
      * @return bool
      */
-    public function execute() : bool
+    public function execute(): bool
     {
         $this->user->downgradeFromRole($this->role);
         return true;

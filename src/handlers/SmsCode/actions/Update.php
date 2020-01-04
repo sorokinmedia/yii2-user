@@ -1,7 +1,9 @@
 <?php
+
 namespace sorokinmedia\user\handlers\SmsCode\actions;
 
 use sorokinmedia\user\entities\SmsCode\AbstractSmsCode;
+use yii\db\Exception;
 
 /**
  * Class Update
@@ -13,9 +15,9 @@ class Update extends AbstractAction
 {
     /**
      * @return bool
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
-    public function execute() : bool
+    public function execute(): bool
     {
         $this->sms_code->updateModel();
         return true;

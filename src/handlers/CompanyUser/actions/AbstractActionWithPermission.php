@@ -1,9 +1,8 @@
 <?php
+
 namespace sorokinmedia\user\handlers\CompanyUser\actions;
 
-use sorokinmedia\user\entities\CompanyUser\{
-    AbstractCompanyUserPermission,AbstractCompanyUser
-};
+use sorokinmedia\user\entities\CompanyUser\{AbstractCompanyUser, AbstractCompanyUserPermission};
 
 /**
  * Class AbstractActionWithPermission

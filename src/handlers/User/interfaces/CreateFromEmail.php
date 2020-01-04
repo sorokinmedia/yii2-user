@@ -1,4 +1,5 @@
 <?php
+
 namespace sorokinmedia\user\handlers\User\interfaces;
 
 use sorokinmedia\user\forms\SignUpFormEmail;
@@ -13,5 +14,5 @@ interface CreateFromEmail
      * @param SignUpFormEmail $signUpFormEmail
      * @return bool
      */
-    public function createFromEmail(SignUpFormEmail $signUpFormEmail) : bool;
+    public function createFromEmail(SignUpFormEmail $signUpFormEmail): bool;
 }

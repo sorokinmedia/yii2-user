@@ -1,4 +1,5 @@
 <?php
+
 namespace sorokinmedia\user\handlers\User\interfaces;
 
 use yii\rbac\Role;
@@ -13,5 +14,5 @@ interface RevokeRole
      * @param Role $role
      * @return bool
      */
-    public function revokeRole(Role $role) : bool;
+    public function revokeRole(Role $role): bool;
 }

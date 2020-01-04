@@ -1,4 +1,5 @@
 <?php
+
 namespace sorokinmedia\user\handlers\User\interfaces;
 
 /**
@@ -10,5 +11,5 @@ interface VerifyAccount
     /**
      * @return bool
      */
-    public function verifyAccount() : bool;
+    public function verifyAccount(): bool;
 }

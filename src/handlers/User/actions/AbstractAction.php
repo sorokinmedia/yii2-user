@@ -1,9 +1,10 @@
 <?php
+
 namespace sorokinmedia\user\handlers\User\actions;
 
+use sorokinmedia\user\entities\User\UserInterface;
 use sorokinmedia\user\forms\{SignupForm, SignUpFormConsole, SignUpFormEmail};
 use sorokinmedia\user\handlers\User\interfaces\ActionExecutable;
-use sorokinmedia\user\entities\User\UserInterface;
 
 /**
  * Class AbstractAction
@@ -31,13 +32,13 @@ abstract class AbstractAction implements ActionExecutable
         SignUpFormConsole $sign_up_form_console = null)
     {
         $this->user = $user;
-        if ($sign_up_form !== null){
+        if ($sign_up_form !== null) {
             $this->signup_form = $sign_up_form;
         }
-        if ($sign_up_form_email !== null){
+        if ($sign_up_form_email !== null) {
             $this->signup_form = $sign_up_form_email;
         }
-        if ($sign_up_form_console !== null){
+        if ($sign_up_form_console !== null) {
             $this->signup_form = $sign_up_form_console;
         }
         return $this;

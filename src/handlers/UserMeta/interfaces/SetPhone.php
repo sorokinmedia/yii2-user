@@ -1,4 +1,5 @@
 <?php
+
 namespace sorokinmedia\user\handlers\UserMeta\interfaces;
 
 use sorokinmedia\user\entities\UserMeta\json\UserMetaPhone;
@@ -13,5 +14,5 @@ interface SetPhone
      * @param UserMetaPhone $userMetaPhone
      * @return bool
      */
-    public function setPhone(UserMetaPhone $userMetaPhone) : bool;
+    public function setPhone(UserMetaPhone $userMetaPhone): bool;
 }

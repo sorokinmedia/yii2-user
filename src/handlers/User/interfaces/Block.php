@@ -1,4 +1,5 @@
 <?php
+
 namespace sorokinmedia\user\handlers\User\interfaces;
 
 /**
@@ -10,5 +11,5 @@ interface Block
     /**
      * @return bool
      */
-    public function block() : bool;
+    public function block(): bool;
 }

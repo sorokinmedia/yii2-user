@@ -1,4 +1,5 @@
 <?php
+
 namespace sorokinmedia\user\handlers\User\interfaces;
 
 /**
@@ -10,5 +11,5 @@ interface Unblock
     /**
      * @return bool
      */
-    public function unblock() : bool;
+    public function unblock(): bool;
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace sorokinmedia\user\handlers\CompanyUser\interfaces;
 
 /**

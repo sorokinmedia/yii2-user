@@ -1,9 +1,11 @@
 <?php
+
 namespace sorokinmedia\user\handlers\UserInvite;
 
 use sorokinmedia\user\entities\UserInvite\AbstractUserInvite;
 use sorokinmedia\user\forms\InviteForm;
 use sorokinmedia\user\handlers\UserInvite\interfaces\{Accept, InviteExistingUser, InviteNewUser, Reject};
+use yii\db\Exception;
 
 /**
  * Class UserInviteHandler
@@ -15,7 +17,7 @@ class UserInviteHandler implements Accept, Reject, InviteNewUser, InviteExisting
      * @param AbstractUserInvite $invite
      * @return bool
      */
-    public function accept(AbstractUserInvite $invite) : bool
+    public function accept(AbstractUserInvite $invite): bool
     {
         return (new actions\Accept($invite))->execute();
     }
@@ -24,7 +26,7 @@ class UserInviteHandler implements Accept, Reject, InviteNewUser, InviteExisting
      * @param AbstractUserInvite $invite
      * @return bool
      */
-    public function reject(AbstractUserInvite $invite) : bool
+    public function reject(AbstractUserInvite $invite): bool
     {
         return (new actions\Reject($invite))->execute();
     }
@@ -33,7 +35,7 @@ class UserInviteHandler implements Accept, Reject, InviteNewUser, InviteExisting
      * @param InviteForm $form
      * @return bool
      * @throws \yii\base\Exception
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
     public function inviteExistingUser(InviteForm $form): bool
     {
@@ -44,7 +46,7 @@ class UserInviteHandler implements Accept, Reject, InviteNewUser, InviteExisting
      * @param InviteForm $form
      * @return bool
      * @throws \yii\base\Exception
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
     public function inviteNewUser(InviteForm $form): bool
     {

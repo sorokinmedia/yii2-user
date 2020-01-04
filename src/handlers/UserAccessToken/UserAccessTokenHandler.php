@@ -1,8 +1,11 @@
 <?php
+
 namespace sorokinmedia\user\handlers\UserAccessToken;
 
-use sorokinmedia\user\handlers\UserAccessToken\interfaces\{Create, Deactivate};
 use sorokinmedia\user\entities\UserAccessToken\UserAccessTokenInterface;
+use sorokinmedia\user\handlers\UserAccessToken\interfaces\{Create, Deactivate};
+use Throwable;
+use yii\db\Exception;
 
 /**
  * Class UserAccessTokenHandler
@@ -26,19 +29,19 @@ class UserAccessTokenHandler implements Create, Deactivate
 
     /**
      * @return bool
-     * @throws \Throwable
-     * @throws \yii\db\Exception
+     * @throws Throwable
+     * @throws Exception
      */
-    public function create() : bool
+    public function create(): bool
     {
         return (new actions\Create($this->token))->execute();
     }
 
     /**
      * @return bool
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
-    public function deactivate() : bool
+    public function deactivate(): bool
     {
         return (new actions\Deactivate($this->token))->execute();
     }

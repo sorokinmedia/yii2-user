@@ -1,5 +1,8 @@
 <?php
+
 namespace sorokinmedia\user\handlers\CompanyUser\actions;
+
+use yii\db\Exception;
 
 /**
  * Class AddPermission
@@ -9,9 +12,9 @@ class AddPermission extends AbstractActionWithPermission
 {
     /**
      * @return bool
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
-    public function execute() : bool
+    public function execute(): bool
     {
         $this->company_user->addPermission($this->permission);
         $this->company_user->afterAddPermission($this->permission);

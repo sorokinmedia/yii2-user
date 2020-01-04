@@ -1,4 +1,5 @@
 <?php
+
 namespace sorokinmedia\user\handlers\UserMeta\interfaces;
 
 /**
@@ -10,5 +11,5 @@ interface VerifyPhone
     /**
      * @return bool
      */
-    public function verifyPhone() : bool;
+    public function verifyPhone(): bool;
 }
