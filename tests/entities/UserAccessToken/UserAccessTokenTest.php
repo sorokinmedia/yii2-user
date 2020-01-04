@@ -1,12 +1,14 @@
 <?php
+
 namespace sorokinmedia\user\tests\entities\UserAccessToken;
 
 use sorokinmedia\user\entities\User\UserInterface;
 use sorokinmedia\user\entities\UserAccessToken\UserAccessTokenInterface;
 use sorokinmedia\user\tests\entities\User\User;
 use sorokinmedia\user\tests\TestCase;
-use yii\db\Connection;
-use yii\db\Schema;
+use Throwable;
+use yii\base\InvalidConfigException;
+use yii\db\Exception;
 
 /**
  * Class UserAccessTokenTest
@@ -16,10 +18,10 @@ class UserAccessTokenTest extends TestCase
 {
     /**
      * @group user-access-token
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testFields()
+    public function testFields(): void
     {
         $this->initDb();
         $user_access_token = new UserAccessToken();
@@ -38,10 +40,10 @@ class UserAccessTokenTest extends TestCase
 
     /**
      * @group user-access-token
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testRelations()
+    public function testRelations(): void
     {
         $this->initDb();
         $user_access_token = UserAccessToken::findOne(['user_id' => 1]);
@@ -63,7 +65,7 @@ class UserAccessTokenTest extends TestCase
     /**
      * @group user-access-token
      */
-    public function testGenerateExpired()
+    public function testGenerateExpired(): void
     {
         $time = time();
         $expired = UserAccessToken::generateExpired(false);
@@ -75,11 +77,11 @@ class UserAccessTokenTest extends TestCase
 
     /**
      * @group user-access-token
-     * @throws \Throwable
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws Throwable
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testInsertModel()
+    public function testInsertModel(): void
     {
         $this->initDb();
         $token = new UserAccessToken([
@@ -97,10 +99,10 @@ class UserAccessTokenTest extends TestCase
 
     /**
      * @group user-access-token
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testDeactivate()
+    public function testDeactivate(): void
     {
         $this->initDb();
         $token = UserAccessToken::findOne(['user_id' => 1]);
@@ -113,18 +115,17 @@ class UserAccessTokenTest extends TestCase
 
     /**
      * @group user-access-token
-     * @throws \Throwable
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws Throwable
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testCreate()
+    public function testCreate(): void
     {
         $this->initDb();
         $user = User::findOne(1);
         $time = time();
         /** @var UserAccessToken $token */
         $token = UserAccessToken::create($user, true);
-        $this->assertInstanceOf(UserAccessTokenInterface::class, $token);
         $this->assertEquals(1, $token->is_active);
         $this->assertEquals(1, $token->user_id);
         $this->assertEquals(32, mb_strlen($token->access_token));

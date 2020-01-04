@@ -1,11 +1,13 @@
 <?php
+
 namespace sorokinmedia\user\tests\forms;
 
 use sorokinmedia\user\entities\UserMeta\json\UserMetaPhone;
-use sorokinmedia\user\forms\UserMetaForm;
 use sorokinmedia\user\forms\UserMetaPhoneForm;
 use sorokinmedia\user\tests\entities\UserMeta\UserMeta;
 use sorokinmedia\user\tests\TestCase;
+use yii\base\InvalidConfigException;
+use yii\db\Exception;
 use yii\helpers\Json;
 
 /**
@@ -16,11 +18,10 @@ class UserMetaPhoneFormTest extends TestCase
 {
     /**
      * @group forms
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
-     * @throws \yii\web\ServerErrorHttpException
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testConstruct()
+    public function testConstruct(): void
     {
         $this->initDb();
         $user_meta = UserMeta::findOne(['user_id' => 1]);
@@ -36,7 +37,7 @@ class UserMetaPhoneFormTest extends TestCase
     /**
      * @group forms
      */
-    public function testValidateFalse()
+    public function testValidateFalse(): void
     {
         $form = new UserMetaPhoneForm([
             'country' => 9,

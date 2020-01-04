@@ -1,9 +1,13 @@
 <?php
+
 namespace sorokinmedia\user\tests\forms;
 
 use sorokinmedia\user\forms\CompanyUserForm;
 use sorokinmedia\user\tests\entities\CompanyUser\CompanyUser;
 use sorokinmedia\user\tests\TestCase;
+use yii\base\InvalidConfigException;
+use yii\db\Exception;
+use yii\web\ServerErrorHttpException;
 
 /**
  * Class CompanyUserFormTest
@@ -13,11 +17,11 @@ class CompanyUserFormTest extends TestCase
 {
     /**
      * @group forms
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
-     * @throws \yii\web\ServerErrorHttpException
+     * @throws InvalidConfigException
+     * @throws Exception
+     * @throws ServerErrorHttpException
      */
-    public function testConstruct()
+    public function testConstruct(): void
     {
         $this->initDb();
         $company_user = CompanyUser::findOne(['user_id' => 1, 'company_id' => 1]);

@@ -1,11 +1,15 @@
 <?php
+
 namespace sorokinmedia\user\tests\entities\UserMeta;
 
 use sorokinmedia\user\entities\UserMeta\json\UserMetaPhone;
 use sorokinmedia\user\forms\UserMetaForm;
 use sorokinmedia\user\tests\entities\User\User;
 use sorokinmedia\user\tests\TestCase;
-use yii\helpers\Json;
+use Throwable;
+use yii\base\InvalidConfigException;
+use yii\db\Exception;
+use yii\db\StaleObjectException;
 
 /**
  * Class UserMetaTest
@@ -15,10 +19,10 @@ class UserMetaTest extends TestCase
 {
     /**
      * @group user-meta
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testFields()
+    public function testFields(): void
     {
         $this->initDb();
         $user_access_token = new UserMeta();
@@ -41,10 +45,10 @@ class UserMetaTest extends TestCase
 
     /**
      * @group user-meta
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testRelations()
+    public function testRelations(): void
     {
         $this->initDb();
         $user_meta = UserMeta::findOne(['user_id' => 1]);
@@ -54,10 +58,10 @@ class UserMetaTest extends TestCase
 
     /**
      * @group user-meta
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testGetFromForm()
+    public function testGetFromForm(): void
     {
         $this->initDb();
         $user_meta = UserMeta::findOne(['user_id' => 1]);
@@ -82,11 +86,11 @@ class UserMetaTest extends TestCase
 
     /**
      * @group user-meta
-     * @throws \Throwable
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws Throwable
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testCreateExisted()
+    public function testCreateExisted(): void
     {
         $this->initDb();
         $user = User::findOne(1);
@@ -100,18 +104,18 @@ class UserMetaTest extends TestCase
         $this->assertEquals('{"name": "Руслан", "surname": "Гилязетдинов", "patronymic": "Рашидович"}', $user_meta->full_name);
         $this->assertEquals('Europe/Samara', $user_meta->tz);
         $this->assertEquals('Russia/Samara', $user_meta->location);
-        $this->assertEquals( 'О себе: текст', $user_meta->about);
+        $this->assertEquals('О себе: текст', $user_meta->about);
         $this->assertEquals('[{"name": "Афвф", "value": "аывфыы 34"}]', $user_meta->custom_fields);
     }
 
     /**
      * @group user-meta
-     * @throws \Throwable
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
-     * @throws \yii\db\StaleObjectException
+     * @throws Throwable
+     * @throws InvalidConfigException
+     * @throws Exception
+     * @throws StaleObjectException
      */
-    public function testCreateNew()
+    public function testCreateNew(): void
     {
         $this->initDb();
         $user = User::findOne(1);
@@ -128,16 +132,16 @@ class UserMetaTest extends TestCase
         $this->assertNull($user_meta->full_name);
         $this->assertEquals('Europe/Moscow', $user_meta->tz);
         $this->assertNull($user_meta->location);
-        $this->assertNull( $user_meta->about);
+        $this->assertNull($user_meta->about);
     }
 
     /**
      * @group user-meta
-     * @throws \Throwable
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws Throwable
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testInsertModel()
+    public function testInsertModel(): void
     {
         $this->initDb();
         $this->initDbAdditional();
@@ -150,10 +154,10 @@ class UserMetaTest extends TestCase
 
     /**
      * @group user-meta
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testUpdateModel()
+    public function testUpdateModel(): void
     {
         $this->initDb();
         /** @var UserMeta $user_meta */
@@ -172,15 +176,15 @@ class UserMetaTest extends TestCase
         $this->assertEquals('{"name": "Руслан", "surname": "Гилязетдинов", "patronymic": "Рашидович"}', $user_meta->full_name);
         $this->assertEquals('Europe/London', $user_meta->tz);
         $this->assertEquals('UK/London', $user_meta->location);
-        $this->assertEquals( 'test_create_about', $user_meta->about);
+        $this->assertEquals('test_create_about', $user_meta->about);
     }
 
     /**
      * @group user-meta
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testSetTelegram()
+    public function testSetTelegram(): void
     {
         $this->initDb();
         /** @var UserMeta $user_meta */
@@ -191,10 +195,10 @@ class UserMetaTest extends TestCase
 
     /**
      * @group user-meta
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testCheckTelegram()
+    public function testCheckTelegram(): void
     {
         $this->initDb();
         /** @var UserMeta $user_meta */
@@ -204,10 +208,10 @@ class UserMetaTest extends TestCase
 
     /**
      * @group user-meta
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testSetPhone()
+    public function testSetPhone(): void
     {
         $this->initDb();
         $user_meta = UserMeta::findOne(['user_id' => 1]);
@@ -222,10 +226,10 @@ class UserMetaTest extends TestCase
 
     /**
      * @group user-meta
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testVerifyPhone()
+    public function testVerifyPhone(): void
     {
         $this->initDb();
         $user_meta = UserMeta::findOne(['user_id' => 1]);

@@ -1,10 +1,13 @@
 <?php
+
 namespace sorokinmedia\user\tests\entities\CompanyUser;
 
 use sorokinmedia\user\forms\CompanyUserForm;
 use sorokinmedia\user\tests\entities\Company\Company;
 use sorokinmedia\user\tests\entities\User\User;
 use sorokinmedia\user\tests\TestCase;
+use Throwable;
+use yii\base\InvalidConfigException;
 use yii\db\Exception;
 
 /**
@@ -15,10 +18,10 @@ class CompanyUserTest extends TestCase
 {
     /**
      * @group company-user
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testFields()
+    public function testFields(): void
     {
         $this->initDb();
         $company_user = new CompanyUser();
@@ -34,10 +37,10 @@ class CompanyUserTest extends TestCase
 
     /**
      * @group company-user
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testRelations()
+    public function testRelations(): void
     {
         $this->initDb();
         $company_user = CompanyUser::findOne(['user_id' => 1, 'company_id' => 1]);
@@ -49,10 +52,10 @@ class CompanyUserTest extends TestCase
 
     /**
      * @group company-user
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testGetFromForm()
+    public function testGetFromForm(): void
     {
         $this->initDb();
         $form = new CompanyUserForm([
@@ -72,11 +75,11 @@ class CompanyUserTest extends TestCase
 
     /**
      * @group company-user
-     * @throws \Throwable
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws Throwable
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testInsertModel()
+    public function testInsertModel(): void
     {
         $this->initDb();
         $this->initDbAdditional();
@@ -98,11 +101,11 @@ class CompanyUserTest extends TestCase
 
     /**
      * @group company-user
-     * @throws \Throwable
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws Throwable
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testUpdateModel()
+    public function testUpdateModel(): void
     {
         $this->initDb();
         $company_user = CompanyUser::findOne(['user_id' => 1, 'company_id' => 1]);
@@ -117,11 +120,11 @@ class CompanyUserTest extends TestCase
 
     /**
      * @group company-user
-     * @throws \Throwable
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws Throwable
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testDeleteModel()
+    public function testDeleteModel(): void
     {
         $this->initDb();
         $company_user = CompanyUser::findOne(['user_id' => 1, 'company_id' => 1]);

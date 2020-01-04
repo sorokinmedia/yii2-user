@@ -21,9 +21,15 @@ class SmsCodeTest extends TestCase
      * Сверяет поля в AR модели
      * @group sms-code
      */
-    public function testFields()
+    public function testFields(): void
     {
-        $this->initDb();
+        try {
+            $this->initDb();
+        } catch (InvalidConfigException $e) {
+
+        } catch (Exception $e) {
+
+        }
         $user = new SmsCode();
         $this->assertEquals(
             [
@@ -48,7 +54,7 @@ class SmsCodeTest extends TestCase
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function testRelations()
+    public function testRelations(): void
     {
         $this->initDb();
         $code = SmsCode::findOne(['code' => 3244]);
@@ -60,7 +66,7 @@ class SmsCodeTest extends TestCase
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function testConstruct()
+    public function testConstruct(): void
     {
         $this->initDb();
         $code = SmsCode::findOne(['code' => 3244]);
@@ -74,7 +80,7 @@ class SmsCodeTest extends TestCase
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function testGetFromForm()
+    public function testGetFromForm(): void
     {
         $this->initDb();
         $code = SmsCode::findOne(['code' => 3244]);
@@ -97,7 +103,7 @@ class SmsCodeTest extends TestCase
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function testInsertModel()
+    public function testInsertModel(): void
     {
         $this->initDb();
         $code = SmsCode::findOne(['code' => 3244]);
@@ -121,7 +127,7 @@ class SmsCodeTest extends TestCase
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function testUpdateModel()
+    public function testUpdateModel(): void
     {
         $this->initDb();
         $code = SmsCode::findOne(['code' => 3244]);
@@ -144,8 +150,9 @@ class SmsCodeTest extends TestCase
      * @group sms-code
      * @throws InvalidConfigException
      * @throws Exception
+     * @throws \Exception
      */
-    public function testDeleteModel()
+    public function testDeleteModel(): void
     {
         $this->initDb();
         $code = SmsCode::findOne(['code' => 3244]);
@@ -176,7 +183,7 @@ class SmsCodeTest extends TestCase
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function testGetType()
+    public function testGetType(): void
     {
         $this->initDb();
         $code = SmsCode::findOne(['code' => 3244]);
@@ -188,6 +195,7 @@ class SmsCodeTest extends TestCase
      * @group sms-code
      * @throws InvalidConfigException
      * @throws Exception
+     * @throws \Exception
      */
     public function testGenerateCode(): void
     {
@@ -220,7 +228,7 @@ class SmsCodeTest extends TestCase
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function testSendCode()
+    public function testSendCode(): void
     {
         $this->initDb();
         $code = SmsCode::findOne(['code' => 3244]);
@@ -232,7 +240,7 @@ class SmsCodeTest extends TestCase
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function testGetCodeByUser()
+    public function testGetCodeByUser(): void
     {
         $this->initDb();
         $user = User::findOne(1);
@@ -245,7 +253,7 @@ class SmsCodeTest extends TestCase
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function testGetCodeByIp()
+    public function testGetCodeByIp(): void
     {
         $this->initDb();
         $code = SmsCode::getCodeByIp('109.124.226.156', SmsCode::TYPE_VERIFY);
@@ -257,7 +265,7 @@ class SmsCodeTest extends TestCase
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function testGetRequestedTodayByIp()
+    public function testGetRequestedTodayByIp(): void
     {
         $this->initDb();
         $this->initDbAdditional();
@@ -270,7 +278,7 @@ class SmsCodeTest extends TestCase
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function testGetRequestedTodayByUser()
+    public function testGetRequestedTodayByUser(): void
     {
         $this->initDb();
         $this->initDbAdditional();
@@ -284,7 +292,7 @@ class SmsCodeTest extends TestCase
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function testGetRequestedTodayForUser()
+    public function testGetRequestedTodayForUser(): void
     {
         $this->initDb();
         $this->initDbAdditional();
@@ -292,15 +300,16 @@ class SmsCodeTest extends TestCase
         $codes = SmsCode::getRequestedTodayForUser($user);
         $this->assertNotEmpty($codes);
         $this->assertInstanceOf(SmsCode::class, $codes[0]);
-        $this->assertEquals(1, count($codes));
+        $this->assertCount(1, $codes);
     }
 
     /**
      * @group sms-code
      * @throws InvalidConfigException
      * @throws Exception
+     * @throws \Exception
      */
-    public function testResetLimit()
+    public function testResetLimit(): void
     {
         $this->initDb();
         $this->initDbAdditional();
@@ -317,7 +326,7 @@ class SmsCodeTest extends TestCase
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function testCheckUser()
+    public function testCheckUser(): void
     {
         $this->initDb();
         $this->initDbAdditional();
@@ -333,7 +342,7 @@ class SmsCodeTest extends TestCase
     /**
      * @group sms-code
      */
-    public function testPhoneFormatter()
+    public function testPhoneFormatter(): void
     {
         $phone = new UserMetaPhone([
             'country' => 7,

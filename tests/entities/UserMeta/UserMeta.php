@@ -1,4 +1,5 @@
 <?php
+
 namespace sorokinmedia\user\tests\entities\UserMeta;
 
 use sorokinmedia\user\entities\UserMeta\AbstractUserMeta;
@@ -22,7 +23,7 @@ class UserMeta extends AbstractUserMeta
      * @return bool
      * @throws Exception
      */
-    public function setPhone(UserMetaPhone $userMetaPhone) : bool
+    public function setPhone(UserMetaPhone $userMetaPhone): bool
     {
         $this->notification_phone = Json::encode($userMetaPhone);
         return $this->updateModel();

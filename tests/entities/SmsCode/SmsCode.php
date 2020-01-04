@@ -1,8 +1,11 @@
 <?php
+
 namespace sorokinmedia\user\tests\entities\SmsCode;
 
+use Exception;
 use sorokinmedia\user\entities\SmsCode\AbstractSmsCode;
 use sorokinmedia\user\tests\entities\User\RelationClassTrait;
+use Yii;
 
 /**
  * Class SmsCode
@@ -12,15 +15,7 @@ class SmsCode extends AbstractSmsCode
 {
     use RelationClassTrait;
 
-    const TYPE_VERIFY = 1;
-
-    /**
-     * @return bool
-     */
-    public function sendCode() : bool
-    {
-        return true;
-    }
+    public const TYPE_VERIFY = 1;
 
     /**
      * @param int|null $type_id
@@ -29,22 +24,30 @@ class SmsCode extends AbstractSmsCode
     public static function getTypes(int $type_id = null)
     {
         $types = [
-            self::TYPE_VERIFY => \Yii::t('app', 'Верификация'),
+            self::TYPE_VERIFY => Yii::t('app', 'Верификация'),
         ];
-        if (!is_null($type_id)){
+        if ($type_id !== null) {
             return $types[$type_id];
         }
         return $types;
     }
 
     /**
+     * @return bool
+     */
+    public function sendCode(): bool
+    {
+        return true;
+    }
+
+    /**
      * @return string
      */
-    public function getMessage() : string
+    public function getMessage(): string
     {
-        switch ($this->type_id){
+        switch ($this->type_id) {
             case self::TYPE_VERIFY:
-                return \Yii::t('app', 'Код проверки {code}', [
+                return Yii::t('app', 'Код проверки {code}', [
                     'code' => $this->code
                 ]);
             default:
@@ -54,9 +57,10 @@ class SmsCode extends AbstractSmsCode
 
     /**
      * @return int
+     * @throws Exception
      */
-    public function generateCode() : int
+    public function generateCode(): int
     {
-        return rand(1000, 9999);
+        return random_int(1000, 9999);
     }
 }

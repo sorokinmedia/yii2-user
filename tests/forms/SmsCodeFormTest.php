@@ -1,9 +1,12 @@
 <?php
+
 namespace sorokinmedia\user\tests\forms;
 
 use sorokinmedia\user\forms\SmsCodeForm;
 use sorokinmedia\user\tests\entities\SmsCode\SmsCode;
 use sorokinmedia\user\tests\TestCase;
+use yii\base\InvalidConfigException;
+use yii\db\Exception;
 
 /**
  * Class SmsCodeFormTest
@@ -13,11 +16,10 @@ class SmsCodeFormTest extends TestCase
 {
     /**
      * @group forms
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
-     * @throws \yii\web\ServerErrorHttpException
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testConstruct()
+    public function testConstruct(): void
     {
         $this->initDb();
         $code = SmsCode::findOne(['user_id' => 1]);

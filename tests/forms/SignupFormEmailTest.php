@@ -1,10 +1,13 @@
 <?php
+
 namespace sorokinmedia\user\tests\forms;
 
-use sorokinmedia\user\entities\User\UserInterface;
 use sorokinmedia\user\forms\SignUpFormEmail;
 use sorokinmedia\user\tests\entities\User\User;
 use sorokinmedia\user\tests\TestCase;
+use yii\base\InvalidConfigException;
+use yii\db\Exception;
+use yii\web\ServerErrorHttpException;
 
 /**
  * Class SignupFormEmailTest
@@ -17,31 +20,29 @@ class SignupFormEmailTest extends TestCase
     /**
      * @group forms
      * @group forms-signup_form_email
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
-     * @throws \yii\web\ServerErrorHttpException
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testConstruct()
+    public function testConstruct(): void
     {
         $this->initDb();
         $user = User::findOne(1);
         $form = new SignUpFormEmail([
             'email' => 'test@yandex.ru',
-        ], $user,  User::ROLE_WORKER);
+        ], $user, User::ROLE_WORKER);
         $this->assertInstanceOf(SignUpFormEmail::class, $form);
         $this->assertEquals($form->email, 'test@yandex.ru');
-        $this->assertInstanceOf(UserInterface::class, $form->getUser());
     }
 
     /**
      * @group forms
      * @group forms-signup_form_email
      * @throws \yii\base\Exception
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
-     * @throws \yii\web\ServerErrorHttpException
+     * @throws InvalidConfigException
+     * @throws Exception
+     * @throws ServerErrorHttpException
      */
-    public function testSignUpFalse()
+    public function testSignUpFalse(): void
     {
         $this->initDb();
         $user = new User();
@@ -57,11 +58,11 @@ class SignupFormEmailTest extends TestCase
      * @group forms
      * @group forms-signup_form_email
      * @throws \yii\base\Exception
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
-     * @throws \yii\web\ServerErrorHttpException
+     * @throws InvalidConfigException
+     * @throws Exception
+     * @throws ServerErrorHttpException
      */
-    public function testSignUpTrue()
+    public function testSignUpTrue(): void
     {
         $this->initDb();
         $user = new User();

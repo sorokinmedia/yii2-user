@@ -1,8 +1,12 @@
 <?php
+
 namespace sorokinmedia\user\tests\entities\Company;
 
 use sorokinmedia\user\tests\entities\User\User;
 use sorokinmedia\user\tests\TestCase;
+use Throwable;
+use yii\base\InvalidConfigException;
+use yii\db\Exception;
 
 /**
  * Class CompanyTest
@@ -12,10 +16,10 @@ class CompanyTest extends TestCase
 {
     /**
      * @group company
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testFields()
+    public function testFields(): void
     {
         $this->initDb();
         $company = new Company();
@@ -32,10 +36,10 @@ class CompanyTest extends TestCase
 
     /**
      * @group company
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testRelations()
+    public function testRelations(): void
     {
         $this->initDb();
         $company = Company::findOne(1);
@@ -46,11 +50,11 @@ class CompanyTest extends TestCase
 
     /**
      * @group company
-     * @throws \Throwable
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws Throwable
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testCreate()
+    public function testCreate(): void
     {
         $this->initDb();
         $this->initDbAdditional();

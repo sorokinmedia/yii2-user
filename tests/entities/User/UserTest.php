@@ -242,7 +242,7 @@ class UserTest extends TestCase
     /**
      * @group user
      */
-    public function testIsPasswordResetTokenValid()
+    public function testIsPasswordResetTokenValid(): void
     {
         $this->assertFalse(User::isPasswordResetTokenValid(3600));
         $this->assertFalse(User::isPasswordResetTokenValid(3600, 'P3LKsIDJLagliQS4yAMpcHEQFB0T_YwW_1529143969'));
@@ -254,7 +254,7 @@ class UserTest extends TestCase
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function testRemovePasswordResetToken()
+    public function testRemovePasswordResetToken(): void
     {
         $this->initDb();
         $user = User::findOne(1);
@@ -267,7 +267,7 @@ class UserTest extends TestCase
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function testSendPasswordResetEmail()
+    public function testSendPasswordResetEmail(): void
     {
         $this->initDb();
         $user = User::findOne(1);
@@ -279,7 +279,7 @@ class UserTest extends TestCase
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function testFindByEmail()
+    public function testFindByEmail(): void
     {
         $this->initDb();
         $user = User::findByEmail('test@yandex.ru');
@@ -292,7 +292,7 @@ class UserTest extends TestCase
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function testGenerateEmailConfirmToken()
+    public function testGenerateEmailConfirmToken(): void
     {
         $this->initDb();
         $user = User::findOne(1);
@@ -305,7 +305,7 @@ class UserTest extends TestCase
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function testRemoveEmailConfirmToken()
+    public function testRemoveEmailConfirmToken(): void
     {
         $this->initDb();
         $user = User::findOne(1);
@@ -318,7 +318,7 @@ class UserTest extends TestCase
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function testConfirmEmailAction()
+    public function testConfirmEmailAction(): void
     {
         $this->initDb();
         $user = User::findOne(1);
@@ -332,12 +332,12 @@ class UserTest extends TestCase
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function testValidatePassword()
+    public function testValidatePassword(): void
     {
         $this->initDb();
         $user = User::findOne(1);
         $this->assertFalse($user->validatePassword('test_password'));
-        $this->assertTrue($user->validatePassword('cytugxjks'));
+        $this->assertTrue($user->validatePassword('another_test_password'));
     }
 
     /**
@@ -346,7 +346,7 @@ class UserTest extends TestCase
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function testSetPassword()
+    public function testSetPassword(): void
     {
         $this->initDb();
         $user = User::findOne(1);
@@ -361,7 +361,7 @@ class UserTest extends TestCase
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function testSaveNewPassword()
+    public function testSaveNewPassword(): void
     {
         $this->initDb();
         $user = User::findOne(1);
@@ -378,7 +378,7 @@ class UserTest extends TestCase
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function testGenerateAuthKey()
+    public function testGenerateAuthKey(): void
     {
         $this->initDb();
         $user = User::findOne(1);
@@ -390,7 +390,7 @@ class UserTest extends TestCase
     /**
      * @group user
      */
-    public function testGetRolesArray()
+    public function testGetRolesArray(): void
     {
         $roles = User::getRolesArray();
         $this->assertNotEmpty($roles);
@@ -402,7 +402,7 @@ class UserTest extends TestCase
     /**
      * @group user
      */
-    public function testGetRoleLink()
+    public function testGetRoleLink(): void
     {
         $links = User::getRoleLink();
         $this->assertNotEmpty($links);
@@ -416,7 +416,7 @@ class UserTest extends TestCase
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function testDeactivateTokens()
+    public function testDeactivateTokens(): void
     {
         $this->initDb();
         $user = User::findOne(1);
@@ -444,7 +444,7 @@ class UserTest extends TestCase
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function testUpdateLastEntering()
+    public function testUpdateLastEntering(): void
     {
         $this->initDb();
         $user = User::findOne(1);
@@ -457,7 +457,7 @@ class UserTest extends TestCase
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function testAfterSignUp()
+    public function testAfterSignUp(): void
     {
         $this->initDb();
         $user = new User();
@@ -470,7 +470,7 @@ class UserTest extends TestCase
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function testAfterSignUpEmail()
+    public function testAfterSignUpEmail(): void
     {
         $this->initDb();
         $user = new User();
@@ -484,7 +484,7 @@ class UserTest extends TestCase
      * @throws Exception
      * @throws ServerErrorHttpException
      */
-    public function testSignUp()
+    public function testSignUp(): void
     {
         $this->initDb();
         $user = new User();
@@ -503,7 +503,7 @@ class UserTest extends TestCase
      * @throws Exception
      * @throws ServerErrorHttpException
      */
-    public function testSignUpEmail()
+    public function testSignUpEmail(): void
     {
         $this->initDb();
         $user = new User();
@@ -519,7 +519,7 @@ class UserTest extends TestCase
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function testSendEmailConfirmation()
+    public function testSendEmailConfirmation(): void
     {
         $this->initDb();
         $user = new User();
@@ -531,7 +531,7 @@ class UserTest extends TestCase
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function testSendEmailConfirmationWithPassword()
+    public function testSendEmailConfirmationWithPassword(): void
     {
         $this->initDb();
         $user = new User();
@@ -544,7 +544,7 @@ class UserTest extends TestCase
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function testGetUsersArray()
+    public function testGetUsersArray(): void
     {
         $this->initDb();
         $array = User::getUsersArray();
@@ -557,7 +557,7 @@ class UserTest extends TestCase
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function testGetActiveUsers()
+    public function testGetActiveUsers(): void
     {
         $this->initDb();
         $models = User::getActiveUsers();

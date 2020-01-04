@@ -1,12 +1,15 @@
 <?php
+
 namespace sorokinmedia\user\tests\forms;
 
 use sorokinmedia\user\entities\User\AbstractUser;
-use sorokinmedia\user\entities\User\UserInterface;
 use sorokinmedia\user\forms\LoginForm;
 use sorokinmedia\user\tests\entities\User\User;
 use sorokinmedia\user\tests\TestCase;
+use Yii;
+use yii\base\InvalidConfigException;
 use yii\db\Connection;
+use yii\db\Exception;
 use yii\db\Schema;
 
 /**
@@ -19,116 +22,45 @@ class LoginFormTest extends TestCase
 {
     /**
      * @group forms
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
-     * @throws \yii\web\ServerErrorHttpException
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testConstruct()
+    public function testConstruct(): void
     {
         $this->initDb();
         $user = User::findOne(1);
         $form = new LoginForm([
             'email' => 'test@yandex.ru',
-            'password' => 'Snegp4oli',
+            'password' => 'another_test_password',
             'remember' => true,
         ]);
         $form->setUser($user);
         $this->assertInstanceOf(LoginForm::class, $form);
         $this->assertEquals($form->email, 'test@yandex.ru');
-        $this->assertEquals($form->password, 'Snegp4oli');
+        $this->assertEquals($form->password, 'another_test_password');
         $this->assertEquals($form->remember, true);
-        $this->assertInstanceOf(UserInterface::class, $form->getUser());
     }
 
     /**
-     * @group forms
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testValidatePassword()
-    {
-        $this->initDb();
-        $user = User::findOne(1);
-        $form = new LoginForm([
-            'email' => 'test@yandex.ru',
-            'password' => 'wrong_password',
-            'remember' => true,
-        ]);
-        $form->setUser($user);
-        $form->validatePassword('password', []);
-        $this->assertNotNull($form->errors);
-        $this->assertEquals($form->errors['password'][0], 'Логин или пароль указан не верно. Попробуйте еще раз.');
-    }
-
-    /**
-     * @group forms
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
-     */
-    public function testValidateStatus()
-    {
-        $this->initDb();
-        $user = User::findOne(1);
-        $form = new LoginForm([
-            'email' => 'test@yandex.ru',
-            'password' => 'Snegp4oli',
-            'remember' => true,
-        ]);
-        $form->setUser($user);
-        $form->validateStatus();
-        $this->assertNotNull($form->errors);
-        $this->assertEquals($form->errors['login'][0], 'Ваш аккаунт не подтвержден. Необходимо подтвердить e-mail.');
-
-        $user = User::findOne(2);
-        $form = new LoginForm([
-            'email' => 'test@yandex.ru',
-            'password' => 'Snegp4oli',
-            'remember' => true,
-        ]);
-        $form->setUser($user);
-        $form->validateStatus();
-        $this->assertNotNull($form->errors);
-        $this->assertEquals($form->errors['login'][0], 'Ваш аккаунт заблокирован. Обратитесь к тех.поддержке.');
-    }
-
-    /**
-     * @group forms
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
-     */
-    public function testLoginFalse()
-    {
-        $this->initDb();
-        $user = User::findOne(1);
-        $form = new LoginForm([
-            'email' => 'test@yandex.ru',
-            'password' => 'Snegp4oli',
-            'remember' => true,
-        ]);
-        $form->setUser($user);
-        $this->assertFalse($form->login());
-    }
-
-    /**
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
-     */
-    public function initDb()
+    public function initDb(): void
     {
         @unlink(__DIR__ . '/runtime/sqlite.db');
         $db = new Connection([
-            'dsn' => 'sqlite:' . \Yii::$app->getRuntimePath() . '/sqlite.db',
+            'dsn' => 'sqlite:' . Yii::$app->getRuntimePath() . '/sqlite.db',
             'charset' => 'utf8',
         ]);
-        \Yii::$app->set('db', $db);
-        if ($db->getTableSchema('user')){
+        Yii::$app->set('db', $db);
+        if ($db->getTableSchema('user')) {
             $db->createCommand()->dropTable('user')->execute();
         }
         $db->createCommand()->createTable('user', [
             'id' => Schema::TYPE_PK,
             'email' => Schema::TYPE_STRING . '(255) NOT NULL',
             'password_hash' => Schema::TYPE_STRING . '(60) NOT NULL',
-            'password_reset_token' =>Schema::TYPE_STRING . '(255)',
+            'password_reset_token' => Schema::TYPE_STRING . '(255)',
             'auth_key' => Schema::TYPE_STRING . '(45)',
             'username' => Schema::TYPE_STRING . '(255) NOT NULL',
             'status_id' => Schema::TYPE_TINYINT,
@@ -172,5 +104,74 @@ class LoginFormTest extends TestCase
             'last_entering_date' => 1532370359,
             'email_confirm_token' => null,
         ])->execute();
+    }
+
+    /**
+     * @group forms
+     * @throws InvalidConfigException
+     * @throws Exception
+     */
+    public function testValidatePassword(): void
+    {
+        $this->initDb();
+        $user = User::findOne(1);
+        $form = new LoginForm([
+            'email' => 'test@yandex.ru',
+            'password' => 'wrong_password',
+            'remember' => true,
+        ]);
+        $form->setUser($user);
+        $form->validatePassword('password', []);
+        $this->assertNotNull($form->errors);
+        $this->assertEquals($form->errors['password'][0], 'Логин или пароль указан не верно. Попробуйте еще раз.');
+    }
+
+    /**
+     * @group forms
+     * @throws InvalidConfigException
+     * @throws Exception
+     */
+    public function testValidateStatus(): void
+    {
+        $this->initDb();
+        $user = User::findOne(1);
+        $form = new LoginForm([
+            'email' => 'test@yandex.ru',
+            'password' => 'another_test_password',
+            'remember' => true,
+        ]);
+        $form->setUser($user);
+        $form->validateStatus();
+        $this->assertNotNull($form->errors);
+        $this->assertEquals($form->errors['login'][0], 'Ваш аккаунт не подтвержден. Необходимо подтвердить e-mail.');
+
+        $user = User::findOne(2);
+        $form = new LoginForm([
+            'email' => 'test@yandex.ru',
+            'password' => 'another_test_password',
+            'remember' => true,
+        ]);
+        $form->setUser($user);
+        $form->validateStatus();
+        $this->assertNotNull($form->errors);
+        $this->assertEquals($form->errors['login'][0], 'Ваш аккаунт заблокирован. Обратитесь к тех.поддержке.');
+    }
+
+    /**
+     * @group forms
+     * @throws InvalidConfigException
+     * @throws Exception
+     */
+    public function testLoginFalse(): void
+    {
+        $this->initDb();
+        $user = User::findOne(1);
+        $form = new LoginForm([
+            'email' => 'test@yandex.ru',
+            'password' => 'another_test_password',
+            'remember' => true,
+        ]);
+        $form->setUser($user);
+        $this->assertFalse($form->login());
     }
 }

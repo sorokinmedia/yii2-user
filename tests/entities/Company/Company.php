@@ -1,4 +1,5 @@
 <?php
+
 namespace sorokinmedia\user\tests\entities\Company;
 
 use sorokinmedia\user\entities\Company\AbstractCompany;

@@ -1,9 +1,12 @@
 <?php
+
 namespace sorokinmedia\user\tests\forms;
 
 use sorokinmedia\user\forms\UserMetaForm;
 use sorokinmedia\user\tests\entities\UserMeta\UserMeta;
 use sorokinmedia\user\tests\TestCase;
+use yii\base\InvalidConfigException;
+use yii\db\Exception;
 
 /**
  * Class UserMetaFormTest
@@ -15,11 +18,10 @@ class UserMetaFormTest extends TestCase
 {
     /**
      * @group forms
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
-     * @throws \yii\web\ServerErrorHttpException
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testConstruct()
+    public function testConstruct(): void
     {
         $this->initDb();
         $user_meta = UserMeta::findOne(['user_id' => 1]);

@@ -1,12 +1,15 @@
 <?php
+
 namespace sorokinmedia\user\tests\forms;
 
 use sorokinmedia\user\entities\User\AbstractUser;
-use sorokinmedia\user\entities\User\UserInterface;
 use sorokinmedia\user\forms\PasswordResetForm;
 use sorokinmedia\user\tests\entities\User\User;
 use sorokinmedia\user\tests\TestCase;
+use Yii;
+use yii\base\InvalidConfigException;
 use yii\db\Connection;
+use yii\db\Exception;
 use yii\db\Schema;
 
 /**
@@ -19,11 +22,10 @@ class PasswordResetFromTest extends TestCase
 {
     /**
      * @group forms
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
-     * @throws \yii\web\ServerErrorHttpException
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testConstruct()
+    public function testConstruct(): void
     {
         $this->initDb();
         $user = User::findOne(1);
@@ -36,86 +38,28 @@ class PasswordResetFromTest extends TestCase
         $this->assertEquals($form->password, 'new_password');
         $this->assertEquals($form->password_repeat, 'new_password');
         $this->assertEquals($form->token, 'test_token');
-        $this->assertInstanceOf(UserInterface::class, $form->getUser());
     }
 
     /**
-     * @group forms
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testCheckRepeatTrue()
-    {
-        $this->initDb();
-        $user = User::findOne(1);
-        $form = new PasswordResetForm([
-            'password' => 'new_password',
-            'password_repeat' => 'new_password',
-            'token' => 'test_token'
-        ], $user);
-        $this->assertTrue($form->checkRepeat());
-    }
-
-    /**
-     * @group forms
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
-     */
-    public function testCheckRepeatFalse()
-    {
-        $this->initDb();
-        $user = User::findOne(1);
-        $form = new PasswordResetForm([
-            'password' => 'new_password',
-            'password_repeat' => 'new_password1',
-            'token' => 'test_token'
-        ], $user);
-        $this->assertFalse($form->checkRepeat());
-    }
-
-    /**
-     * @group forms
-     * @throws \yii\base\Exception
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
-     */
-    public function testResetPassword()
-    {
-        $this->initDb();
-        $user = User::findOne(1);
-        $form = new PasswordResetForm([
-            'password' => 'new_password',
-            'password_repeat' => 'new_password',
-            'token' => 'test_token',
-        ], $user);
-        $this->assertTrue($form->checkRepeat());
-        $old_password = $user->password_hash;
-        $form->resetPassword();
-        $user->refresh();
-        $this->assertNull($user->password_reset_token);
-        $this->assertNotEquals($old_password, $user->password_hash);
-    }
-
-    /**
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
-     */
-    public function initDb()
+    public function initDb(): void
     {
         @unlink(__DIR__ . '/runtime/sqlite.db');
         $db = new Connection([
-            'dsn' => 'sqlite:' . \Yii::$app->getRuntimePath() . '/sqlite.db',
+            'dsn' => 'sqlite:' . Yii::$app->getRuntimePath() . '/sqlite.db',
             'charset' => 'utf8',
         ]);
-        \Yii::$app->set('db', $db);
-        if ($db->getTableSchema('user')){
+        Yii::$app->set('db', $db);
+        if ($db->getTableSchema('user')) {
             $db->createCommand()->dropTable('user')->execute();
         }
         $db->createCommand()->createTable('user', [
             'id' => Schema::TYPE_PK,
             'email' => Schema::TYPE_STRING . '(255) NOT NULL',
             'password_hash' => Schema::TYPE_STRING . '(60) NOT NULL',
-            'password_reset_token' =>Schema::TYPE_STRING . '(255)',
+            'password_reset_token' => Schema::TYPE_STRING . '(255)',
             'auth_key' => Schema::TYPE_STRING . '(45)',
             'username' => Schema::TYPE_STRING . '(255) NOT NULL',
             'status_id' => Schema::TYPE_TINYINT,
@@ -159,5 +103,62 @@ class PasswordResetFromTest extends TestCase
             'last_entering_date' => 1532370359,
             'email_confirm_token' => null,
         ])->execute();
+    }
+
+    /**
+     * @group forms
+     * @throws InvalidConfigException
+     * @throws Exception
+     */
+    public function testCheckRepeatTrue(): void
+    {
+        $this->initDb();
+        $user = User::findOne(1);
+        $form = new PasswordResetForm([
+            'password' => 'new_password',
+            'password_repeat' => 'new_password',
+            'token' => 'test_token'
+        ], $user);
+        $this->assertTrue($form->checkRepeat());
+    }
+
+    /**
+     * @group forms
+     * @throws InvalidConfigException
+     * @throws Exception
+     */
+    public function testCheckRepeatFalse(): void
+    {
+        $this->initDb();
+        $user = User::findOne(1);
+        $form = new PasswordResetForm([
+            'password' => 'new_password',
+            'password_repeat' => 'new_password1',
+            'token' => 'test_token'
+        ], $user);
+        $this->assertFalse($form->checkRepeat());
+    }
+
+    /**
+     * @group forms
+     * @throws \yii\base\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
+     */
+    public function testResetPassword(): void
+    {
+        $this->initDb();
+        $user = User::findOne(1);
+        $form = new PasswordResetForm([
+            'password' => 'new_password',
+            'password_repeat' => 'new_password',
+            'token' => 'test_token',
+        ], $user);
+        $this->assertTrue($form->checkRepeat());
+        $old_password = $user->password_hash;
+        $form->resetPassword();
+        $user->refresh();
+        $this->assertNull($user->password_reset_token);
+        $this->assertNotEquals($old_password, $user->password_hash);
     }
 }

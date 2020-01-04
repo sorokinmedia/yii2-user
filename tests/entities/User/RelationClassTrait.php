@@ -1,4 +1,5 @@
 <?php
+
 namespace sorokinmedia\user\tests\entities\User;
 
 use sorokinmedia\user\tests\entities\Company\Company;
@@ -16,7 +17,16 @@ trait RelationClassTrait
     public $__companyClass;
     public $__companyUserClass;
 
-    public function initClasses()
+    /**
+     * инициализация связей
+     */
+    public function init(): void
+    {
+        parent::init();
+        $this->initClasses();
+    }
+
+    public function initClasses(): void
     {
         $this->__userClass = User::class;
         $this->__userMetaClass = UserMeta::class;
@@ -24,15 +34,6 @@ trait RelationClassTrait
         $this->__smsCodeClass = SmsCode::class;
         $this->__companyClass = Company::class;
         $this->__companyUserClass = CompanyUser::class;
-    }
-
-    /**
-     * инициализация связей
-     */
-    public function init()
-    {
-        parent::init();
-        $this->initClasses();
     }
 
     /**

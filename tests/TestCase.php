@@ -125,7 +125,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $db->createCommand()->insert('user', [
             'id' => 1,
             'email' => 'test@yandex.ru',
-            'password_hash' => '$2y$13$965KGf0VPtTcQqflsIEDtu4kmvM4mstARSbtRoZRiwYZkUqCQWmcy',
+            'password_hash' => '$2y$13$J/R9DEe0Q/L7fWgPwMo7Hunca2NByL4xbTS3gd44/lqBeGNu8Dzwm',
             'password_reset_token' => null,
             'auth_key' => 'NdLufkTZDHMPH8Sw3p5f7ukUXSXllYwM',
             'username' => 'IvanSidorov',
