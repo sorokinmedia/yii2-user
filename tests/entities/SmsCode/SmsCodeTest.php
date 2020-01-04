@@ -1,12 +1,15 @@
 <?php
+
 namespace sorokinmedia\user\tests\entities\User;
 
-use sorokinmedia\user\entities\{
-    User\UserInterface,UserMeta\json\UserMetaPhone
-};
+use sorokinmedia\user\entities\{User\UserInterface, UserMeta\json\UserMetaPhone};
 use sorokinmedia\user\forms\SmsCodeForm;
 use sorokinmedia\user\tests\entities\SmsCode\SmsCode;
 use sorokinmedia\user\tests\TestCase;
+use Throwable;
+use Yii;
+use yii\base\InvalidConfigException;
+use yii\db\Exception;
 
 /**
  * Class SmsCodeTest
@@ -42,8 +45,8 @@ class SmsCodeTest extends TestCase
     /**
      * проверяет наличие связей
      * @group sms-code
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testRelations()
     {
@@ -54,8 +57,8 @@ class SmsCodeTest extends TestCase
 
     /**
      * @group sms-code
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testConstruct()
     {
@@ -68,8 +71,8 @@ class SmsCodeTest extends TestCase
 
     /**
      * @group sms-code
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testGetFromForm()
     {
@@ -90,9 +93,9 @@ class SmsCodeTest extends TestCase
 
     /**
      * @group sms-code
-     * @throws \Throwable
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws Throwable
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testInsertModel()
     {
@@ -115,8 +118,8 @@ class SmsCodeTest extends TestCase
 
     /**
      * @group sms-code
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testUpdateModel()
     {
@@ -139,8 +142,8 @@ class SmsCodeTest extends TestCase
 
     /**
      * @group sms-code
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testDeleteModel()
     {
@@ -153,69 +156,69 @@ class SmsCodeTest extends TestCase
 
     /**
      * @group sms-code
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testGetTypes()
+    public function testGetTypes(): void
     {
         $this->initDb();
         $types = SmsCode::getTypes();
-        $this->assertInternalType('array', $types);
+        $this->assertIsArray($types);
         $this->assertNotEmpty($types);
-        $this->assertEquals(\Yii::t('app', 'Верификация'), $types[SmsCode::TYPE_VERIFY]);
+        $this->assertEquals(Yii::t('app', 'Верификация'), $types[SmsCode::TYPE_VERIFY]);
 
         $type = SmsCode::getTypes(SmsCode::TYPE_VERIFY);
-        $this->assertEquals(\Yii::t('app', 'Верификация'), $type);
+        $this->assertEquals(Yii::t('app', 'Верификация'), $type);
     }
 
     /**
      * @group sms-code
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testGetType()
     {
         $this->initDb();
         $code = SmsCode::findOne(['code' => 3244]);
         $type = $code->getType();
-        $this->assertEquals(\Yii::t('app', 'Верификация'), $type);
+        $this->assertEquals(Yii::t('app', 'Верификация'), $type);
     }
 
     /**
      * @group sms-code
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testGenerateCode()
+    public function testGenerateCode(): void
     {
         $this->initDb();
         $code = SmsCode::findOne(['code' => 3244]);
         $old_code = $code->code;
         $new_code = $code->generateCode();
         $this->assertNotEquals($old_code, $new_code);
-        $this->assertInternalType('integer', $new_code);
+        $this->assertIsInt($new_code);
     }
 
     /**
      * @group sms-code
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testGetMessage()
+    public function testGetMessage(): void
     {
         $this->initDb();
         $code = SmsCode::findOne(['code' => 3244]);
         $message = $code->getMessage();
-        $this->assertInternalType('string', $message);
-        $this->assertEquals((\Yii::t('app', 'Код проверки {code}', [
+        $this->assertIsString($message);
+        $this->assertEquals((Yii::t('app', 'Код проверки {code}', [
             'code' => $code->code
         ])), $message);
     }
 
     /**
      * @group sms-code
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testSendCode()
     {
@@ -226,8 +229,8 @@ class SmsCodeTest extends TestCase
 
     /**
      * @group sms-code
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testGetCodeByUser()
     {
@@ -239,8 +242,8 @@ class SmsCodeTest extends TestCase
 
     /**
      * @group sms-code
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testGetCodeByIp()
     {
@@ -251,8 +254,8 @@ class SmsCodeTest extends TestCase
 
     /**
      * @group sms-code
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testGetRequestedTodayByIp()
     {
@@ -264,8 +267,8 @@ class SmsCodeTest extends TestCase
 
     /**
      * @group sms-code
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testGetRequestedTodayByUser()
     {
@@ -278,8 +281,8 @@ class SmsCodeTest extends TestCase
 
     /**
      * @group sms-code
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testGetRequestedTodayForUser()
     {
@@ -294,8 +297,8 @@ class SmsCodeTest extends TestCase
 
     /**
      * @group sms-code
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testResetLimit()
     {
@@ -311,8 +314,8 @@ class SmsCodeTest extends TestCase
 
     /**
      * @group sms-code
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testCheckUser()
     {

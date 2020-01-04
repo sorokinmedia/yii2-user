@@ -52,12 +52,11 @@ class UserAccessTokenTest extends TestCase
     /**
      * @group user-access-token
      */
-    public function testGenerateToken()
+    public function testGenerateToken(): void
     {
-        $token = null;
         $token = UserAccessToken::generateToken('test_string');
         $this->assertNotNull($token);
-        $this->assertInternalType('string', $token);
+        $this->assertIsString($token);
         $this->assertEquals(32, mb_strlen($token));
     }
 

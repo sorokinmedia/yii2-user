@@ -1,12 +1,18 @@
 <?php
+
 namespace sorokinmedia\user\tests\entities\User;
 
+use RuntimeException;
 use sorokinmedia\user\entities\User\UserInterface;
 use sorokinmedia\user\entities\UserAccessToken\UserAccessTokenInterface;
 use sorokinmedia\user\forms\SignupForm;
 use sorokinmedia\user\forms\SignUpFormEmail;
 use sorokinmedia\user\tests\TestCase;
+use Yii;
+use yii\base\InvalidConfigException;
+use yii\db\Exception;
 use yii\web\IdentityInterface;
+use yii\web\ServerErrorHttpException;
 
 /**
  * Class FormGeneratorTest
@@ -17,9 +23,11 @@ use yii\web\IdentityInterface;
 class UserTest extends TestCase
 {
     /**
+     * @throws InvalidConfigException
+     * @throws Exception
      * Сверяет поля в AR модели
      */
-    public function testFields()
+    public function testFields(): void
     {
         $this->initDb();
         $user = new User();
@@ -43,10 +51,10 @@ class UserTest extends TestCase
     /**
      * проверяет наличие связей
      * @group user
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testRelations()
+    public function testRelations(): void
     {
         $this->initDb();
         $user = User::findOne(1);
@@ -58,23 +66,23 @@ class UserTest extends TestCase
     /**
      * @group user
      */
-    public function testGetStatusesArray()
+    public function testGetStatusesArray(): void
     {
         $this->assertEquals([
-            User::STATUS_BLOCKED => \Yii::t('app', 'Заблокирован'),
-            User::STATUS_ACTIVE => \Yii::t('app','Активен'),
-            User::STATUS_WAIT_EMAIL => \Yii::t('app','Ожидает подтверждения e-mail'),
-            User::STATUS_MODERATION => \Yii::t('app','На модерации'),
-            User::STATUS_LANDING => \Yii::t('app','С лендинга'),
+            User::STATUS_BLOCKED => Yii::t('app', 'Заблокирован'),
+            User::STATUS_ACTIVE => Yii::t('app', 'Активен'),
+            User::STATUS_WAIT_EMAIL => Yii::t('app', 'Ожидает подтверждения e-mail'),
+            User::STATUS_MODERATION => Yii::t('app', 'На модерации'),
+            User::STATUS_LANDING => Yii::t('app', 'С лендинга'),
         ], User::getStatusesArray());
     }
 
     /**
      * @group user
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testGetStatus()
+    public function testGetStatus(): void
     {
         $this->initDb();
         $user = User::findOne(1);
@@ -83,10 +91,10 @@ class UserTest extends TestCase
 
     /**
      * @group user
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testActiveDeactivate()
+    public function testActiveDeactivate(): void
     {
         $this->initDb();
         $user = User::findOne(1);
@@ -98,10 +106,11 @@ class UserTest extends TestCase
 
     /**
      * @group user
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
+     * @throws \Exception
      */
-    public function testBlockUnblock()
+    public function testBlockUnblock(): void
     {
         $this->initDb();
         $user = User::findOne(1);
@@ -115,10 +124,11 @@ class UserTest extends TestCase
 
     /**
      * @group user
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
+     * @throws \Exception
      */
-    public function testVerifyAccount()
+    public function testVerifyAccount(): void
     {
         $this->initDb();
         $user = User::findOne(1);
@@ -129,10 +139,10 @@ class UserTest extends TestCase
 
     /**
      * @group user
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testFindIdentity()
+    public function testFindIdentity(): void
     {
         $this->initDb();
         $identity = User::findIdentity(1);
@@ -141,10 +151,10 @@ class UserTest extends TestCase
 
     /**
      * @group user
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testFindIdentityByAccessToken()
+    public function testFindIdentityByAccessToken(): void
     {
         $this->initDb();
         $identity = User::findIdentityByAccessToken('NdLufkTZDHMPH8Sw3p5f7ukUXSXllYwM');
@@ -156,10 +166,10 @@ class UserTest extends TestCase
 
     /**
      * @group user
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testGetAuthKey()
+    public function testGetAuthKey(): void
     {
         $this->initDb();
         $user = User::findOne(1);
@@ -168,10 +178,10 @@ class UserTest extends TestCase
 
     /**
      * @group user
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testValidateAuthKey()
+    public function testValidateAuthKey(): void
     {
         $this->initDb();
         $user = User::findOne(1);
@@ -182,25 +192,25 @@ class UserTest extends TestCase
     /**
      * @group user
      * @throws \yii\base\Exception
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testGeneratePasswordResetToken()
+    public function testGeneratePasswordResetToken(): void
     {
         $this->initDb();
         $user = User::findOne(1);
         $user->generatePasswordResetToken();
         $this->assertNotNull($user->password_reset_token);
-        $this->assertEquals(43,mb_strlen($user->password_reset_token));
+        $this->assertEquals(43, mb_strlen($user->password_reset_token));
     }
 
     /**
      * @group user
      * @throws \yii\base\Exception
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testSaveGeneratedPasswordResetToken()
+    public function testSaveGeneratedPasswordResetToken(): void
     {
         $this->initDb();
         $user = User::findOne(1);
@@ -213,15 +223,16 @@ class UserTest extends TestCase
     /**
      * @group user
      * @throws \yii\base\Exception
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testFindByPasswordResetToken()
+    public function testFindByPasswordResetToken(): void
     {
         $this->initDb();
         $user = User::findOne(1);
-        $this->setExpectedException(\RuntimeException::class, 'Недействительный токен. Запросите сброс пароля еще раз.');
-        $this->getExpectedException(User::findByPasswordResetToken(3600,'test_token'));
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Недействительный токен. Запросите сброс пароля еще раз.');
+        $this->expectException(User::findByPasswordResetToken(3600, 'test_token'));
         $user->saveGeneratedPasswordResetToken();
         $founded_user = User::findByPasswordResetToken(3600, $user->password_reset_token);
         $this->assertInstanceOf(UserInterface::class, $founded_user);
@@ -240,8 +251,8 @@ class UserTest extends TestCase
 
     /**
      * @group user
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testRemovePasswordResetToken()
     {
@@ -253,8 +264,8 @@ class UserTest extends TestCase
 
     /**
      * @group user
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testSendPasswordResetEmail()
     {
@@ -265,8 +276,8 @@ class UserTest extends TestCase
 
     /**
      * @group user
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testFindByEmail()
     {
@@ -278,8 +289,8 @@ class UserTest extends TestCase
     /**
      * @group user
      * @throws \yii\base\Exception
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testGenerateEmailConfirmToken()
     {
@@ -288,11 +299,11 @@ class UserTest extends TestCase
         $user->generateEmailConfirmToken();
         $this->assertNotNull($user->email_confirm_token);
     }
-    
+
     /**
      * @group user
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testRemoveEmailConfirmToken()
     {
@@ -304,8 +315,8 @@ class UserTest extends TestCase
 
     /**
      * @group user
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testConfirmEmailAction()
     {
@@ -318,8 +329,8 @@ class UserTest extends TestCase
 
     /**
      * @group user
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testValidatePassword()
     {
@@ -332,8 +343,8 @@ class UserTest extends TestCase
     /**
      * @group user
      * @throws \yii\base\Exception
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testSetPassword()
     {
@@ -347,8 +358,8 @@ class UserTest extends TestCase
     /**
      * @group user
      * @throws \yii\base\Exception
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testSaveNewPassword()
     {
@@ -364,8 +375,8 @@ class UserTest extends TestCase
     /**
      * @group user
      * @throws \yii\base\Exception
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testGenerateAuthKey()
     {
@@ -383,9 +394,9 @@ class UserTest extends TestCase
     {
         $roles = User::getRolesArray();
         $this->assertNotEmpty($roles);
-        $this->assertEquals($roles[User::ROLE_ADMIN], \Yii::t('app', 'Администратор'));
+        $this->assertEquals($roles[User::ROLE_ADMIN], Yii::t('app', 'Администратор'));
         $role = User::getRolesArray(User::ROLE_ADMIN);
-        $this->assertEquals($role, \Yii::t('app', 'Администратор'));
+        $this->assertEquals($role, Yii::t('app', 'Администратор'));
     }
 
     /**
@@ -402,8 +413,8 @@ class UserTest extends TestCase
 
     /**
      * @group user
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testDeactivateTokens()
     {
@@ -418,20 +429,20 @@ class UserTest extends TestCase
 
     /**
      * @group user
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testGetCheckToken()
+    public function testGetCheckToken(): void
     {
         $this->initDb();
         $user = User::findOne(1);
-        $this->assertInternalType('string', $user->getCheckToken());
+        $this->assertIsString($user->getCheckToken());
     }
 
     /**
      * @group user
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testUpdateLastEntering()
     {
@@ -443,8 +454,8 @@ class UserTest extends TestCase
 
     /**
      * @group user
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testAfterSignUp()
     {
@@ -456,8 +467,8 @@ class UserTest extends TestCase
 
     /**
      * @group user
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testAfterSignUpEmail()
     {
@@ -469,9 +480,9 @@ class UserTest extends TestCase
 
     /**
      * @group user
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
-     * @throws \yii\web\ServerErrorHttpException
+     * @throws InvalidConfigException
+     * @throws Exception
+     * @throws ServerErrorHttpException
      */
     public function testSignUp()
     {
@@ -488,9 +499,9 @@ class UserTest extends TestCase
     /**
      * @group user
      * @throws \yii\base\Exception
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
-     * @throws \yii\web\ServerErrorHttpException
+     * @throws InvalidConfigException
+     * @throws Exception
+     * @throws ServerErrorHttpException
      */
     public function testSignUpEmail()
     {
@@ -505,8 +516,8 @@ class UserTest extends TestCase
 
     /**
      * @group user
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testSendEmailConfirmation()
     {
@@ -517,8 +528,8 @@ class UserTest extends TestCase
 
     /**
      * @group user
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testSendEmailConfirmationWithPassword()
     {
@@ -530,8 +541,8 @@ class UserTest extends TestCase
 
     /**
      * @group user
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testGetUsersArray()
     {
@@ -543,8 +554,8 @@ class UserTest extends TestCase
 
     /**
      * @group user
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testGetActiveUsers()
     {
