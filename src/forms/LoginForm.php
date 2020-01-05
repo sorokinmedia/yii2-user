@@ -127,7 +127,7 @@ class LoginForm extends Model
     /**
      * валидация статуса
      */
-    public function validateStatus(): void
+    public function validateStatus()
     {
         /** @var AbstractUser $user */
         $user = $this->getUser();
