@@ -70,16 +70,16 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
     public function attributeLabels(): array
     {
         return [
-            'user_id' => Yii::t('sm-user', 'Пользователь'),
-            'notification_email' => Yii::t('sm-user', 'E-mail для уведомлений'),
-            'notification_phone' => Yii::t('sm-user', 'Телефон для уведомлений'),
-            'notification_telegram' => Yii::t('sm-user', 'Telegram для уведомлений'),
-            'full_name' => Yii::t('sm-user', 'Полное имя'),
-            'display_name' => Yii::t('sm-user', 'Отображаемое имя'),
-            'tz' => Yii::t('sm-user', 'Часовой пояс'),
-            'location' => Yii::t('sm-user', 'Страна/Город'),
-            'about' => Yii::t('sm-user', 'О себе'),
-            'custom_fields' => Yii::t('sm-user', 'Дополнительные данные'),
+            'user_id' => Yii::t('app-sm-user', 'Пользователь'),
+            'notification_email' => Yii::t('app-sm-user', 'E-mail для уведомлений'),
+            'notification_phone' => Yii::t('app-sm-user', 'Телефон для уведомлений'),
+            'notification_telegram' => Yii::t('app-sm-user', 'Telegram для уведомлений'),
+            'full_name' => Yii::t('app-sm-user', 'Полное имя'),
+            'display_name' => Yii::t('app-sm-user', 'Отображаемое имя'),
+            'tz' => Yii::t('app-sm-user', 'Часовой пояс'),
+            'location' => Yii::t('app-sm-user', 'Страна/Город'),
+            'about' => Yii::t('app-sm-user', 'О себе'),
+            'custom_fields' => Yii::t('app-sm-user', 'Дополнительные данные'),
         ];
     }
 
@@ -155,7 +155,7 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
     public function insertModel(): bool
     {
         if (!$this->insert()) {
-            throw new Exception(Yii::t('sm-user', 'Ошибка при добавлении меты'));
+            throw new Exception(Yii::t('app-sm-user', 'Ошибка при добавлении меты'));
         }
         return true;
     }
@@ -168,7 +168,7 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
     {
         $this->getFromForm();
         if (!$this->save()) {
-            throw new Exception(Yii::t('sm-user', 'Ошибка при обновлении модели в БД'));
+            throw new Exception(Yii::t('app-sm-user', 'Ошибка при обновлении модели в БД'));
         }
         return true;
     }
@@ -183,7 +183,7 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
     {
         $this->notification_telegram = $chat_id;
         if (!$this->save()) {
-            throw new Exception(Yii::t('sm-user', 'Ошибка при добавлении ID телеграм чата пользователю: setTelegramId'));
+            throw new Exception(Yii::t('app-sm-user', 'Ошибка при добавлении ID телеграм чата пользователю: setTelegramId'));
         }
         return true;
     }
@@ -211,7 +211,7 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
     {
         $this->notification_telegram = null;
         if (!$this->save()) {
-            throw new Exception(Yii::t('sm-user', 'Ошибка при сбросе ID телеграм'));
+            throw new Exception(Yii::t('app-sm-user', 'Ошибка при сбросе ID телеграм'));
         }
         return true;
     }
@@ -250,7 +250,7 @@ abstract class AbstractUserMeta extends ActiveRecord implements UserMetaInterfac
     {
         $this->full_name = $userMetaFullName;
         if (!$this->save()) {
-            throw new Exception(Yii::t('sm-user', 'Ошибка при сохранении полного имени'));
+            throw new Exception(Yii::t('app-sm-user', 'Ошибка при сохранении полного имени'));
         }
         return true;
     }

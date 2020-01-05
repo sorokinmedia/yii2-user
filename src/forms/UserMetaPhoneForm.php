@@ -55,9 +55,9 @@ class UserMetaPhoneForm extends Model
     public function attributeLabels(): array
     {
         return [
-            'country' => Yii::t('sm-user', 'Код страны'),
-            'number' => Yii::t('sm-user', 'Номер телефона'),
-            'is_verified' => Yii::t('sm-user', 'Подтвержден'),
+            'country' => Yii::t('app-sm-user', 'Код страны'),
+            'number' => Yii::t('app-sm-user', 'Номер телефона'),
+            'is_verified' => Yii::t('app-sm-user', 'Подтвержден'),
         ];
     }
 }

@@ -116,12 +116,12 @@ abstract class AbstractUserAccessToken extends ActiveRecord implements UserAcces
     public function attributeLabels(): array
     {
         return [
-            'user_id' => Yii::t('sm-user', 'Пользователь'),
-            'access_token' => Yii::t('sm-user', 'Токен доступа'),
-            'created_at' => Yii::t('sm-user', 'Создан'),
-            'updated_at' => Yii::t('sm-user', 'Изменен'),
-            'expired_at' => Yii::t('sm-user', 'Срок действия'),
-            'is_active' => Yii::t('sm-user', 'Активен'),
+            'user_id' => Yii::t('app-sm-user', 'Пользователь'),
+            'access_token' => Yii::t('app-sm-user', 'Токен доступа'),
+            'created_at' => Yii::t('app-sm-user', 'Создан'),
+            'updated_at' => Yii::t('app-sm-user', 'Изменен'),
+            'expired_at' => Yii::t('app-sm-user', 'Срок действия'),
+            'is_active' => Yii::t('app-sm-user', 'Активен'),
         ];
     }
 
@@ -142,7 +142,7 @@ abstract class AbstractUserAccessToken extends ActiveRecord implements UserAcces
     public function insertModel(): bool
     {
         if (!$this->insert()) {
-            throw new Exception(Yii::t('sm-user', 'Ошибка при добавлении модели в БД'));
+            throw new Exception(Yii::t('app-sm-user', 'Ошибка при добавлении модели в БД'));
         }
         return true;
     }
@@ -157,7 +157,7 @@ abstract class AbstractUserAccessToken extends ActiveRecord implements UserAcces
         $this->is_active = 0;
         $this->expired_at = time();
         if (!$this->save()) {
-            throw new Exception(Yii::t('sm-user', 'Ошибка при деактивации токена'));
+            throw new Exception(Yii::t('app-sm-user', 'Ошибка при деактивации токена'));
         }
         return true;
     }

@@ -101,7 +101,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     public static function findByPasswordResetToken(int $expired, string $token = null): AbstractUser
     {
         if (!static::isPasswordResetTokenValid($expired, $token)) {
-            throw new RuntimeException(Yii::t('sm-user', 'Недействительный токен. Запросите сброс пароля еще раз.'));
+            throw new RuntimeException(Yii::t('app-sm-user', 'Недействительный токен. Запросите сброс пароля еще раз.'));
         }
         return static::findOne([
             'password_reset_token' => $token,
@@ -234,12 +234,12 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
         return [
             ['username', 'required'],
             ['username', 'match', 'pattern' => '#^[\w_-]+$#i'],
-            ['username', 'unique', 'on' => 'create', 'targetClass' => AbstractUser::class, 'message' => Yii::t('sm-user', 'Такое имя пользователя уже занято')],
+            ['username', 'unique', 'on' => 'create', 'targetClass' => AbstractUser::class, 'message' => Yii::t('app-sm-user', 'Такое имя пользователя уже занято')],
             ['username', 'string', 'min' => 2, 'max' => 255],
 
             ['email', 'required'],
             ['email', 'email'],
-            ['email', 'unique', 'on' => 'create', 'targetClass' => AbstractUser::class, 'message' => Yii::t('sm-user', 'Такой e-mail уже зарегистрирован')],
+            ['email', 'unique', 'on' => 'create', 'targetClass' => AbstractUser::class, 'message' => Yii::t('app-sm-user', 'Такой e-mail уже зарегистрирован')],
             ['email', 'string', 'max' => 255],
 
             ['status_id', 'integer'],
@@ -259,11 +259,11 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     public static function getStatusesArray(): array
     {
         return [
-            self::STATUS_BLOCKED => Yii::t('sm-user', 'Заблокирован'),
-            self::STATUS_ACTIVE => Yii::t('sm-user', 'Активен'),
-            self::STATUS_WAIT_EMAIL => Yii::t('sm-user', 'Ожидает подтверждения e-mail'),
-            self::STATUS_MODERATION => Yii::t('sm-user', 'На модерации'),
-            self::STATUS_LANDING => Yii::t('sm-user', 'С лендинга'),
+            self::STATUS_BLOCKED => Yii::t('app-sm-user', 'Заблокирован'),
+            self::STATUS_ACTIVE => Yii::t('app-sm-user', 'Активен'),
+            self::STATUS_WAIT_EMAIL => Yii::t('app-sm-user', 'Ожидает подтверждения e-mail'),
+            self::STATUS_MODERATION => Yii::t('app-sm-user', 'На модерации'),
+            self::STATUS_LANDING => Yii::t('app-sm-user', 'С лендинга'),
         ];
     }
 
@@ -273,16 +273,16 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     public function attributeLabels(): array
     {
         return [
-            'id' => Yii::t('sm-user', 'ID'),
-            'created_at' => Yii::t('sm-user', 'Дата регистрации'),
-            'username' => Yii::t('sm-user', 'Никнейм'),
-            'auth_key' => Yii::t('sm-user', 'API ключ'),
-            'email_confirm_token' => Yii::t('sm-user', 'Токен подтверждения e-mail'),
-            'password_hash' => Yii::t('sm-user', 'Password hash'),
-            'password_reset_token' => Yii::t('sm-user', 'Токен сброса пароля'),
-            'email' => Yii::t('sm-user', 'Email'),
-            'status_id' => Yii::t('sm-user', 'Статус'),
-            'last_entering_date' => Yii::t('sm-user', 'Последний вход'),
+            'id' => Yii::t('app-sm-user', 'ID'),
+            'created_at' => Yii::t('app-sm-user', 'Дата регистрации'),
+            'username' => Yii::t('app-sm-user', 'Никнейм'),
+            'auth_key' => Yii::t('app-sm-user', 'API ключ'),
+            'email_confirm_token' => Yii::t('app-sm-user', 'Токен подтверждения e-mail'),
+            'password_hash' => Yii::t('app-sm-user', 'Password hash'),
+            'password_reset_token' => Yii::t('app-sm-user', 'Токен сброса пароля'),
+            'email' => Yii::t('app-sm-user', 'Email'),
+            'status_id' => Yii::t('app-sm-user', 'Статус'),
+            'last_entering_date' => Yii::t('app-sm-user', 'Последний вход'),
         ];
     }
 
@@ -320,7 +320,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
         $this->deactivate();
         if (!$this->save()) {
             print_r($this->getErrors());
-            throw new Exception(Yii::t('sm-user', 'Ошибка при блокировании пользователя'));
+            throw new Exception(Yii::t('app-sm-user', 'Ошибка при блокировании пользователя'));
         }
         return true;
     }
@@ -351,7 +351,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     {
         $this->activate();
         if (!$this->save()) {
-            throw new Exception(Yii::t('sm-user', 'Ошибка при разблокировке пользователя'));
+            throw new Exception(Yii::t('app-sm-user', 'Ошибка при разблокировке пользователя'));
         }
         return true;
     }
@@ -382,7 +382,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     {
         $this->activate();
         if (!$this->save()) {
-            throw new Exception(Yii::t('sm-user', 'Ошибка при активации аккаунат'));
+            throw new Exception(Yii::t('app-sm-user', 'Ошибка при активации аккаунат'));
         }
         return true;
     }
@@ -651,7 +651,7 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
     {
         $this->last_entering_date = time();
         if (!$this->save()) {
-            throw new Exception(Yii::t('sm-user', 'Ошибка обновления даты входа'));
+            throw new Exception(Yii::t('app-sm-user', 'Ошибка обновления даты входа'));
         }
         return true;
     }

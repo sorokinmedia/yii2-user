@@ -44,9 +44,9 @@ class UserMetaFullName extends Model
     public function attributeLabels(): array
     {
         return [
-            'surname' => Yii::t('sm-user', 'Фамилия'),
-            'name' => Yii::t('sm-user', 'Имя'),
-            'patronymic' => Yii::t('sm-user', 'Отчество'),
+            'surname' => Yii::t('app-sm-user', 'Фамилия'),
+            'name' => Yii::t('app-sm-user', 'Имя'),
+            'patronymic' => Yii::t('app-sm-user', 'Отчество'),
         ];
     }
 }

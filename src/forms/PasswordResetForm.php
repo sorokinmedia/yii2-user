@@ -33,11 +33,11 @@ class PasswordResetForm extends Model
     {
         parent::__construct($config);
         if (empty($this->token) || !is_string($this->token)) {
-            throw new InvalidArgumentException(Yii::t('sm-user', 'Токен не может быть пустым'));
+            throw new InvalidArgumentException(Yii::t('app-sm-user', 'Токен не может быть пустым'));
         }
         $this->_user = $user;
         if (!$this->_user) {
-            throw new InvalidArgumentException(Yii::t('sm-user', 'Неверный токен. Запросите сброс пароля еще раз'));
+            throw new InvalidArgumentException(Yii::t('app-sm-user', 'Неверный токен. Запросите сброс пароля еще раз'));
         }
     }
 
@@ -59,8 +59,8 @@ class PasswordResetForm extends Model
     public function attributeLabels(): array
     {
         return [
-            'password' => Yii::t('sm-user', 'Пароль'),
-            'password_repeat' => Yii::t('sm-user', 'Повторите пароль'),
+            'password' => Yii::t('app-sm-user', 'Пароль'),
+            'password_repeat' => Yii::t('app-sm-user', 'Повторите пароль'),
         ];
     }
 
@@ -93,7 +93,7 @@ class PasswordResetForm extends Model
         if ($this->password === $this->password_repeat) {
             return true;
         }
-        $this->addError('password_repeat', Yii::t('sm-user', 'Пароли не совпадают'));
+        $this->addError('password_repeat', Yii::t('app-sm-user', 'Пароли не совпадают'));
         return false;
     }
 }

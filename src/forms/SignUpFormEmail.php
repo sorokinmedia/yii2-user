@@ -53,9 +53,9 @@ class SignUpFormEmail extends Model
     public function attributeLabels(): array
     {
         return [
-            'username' => Yii::t('sm-user', 'Имя пользователя'),
-            'email' => Yii::t('sm-user', 'E-mail'),
-            'password' => Yii::t('sm-user', 'Пароль'),
+            'username' => Yii::t('app-sm-user', 'Имя пользователя'),
+            'email' => Yii::t('app-sm-user', 'E-mail'),
+            'password' => Yii::t('app-sm-user', 'Пароль'),
         ];
     }
 
@@ -68,7 +68,7 @@ class SignUpFormEmail extends Model
             ['email', 'filter', 'filter' => 'trim'],
             ['email', 'required'],
             ['email', 'email'],
-            ['email', 'unique', 'targetClass' => AbstractUser::class, 'message' => Yii::t('sm-user', 'Этот E-mail уже зарегистрирован в системе. Попробуйте использовать другой или восстановить пароль, указав текущий.')],
+            ['email', 'unique', 'targetClass' => AbstractUser::class, 'message' => Yii::t('app-sm-user', 'Этот E-mail уже зарегистрирован в системе. Попробуйте использовать другой или восстановить пароль, указав текущий.')],
         ];
     }
 

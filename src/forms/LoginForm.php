@@ -53,9 +53,9 @@ class LoginForm extends Model
     public function attributeLabels(): array
     {
         return [
-            'email' => Yii::t('sm-user', 'Email'),
-            'password' => Yii::t('sm-user', 'Пароль'),
-            'remember' => Yii::t('sm-user', 'Запомнить меня'),
+            'email' => Yii::t('app-sm-user', 'Email'),
+            'password' => Yii::t('app-sm-user', 'Пароль'),
+            'remember' => Yii::t('app-sm-user', 'Запомнить меня'),
         ];
     }
 
@@ -69,7 +69,7 @@ class LoginForm extends Model
             /** @var AbstractUser $user */
             $user = $this->getUser();
             if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError('password', Yii::t('sm-user', 'Логин или пароль указан не верно. Попробуйте еще раз.'));
+                $this->addError('password', Yii::t('app-sm-user', 'Логин или пароль указан не верно. Попробуйте еще раз.'));
             }
         }
     }
@@ -101,10 +101,10 @@ class LoginForm extends Model
         /** @var AbstractUser $user */
         $user = $this->getUser();
         if ($user && $user->status_id === AbstractUser::STATUS_BLOCKED) {
-            throw new InvalidArgumentException(Yii::t('sm-user', 'Ваш аккаунт заблокирован. Обратитесь к тех.поддержке.'));
+            throw new InvalidArgumentException(Yii::t('app-sm-user', 'Ваш аккаунт заблокирован. Обратитесь к тех.поддержке.'));
         }
         if ($user && $user->status_id === AbstractUser::STATUS_WAIT_EMAIL) {
-            throw new InvalidArgumentException(Yii::t('sm-user', 'Ваш аккаунт не подтвержден. Необходимо подтвердить e-mail.'));
+            throw new InvalidArgumentException(Yii::t('app-sm-user', 'Ваш аккаунт не подтвержден. Необходимо подтвердить e-mail.'));
         }
         return true;
     }
@@ -132,9 +132,9 @@ class LoginForm extends Model
         /** @var AbstractUser $user */
         $user = $this->getUser();
         if ($user && $user->status_id === AbstractUser::STATUS_BLOCKED) {
-            $this->addError('login', Yii::t('sm-user', 'Ваш аккаунт заблокирован. Обратитесь к тех.поддержке.'));
+            $this->addError('login', Yii::t('app-sm-user', 'Ваш аккаунт заблокирован. Обратитесь к тех.поддержке.'));
         } elseif ($user && $user->status_id === AbstractUser::STATUS_WAIT_EMAIL) {
-            $this->addError('login', Yii::t('sm-user', 'Ваш аккаунт не подтвержден. Необходимо подтвердить e-mail.'));
+            $this->addError('login', Yii::t('app-sm-user', 'Ваш аккаунт не подтвержден. Необходимо подтвердить e-mail.'));
         }
     }
 }

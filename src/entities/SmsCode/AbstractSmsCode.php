@@ -168,7 +168,7 @@ abstract class AbstractSmsCode extends ActiveRecord implements RelationInterface
         $this->getFromForm();
         $this->is_deleted = true;
         if (!$this->save()) {
-            throw new \RuntimeException(Yii::t('sm-user', 'Ошибка при удалении кода'));
+            throw new \RuntimeException(Yii::t('app-sm-user', 'Ошибка при удалении кода'));
         }
         return true;
     }
@@ -222,16 +222,16 @@ abstract class AbstractSmsCode extends ActiveRecord implements RelationInterface
     public function attributeLabels(): array
     {
         return [
-            'id' => Yii::t('sm-user', 'ID'),
-            'user_id' => Yii::t('sm-user', 'Пользователь'),
-            'phone' => Yii::t('sm-user', 'Номер телефона'),
-            'created_at' => Yii::t('sm-user', 'Дата'),
-            'code' => Yii::t('sm-user', 'Код'),
-            'type_id' => Yii::t('sm-user', 'Тип'),
-            'ip' => Yii::t('sm-user', 'IP'),
-            'is_used' => Yii::t('sm-user', 'Кол-во использований'),
-            'is_validated' => Yii::t('sm-user', 'Проверен'),
-            'is_deleted' => Yii::t('sm-user', 'Удален'),
+            'id' => Yii::t('app-sm-user', 'ID'),
+            'user_id' => Yii::t('app-sm-user', 'Пользователь'),
+            'phone' => Yii::t('app-sm-user', 'Номер телефона'),
+            'created_at' => Yii::t('app-sm-user', 'Дата'),
+            'code' => Yii::t('app-sm-user', 'Код'),
+            'type_id' => Yii::t('app-sm-user', 'Тип'),
+            'ip' => Yii::t('app-sm-user', 'IP'),
+            'is_used' => Yii::t('app-sm-user', 'Кол-во использований'),
+            'is_validated' => Yii::t('app-sm-user', 'Проверен'),
+            'is_deleted' => Yii::t('app-sm-user', 'Удален'),
         ];
     }
 
@@ -245,7 +245,7 @@ abstract class AbstractSmsCode extends ActiveRecord implements RelationInterface
     {
         $this->getFromForm();
         if (!$this->insert()) {
-            throw new Exception(Yii::t('sm-user', $this->getMessage()));
+            throw new Exception(Yii::t('app-sm-user', $this->getMessage()));
         }
         return true;
     }
@@ -283,7 +283,7 @@ abstract class AbstractSmsCode extends ActiveRecord implements RelationInterface
     {
         $this->getFromForm();
         if (!$this->save()) {
-            throw new Exception(Yii::t('sm-user', 'Ошибка при обновлении в БД'));
+            throw new Exception(Yii::t('app-sm-user', 'Ошибка при обновлении в БД'));
         }
         return true;
     }
@@ -334,7 +334,7 @@ abstract class AbstractSmsCode extends ActiveRecord implements RelationInterface
         ++$this->is_used;
         $this->is_validated = $is_validated;
         if (!$this->save()) {
-            throw new Exception(Yii::t('sm-user', 'Ошибка при сохранении статуса кода'));
+            throw new Exception(Yii::t('app-sm-user', 'Ошибка при сохранении статуса кода'));
         }
         return true;
     }

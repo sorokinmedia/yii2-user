@@ -21,4 +21,4 @@
 
 ## Translation
 
-Use `Yii::t('sm-user', '')` for messages which need to be translated.
+Use `Yii::t('app-sm-user', '')` for messages which need to be translated.

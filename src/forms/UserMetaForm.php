@@ -71,13 +71,13 @@ class UserMetaForm extends Model
     public function attributeLabels(): array
     {
         return [
-            'notification_email' => Yii::t('sm-user', 'E-mail для уведомлений'),
-            'full_name' => Yii::t('sm-user', 'Полное имя'),
-            'display_name' => Yii::t('sm-user', 'Отображаемое имя'),
-            'tz' => Yii::t('sm-user', 'Часовой пояс'),
-            'location' => Yii::t('sm-user', 'Страна/Город'),
-            'about' => Yii::t('sm-user', 'О себе'),
-            'custom_fields' => Yii::t('sm-user', 'Дополнительные данные'),
+            'notification_email' => Yii::t('app-sm-user', 'E-mail для уведомлений'),
+            'full_name' => Yii::t('app-sm-user', 'Полное имя'),
+            'display_name' => Yii::t('app-sm-user', 'Отображаемое имя'),
+            'tz' => Yii::t('app-sm-user', 'Часовой пояс'),
+            'location' => Yii::t('app-sm-user', 'Страна/Город'),
+            'about' => Yii::t('app-sm-user', 'О себе'),
+            'custom_fields' => Yii::t('app-sm-user', 'Дополнительные данные'),
         ];
     }
 }

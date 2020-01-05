@@ -53,9 +53,9 @@ class CompanyUserForm extends Model
     public function attributeLabels(): array
     {
         return [
-            'company_id' => Yii::t('sm-user', 'Компания'),
-            'user_id' => Yii::t('sm-user', 'Пользователь'),
-            'role' => Yii::t('sm-user', 'Роль'),
+            'company_id' => Yii::t('app-sm-user', 'Компания'),
+            'user_id' => Yii::t('app-sm-user', 'Пользователь'),
+            'role' => Yii::t('app-sm-user', 'Роль'),
         ];
     }
 }

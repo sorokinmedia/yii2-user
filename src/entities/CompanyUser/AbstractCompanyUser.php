@@ -69,10 +69,10 @@ abstract class AbstractCompanyUser extends ActiveRecord implements CompanyUserIn
     public function attributeLabels(): array
     {
         return [
-            'company_id' => Yii::t('sm-user', 'Компания'),
-            'user_id' => Yii::t('sm-user', 'Пользователь'),
-            'role' => Yii::t('sm-user', 'Роль'),
-            'permissions' => Yii::t('sm-user', 'Разрешения'),
+            'company_id' => Yii::t('app-sm-user', 'Компания'),
+            'user_id' => Yii::t('app-sm-user', 'Пользователь'),
+            'role' => Yii::t('app-sm-user', 'Роль'),
+            'permissions' => Yii::t('app-sm-user', 'Разрешения'),
         ];
     }
 
@@ -110,7 +110,7 @@ abstract class AbstractCompanyUser extends ActiveRecord implements CompanyUserIn
     {
         $this->getFromForm();
         if (!$this->insert()) {
-            throw new Exception(Yii::t('sm-user', 'Ошибка при добавлении в БД'));
+            throw new Exception(Yii::t('app-sm-user', 'Ошибка при добавлении в БД'));
         }
         return true;
     }
@@ -137,7 +137,7 @@ abstract class AbstractCompanyUser extends ActiveRecord implements CompanyUserIn
     public function deleteModel(): bool
     {
         if (!$this->delete()) {
-            throw new Exception(Yii::t('sm-user', 'Ошибка при удалении из БД'));
+            throw new Exception(Yii::t('app-sm-user', 'Ошибка при удалении из БД'));
         }
         return true;
     }
@@ -167,7 +167,7 @@ abstract class AbstractCompanyUser extends ActiveRecord implements CompanyUserIn
     {
         $this->getFromForm();
         if (!$this->save()) {
-            throw new Exception(Yii::t('sm-user', 'Ошибка при обновлении в БД'));
+            throw new Exception(Yii::t('app-sm-user', 'Ошибка при обновлении в БД'));
         }
         return true;
     }

@@ -69,14 +69,14 @@ class SmsCodeForm extends Model
     public function attributeLabels(): array
     {
         return [
-            'user_id' => Yii::t('sm-user', 'Пользователь'),
-            'phone' => Yii::t('sm-user', 'Номер телефона'),
-            'code' => Yii::t('sm-user', 'Код'),
-            'type_id' => Yii::t('sm-user', 'Тип'),
-            'ip' => Yii::t('sm-user', 'IP'),
-            'is_used' => Yii::t('sm-user', 'Кол-во использований'),
-            'is_validated' => Yii::t('sm-user', 'Проверен'),
-            'is_deleted' => Yii::t('sm-user', 'Удален'),
+            'user_id' => Yii::t('app-sm-user', 'Пользователь'),
+            'phone' => Yii::t('app-sm-user', 'Номер телефона'),
+            'code' => Yii::t('app-sm-user', 'Код'),
+            'type_id' => Yii::t('app-sm-user', 'Тип'),
+            'ip' => Yii::t('app-sm-user', 'IP'),
+            'is_used' => Yii::t('app-sm-user', 'Кол-во использований'),
+            'is_validated' => Yii::t('app-sm-user', 'Проверен'),
+            'is_deleted' => Yii::t('app-sm-user', 'Удален'),
         ];
     }
 }

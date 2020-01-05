@@ -53,9 +53,9 @@ class SignUpFormExisted extends Model
     public function attributeLabels(): array
     {
         return [
-            'username' => Yii::t('sm-user', 'Имя пользователя'),
-            'email' => Yii::t('sm-user', 'E-mail'),
-            'password' => Yii::t('sm-user', 'Пароль'),
+            'username' => Yii::t('app-sm-user', 'Имя пользователя'),
+            'email' => Yii::t('app-sm-user', 'E-mail'),
+            'password' => Yii::t('app-sm-user', 'Пароль'),
         ];
     }
 
@@ -68,13 +68,13 @@ class SignUpFormExisted extends Model
             ['username', 'filter', 'filter' => 'trim'],
             ['username', 'required'],
             ['username', 'match', 'pattern' => '#^[\w_-]+$#i'],
-            ['username', 'unique', 'targetClass' => AbstractUser::class, 'message' => Yii::t('sm-user', 'Этот логин уже занят. Попробуйте использовать другой.')],
+            ['username', 'unique', 'targetClass' => AbstractUser::class, 'message' => Yii::t('app-sm-user', 'Этот логин уже занят. Попробуйте использовать другой.')],
             ['username', 'string', 'min' => 2, 'max' => 255],
 
             ['email', 'filter', 'filter' => 'trim'],
             ['email', 'required'],
             ['email', 'email'],
-            ['email', 'unique', 'targetClass' => AbstractUser::class, 'message' => Yii::t('sm-user', 'Этот E-mail уже зарегистрирован в системе. Попробуйте использовать другой или восстановить пароль, указав текущий.')],
+            ['email', 'unique', 'targetClass' => AbstractUser::class, 'message' => Yii::t('app-sm-user', 'Этот E-mail уже зарегистрирован в системе. Попробуйте использовать другой или восстановить пароль, указав текущий.')],
 
             ['password', 'required'],
             ['password', 'string', 'min' => 6],

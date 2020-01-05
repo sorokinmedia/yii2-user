@@ -47,11 +47,11 @@ class InviteExistingUser extends AbstractAction
         ]);
 
         if (!$this->invite->save()) {
-            throw new Exception(Yii::t('sm-user', 'Изменения не сохранены'));
+            throw new Exception(Yii::t('app-sm-user', 'Изменения не сохранены'));
         }
 
         if (!$this->invite->sendNotificationsToNewUser()) {
-            throw new \yii\base\Exception(Yii::t('sm-user', 'Уведомления не отправлены'));
+            throw new \yii\base\Exception(Yii::t('app-sm-user', 'Уведомления не отправлены'));
         }
 
         return true;
