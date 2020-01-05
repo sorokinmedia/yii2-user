@@ -239,6 +239,21 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             'aliases' => [
                 '@tests' => __DIR__,
             ],
+            'components' => [
+                'i18n' => [
+                    'translations' => [
+                        'app*' => [
+                            'class' => 'yii\i18n\PhpMessageSource',
+                            //'basePath' => '@app/messages',
+                            //'sourceLanguage' => 'en-US',
+                            'fileMap' => [
+                                'app' => 'app.php',
+                                'app/error' => 'error.php',
+                            ],
+                        ],
+                    ],
+                ],
+            ]
         ]);
     }
 
