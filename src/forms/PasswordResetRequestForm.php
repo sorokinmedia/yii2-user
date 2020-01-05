@@ -36,8 +36,8 @@ class PasswordResetRequestForm extends Model
     public function attributeLabels(): array
     {
         return [
-            'email' => Yii::t('app', 'E-mail'),
-            'password_reset_token_expire' => Yii::t('app', 'Срок истечения токена'),
+            'email' => Yii::t('sm-user', 'E-mail'),
+            'password_reset_token_expire' => Yii::t('sm-user', 'Срок истечения токена'),
         ];
     }
 

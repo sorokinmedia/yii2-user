@@ -42,7 +42,7 @@ class PasswordChangeForm extends Model
             [['password', 'password_repeat'], 'required'],
             [['password'], 'string', 'min' => 6],
             [['password_repeat'], 'string'],
-            [['password_repeat'], 'compare', 'compareAttribute' => 'password', 'message' => Yii::t('app', 'Пароли не совпадают')]
+            [['password_repeat'], 'compare', 'compareAttribute' => 'password', 'message' => Yii::t('sm-user', 'Пароли не совпадают')]
         ];
     }
 
@@ -52,8 +52,8 @@ class PasswordChangeForm extends Model
     public function attributeLabels(): array
     {
         return [
-            'password' => Yii::t('app', 'Пароль'),
-            'password_repeat' => Yii::t('app', 'Повторите пароль'),
+            'password' => Yii::t('sm-user', 'Пароль'),
+            'password_repeat' => Yii::t('sm-user', 'Повторите пароль'),
         ];
     }
 
@@ -85,7 +85,7 @@ class PasswordChangeForm extends Model
         if ($this->password === $this->password_repeat) {
             return true;
         }
-        $this->addError('password_repeat', Yii::t('app', 'Пароли не совпадают'));
+        $this->addError('password_repeat', Yii::t('sm-user', 'Пароли не совпадают'));
         return false;
     }
 }

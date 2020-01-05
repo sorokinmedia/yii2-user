@@ -39,7 +39,7 @@ class SmsCodeValidator extends Model
     {
         $codeRequestsCountIp = AbstractSmsCode::getRequestedTodayByIp($this->ip, $this->type_id); // число запросов смс за сегодня
         if ($codeRequestsCountIp >= AbstractSmsCode::MAX_PER_IP) {
-            throw $e = new Exception(Yii::t('app', 'Превышено число попыток с вашего IP адреса. Попробуйте завтра или обратитесь к администратору ресурса'));
+            throw $e = new Exception(Yii::t('sm-user', 'Превышено число попыток с вашего IP адреса. Попробуйте завтра или обратитесь к администратору ресурса'));
         }
     }
 
@@ -51,7 +51,7 @@ class SmsCodeValidator extends Model
     {
         $codeRequestsCountPhone = AbstractSmsCode::getRequestedTodayByUser($this->user, $this->type_id); // число запросов смс за сегодня
         if ($codeRequestsCountPhone >= AbstractSmsCode::MAX_PER_DAY) {
-            throw $e = new Exception(Yii::t('app', 'Превышено число попыток. Попробуйте завтра или обратитесь к администратору ресурса'));
+            throw $e = new Exception(Yii::t('sm-user', 'Превышено число попыток. Попробуйте завтра или обратитесь к администратору ресурса'));
         }
     }
 }

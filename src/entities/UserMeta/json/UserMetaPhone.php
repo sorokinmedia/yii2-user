@@ -55,9 +55,9 @@ class UserMetaPhone extends Model
     public static function getCodes(): array
     {
         return [
-            7 => Yii::t('app', '+7'), // Россия Казахстан
-            375 => Yii::t('app', '+375'), // Украина
-            380 => Yii::t('app', '+380'), // Беларусь
+            7 => Yii::t('sm-user', '+7'), // Россия Казахстан
+            375 => Yii::t('sm-user', '+375'), // Украина
+            380 => Yii::t('sm-user', '+380'), // Беларусь
         ];
     }
 
@@ -67,9 +67,9 @@ class UserMetaPhone extends Model
     public function attributeLabels(): array
     {
         return [
-            'country' => Yii::t('app', 'Код страны'),
-            'number' => Yii::t('app', 'Номер телефона'),
-            'is_verified' => Yii::t('app', 'Подтвержден'),
+            'country' => Yii::t('sm-user', 'Код страны'),
+            'number' => Yii::t('sm-user', 'Номер телефона'),
+            'is_verified' => Yii::t('sm-user', 'Подтвержден'),
         ];
     }
 

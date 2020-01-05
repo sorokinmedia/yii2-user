@@ -51,7 +51,7 @@ abstract class AbstractCompany extends ActiveRecord implements CompanyInterface,
             'owner_id' => $owner->id,
         ]);
         if (!$company->insert()) {
-            throw new Exception(Yii::t('app', 'Ошибка при добавлении компании'));
+            throw new Exception(Yii::t('sm-user', 'Ошибка при добавлении компании'));
         }
         $company->refresh();
         $form = new CompanyUserForm([
@@ -61,7 +61,7 @@ abstract class AbstractCompany extends ActiveRecord implements CompanyInterface,
         ]);
         $company_user = new $company->__companyUserClass([], $form);
         if (!(new CompanyUserHandler($company_user))->create()) {
-            throw new Exception(Yii::t('app', 'Ошибка при добавлении сотрудника в компанию'));
+            throw new Exception(Yii::t('sm-user', 'Ошибка при добавлении сотрудника в компанию'));
         }
         return $company;
     }
@@ -74,7 +74,7 @@ abstract class AbstractCompany extends ActiveRecord implements CompanyInterface,
         return [
             [['owner_id'], 'required'],
             [['owner_id'], 'exist', 'targetClass' => AbstractUser::class, 'targetAttribute' => ['owner_id' => 'id']],
-            [['name'], 'default', 'value' => Yii::t('app', 'Моя компания')],
+            [['name'], 'default', 'value' => Yii::t('sm-user', 'Моя компания')],
             [['name'], 'string', 'max' => 500],
             [['description'], 'string']
         ];
@@ -86,10 +86,10 @@ abstract class AbstractCompany extends ActiveRecord implements CompanyInterface,
     public function attributeLabels(): array
     {
         return [
-            'id' => Yii::t('app', 'ID'),
-            'owner_id' => Yii::t('app', 'Владелец'),
-            'name' => Yii::t('app', 'Название'),
-            'description' => Yii::t('app', 'Описание'),
+            'id' => Yii::t('sm-user', 'ID'),
+            'owner_id' => Yii::t('sm-user', 'Владелец'),
+            'name' => Yii::t('sm-user', 'Название'),
+            'description' => Yii::t('sm-user', 'Описание'),
         ];
     }
 

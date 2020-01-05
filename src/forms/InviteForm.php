@@ -71,7 +71,7 @@ class InviteForm extends Model
     public function checkAtLeast($attribute): void
     {
         if (!$this->user && !$this->email) {
-            $this->addError($attribute, Yii::t('app', 'Пользователь или email должны быть заполнены'));
+            $this->addError($attribute, Yii::t('sm-user', 'Пользователь или email должны быть заполнены'));
         }
     }
 
@@ -94,7 +94,7 @@ class InviteForm extends Model
         }
 
         if ($query->exists()) {
-            $this->addError($attribute, Yii::t('app', 'Пришглашение этому пользователю уже отправлено'));
+            $this->addError($attribute, Yii::t('sm-user', 'Пришглашение этому пользователю уже отправлено'));
         }
     }
 
@@ -111,7 +111,7 @@ class InviteForm extends Model
             ]);
 
             if (empty($this->meta) && $query->exists()) {
-                $this->addError($attribute, Yii::t('app', 'Пользователю уже выданы права'));
+                $this->addError($attribute, Yii::t('sm-user', 'Пользователю уже выданы права'));
             }
         }
     }
