@@ -18,3 +18,7 @@
 ## Run tests
 
 `sudo vendor/bin/phpunit`
+
+## Translation
+
+Use `Yii::t('sm-user', '')` for messages which need to be translated.
