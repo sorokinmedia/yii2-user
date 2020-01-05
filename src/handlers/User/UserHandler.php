@@ -3,7 +3,7 @@
 namespace sorokinmedia\user\handlers\User;
 
 use sorokinmedia\user\entities\User\UserInterface;
-use sorokinmedia\user\forms\{SignupForm, SignUpFormConsole, SignUpFormEmail};
+use sorokinmedia\user\forms\{SignupForm, SignUpFormConsole, SignUpFormEmail, SignUpFormExisted};
 use sorokinmedia\user\handlers\User\interfaces\{AddRole,
     Block,
     Create,
@@ -67,6 +67,17 @@ class UserHandler implements Create, CreateFromEmail, CreateFromConsole, VerifyA
     public function createFromConsole(SignUpFormConsole $sign_up_form_console): bool
     {
         return (new actions\CreateFromConsole($this->user, null, null, $sign_up_form_console))->execute();
+    }
+
+    /**
+     * регистрация пользователя через перенос пользователя с проекта на проект
+     * @param SignUpFormExisted $sign_up_form_existed
+     * @return bool
+     * @throws ServerErrorHttpException
+     */
+    public function createExisted(SignUpFormExisted $sign_up_form_existed): bool
+    {
+        return (new actions\CreateExisted($this->user, null, null, null, $sign_up_form_existed))->execute();
     }
 
     /**

@@ -488,12 +488,12 @@ class UserTest extends TestCase
     {
         $this->initDb();
         $user = new User();
-        $signip_form = new SignupForm([
+        $signup_form = new SignupForm([
             'email' => 'Ma3oBblu@gmail.com',
             'username' => 'Ma3oBblu',
             'password' => 'test_password',
         ], $user, User::ROLE_ADMIN);
-        $this->assertTrue($user->signUp($signip_form));
+        $this->assertTrue($user->signUp($signup_form));
     }
 
     /**
@@ -507,11 +507,11 @@ class UserTest extends TestCase
     {
         $this->initDb();
         $user = new User();
-        $signip_form = new SignUpFormEmail([
+        $signup_form = new SignUpFormEmail([
             'email' => 'Ma3oBblu@gmail.com',
         ], $user, User::ROLE_ADMIN);
-        $signip_form->prepareUsernameAndPassword();
-        $this->assertTrue($user->signUpEmail($signip_form));
+        $signup_form->prepareUsernameAndPassword();
+        $this->assertTrue($user->signUpEmail($signup_form));
     }
 
     /**

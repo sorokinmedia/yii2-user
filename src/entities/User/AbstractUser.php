@@ -7,7 +7,7 @@ use sorokinmedia\ar_relations\RelationInterface;
 use sorokinmedia\helpers\DateHelper;
 use sorokinmedia\user\entities\UserAccessToken\{AbstractUserAccessToken, UserAccessTokenInterface};
 use sorokinmedia\user\entities\UserMeta\json\UserMetaPhone;
-use sorokinmedia\user\forms\{SignupForm, SignUpFormConsole, SignUpFormEmail};
+use sorokinmedia\user\forms\{SignupForm, SignUpFormConsole, SignUpFormEmail, SignUpFormExisted};
 use Throwable;
 use sorokinmedia\user\handlers\{UserAccessToken\UserAccessTokenHandler, UserInvite\interfaces\ProcessInvitesInterface};
 use Yii;
@@ -681,6 +681,36 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
             if ($form->affiliate_id !== null) {
                 $this->processAffiliate($form->affiliate_id);
             }
+            $transaction->commit();
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            throw new ServerErrorHttpException($e->getMessage());
+        }
+        return true;
+    }
+
+    /**
+     * регистрация пользователя при переносе с другого сервиса
+     * отличтельная особенность - не генерируем хеш пароля, а используем тот что пришел снаружи
+     * также пользователь автоматически активирован, письмо с токеном не шлем
+     * также не учитываем аффилиатов и инвайты
+     * @param SignUpFormExisted $form
+     * @return bool
+     * @throws ServerErrorHttpException
+     */
+    public function signUpExisted(SignUpFormExisted $form): bool
+    {
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $this->username = $form->username;
+            $this->email = $form->email;
+            $this->password_hash = $form->password;
+            $this->status_id = self::STATUS_ACTIVE;
+            $this->generateAuthKey();
+            if (!$this->save()) {
+                throw new RuntimeException('Ошибка при регистрации #1');
+            }
+            $this->afterSignUp($form->role);
             $transaction->commit();
         } catch (\Exception $e) {
             $transaction->rollBack();
