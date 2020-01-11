@@ -96,9 +96,9 @@ abstract class AbstractUser extends ActiveRecord implements IdentityInterface, U
      * поиск по токену сброса пароля
      * @param int $expired
      * @param string $token
-     * @return AbstractUser
+     * @return null|AbstractUser
      */
-    public static function findByPasswordResetToken(int $expired, string $token = null): AbstractUser
+    public static function findByPasswordResetToken(int $expired, string $token = null): ?AbstractUser
     {
         if (!static::isPasswordResetTokenValid($expired, $token)) {
             throw new RuntimeException(Yii::t('app-sm-user', 'Недействительный токен. Запросите сброс пароля еще раз.'));

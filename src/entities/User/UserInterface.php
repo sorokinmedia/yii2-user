@@ -29,9 +29,9 @@ interface UserInterface
      * поиск пользователя по токену сброса пароля
      * @param int $expired
      * @param string $token
-     * @return AbstractUser
+     * @return null|AbstractUser
      */
-    public static function findByPasswordResetToken(int $expired, string $token = null): AbstractUser;
+    public static function findByPasswordResetToken(int $expired, string $token = null): ?AbstractUser;
 
     /**
      * проверка валидности токена сброса пароля
